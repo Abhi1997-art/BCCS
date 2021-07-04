@@ -276,13 +276,12 @@ public class ReportController {
 		return report;
 	}
 	
-	
 	@GetMapping("/legal_case_submit_due")
 	List<iBikeLegalReport> getLegalCaseSubmitDue(){
 		List<iBikeLegalReport> report = reportservice.getLegalCaseSubmitDue();
 		return report;
 	}
-	
+
 	
 	
 	//Search...................................................................................................................................
