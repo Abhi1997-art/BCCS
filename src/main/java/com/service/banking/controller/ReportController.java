@@ -280,8 +280,38 @@ public class ReportController {
 	List<iBikeLegalReport> getLegalCaseSubmitDue(){
 		List<iBikeLegalReport> report = reportservice.getLegalCaseSubmitDue();
 		return report;
-	}
-
+	}	
+	
+	@GetMapping("/bike_not_sold_due_to")
+	List<iBikeLegalReport> getBikeNotSoldDueTo(){
+		List<iBikeLegalReport> report = reportservice.getBikeNotSoldDueTo();
+		return report;
+	}	
+	
+	@GetMapping("/legal_case_not_submit_due_to")
+	List<iBikeLegalReport> getLegalCaseNotSubmitDueTo(){
+		List<iBikeLegalReport> report = reportservice.getLegalCaseNotSubmitDueTo();
+		return report;
+	}	
+	
+	@GetMapping("/cheque_action_pending")
+	List<iBikeLegalReport> getChequeActionPending(){
+		List<iBikeLegalReport> report = reportservice.getChequeActionPending();
+		return report;
+	}	
+	
+	@GetMapping("/arbitration_case_detail_report")
+	List<iBikeLegalReport> getArbitrationCaseDetailReport(){
+		List<iBikeLegalReport> report = reportservice.getArbitrationCaseDetailReport();
+		return report;
+	}	
+	
+	@GetMapping("/legal_finalised")
+	List<iBikeLegalReport> getLegalFinalised(@RequestParam Boolean legal, @RequestParam Boolean process, @RequestParam Boolean arbitration){
+		List<iBikeLegalReport> report = reportservice.getLegalFinalised(legal, process, arbitration);
+		return report;
+	}	
+	
 	
 	
 	//Search...................................................................................................................................

@@ -31,6 +31,15 @@ public interface iBikeLegalReport {
 	public String getCheque_Returned_On();
 	public String getNotice_Sent_After_Cheque_Returned_On();
 	public String getBike_not_sold_reason();
+	public String getFinal_Recovery_Notice_Sent_On();
+	public Boolean getIs_In_Arbitration();
+	public String getArbitration_On();
+	public String getLegal_Process_Given_Date();
+	public String getLegal_Filing_Date();
+	public String getLegal_Case_Finalised_On();
+	
+	
+
 	
 	
 	

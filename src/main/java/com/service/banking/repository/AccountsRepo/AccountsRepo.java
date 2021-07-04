@@ -480,6 +480,56 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 			+ "where a.is_final_recovery_notice_sent =1 and a.is_cheque_presented_in_bank =1 and a.is_cheque_returned =1 and a.is_in_arbitration =0\r\n"
 			+ "and a.is_in_legal =0 and a.ActiveStatus =1 and a.is_notice_sent_after_cheque_returned =1 ", nativeQuery = true)	
 	List<iBikeLegalReport> getLegalCaseSubmitDue();
+
+	@Query(value = "select a.AccountNumber, m.name, m.member_no , m.CurrentAddress, m.is_defaulter , m.FatherName , m.PermanentAddress , m.landmark , m.tehsil , m.district , \r\n"
+			+ "m.PhoneNos , d.name as dealerName , a.bike_surrendered_on , a.bike_not_sold_reason , a.Amount , a.created_at from accounts a \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "left join dealers d on d.id = a.dealer_id \r\n"
+			+ "where a.DefaultAC =0 and a.bike_surrendered =1 and a.is_bike_returned = 0 and a.is_bike_auctioned =0 and \r\n"
+			+ "(Not a.bike_not_sold_reason = null or not a.bike_not_sold_reason = \" \") ", nativeQuery = true)	
+	List<iBikeLegalReport> getBikeNotSoldDueTo();
+
+	@Query(value = "select a.AccountNumber, m.name, m.member_no , m.CurrentAddress, m.is_defaulter , m.FatherName , m.PermanentAddress , m.landmark , m.tehsil , m.district , \r\n"
+			+ "m.PhoneNos , d.name as dealerName , a.bike_surrendered_on , a.final_recovery_notice_sent_on , a.legal_case_not_submitted_reason , a.Amount , a.created_at from accounts a \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "left join dealers d on d.id = a.dealer_id \r\n"
+			+ "where a.is_given_for_legal_process = 1 and a.is_in_legal =0 and \r\n"
+			+ "(not a.legal_case_not_submitted_reason = \" \" or not a.legal_case_not_submitted_reason= null) and \r\n"
+			+ "a.is_legal_case_finalised = 0 and a.is_in_arbitration =0", nativeQuery = true)	
+	List<iBikeLegalReport> getLegalCaseNotSubmitDueTo();
+
+	@Query(value = "select a.AccountNumber, m.name, m.member_no , m.CurrentAddress, m.is_defaulter , m.FatherName , m.PermanentAddress , m.landmark , m.tehsil , m.district , \r\n"
+			+ "m.PhoneNos , d.name as dealerName , a.bike_surrendered_on , a.final_recovery_notice_sent_on , a.bike_auctioned_on , a.Amount , a.created_at from accounts a \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "left join dealers d on d.id = a.dealer_id \r\n"
+			+ "where a.ActiveStatus = 1 and a.is_final_recovery_notice_sent = 1 and \r\n"
+			+ "a.is_cheque_presented_in_bank = 1 and a.is_cheque_returned  = 0 and \r\n"
+			+ "a.is_legal_case_finalised = 0 and \r\n"
+			+ "(a.legal_case_not_submitted_reason = \"\" or a.legal_case_not_submitted_reason = null or a.legal_case_not_submitted_reason = 0)", nativeQuery = true)	
+	List<iBikeLegalReport> getChequeActionPending();
+
+	@Query(value = "select a.AccountNumber, m.name, m.member_no , m.CurrentAddress, m.is_defaulter , m.FatherName , m.PermanentAddress , m.landmark , m.tehsil , m.district , \r\n"
+			+ "m.PhoneNos , d.name as dealerName , a.bike_surrendered_on  , a.Amount , a.created_at ,\r\n"
+			+ " a.arbitration_on from accounts a \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "left join dealers d on d.id = a.dealer_id \r\n"
+			+ "where a.is_legal_case_finalised = 0 and a.is_in_legal = 0 and \r\n"
+			+ "a.is_in_arbitration = 1", nativeQuery = true)	
+	List<iBikeLegalReport> getArbitrationCaseDetailReport();
+
+	@Query(value = "select a.AccountNumber, m.name, m.member_no , m.CurrentAddress, m.is_defaulter , m.FatherName , m.PermanentAddress , m.landmark , m.tehsil , m.district , \r\n"
+			+ "m.PhoneNos , d.name as dealerName , a.legal_process_given_date  , a.legal_filing_date , a.legal_case_finalised_on , a.Amount , a.created_at from accounts a \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "left join dealers d on d.id = a.dealer_id \r\n"
+			+ "where \r\n"
+			+ "case\r\n"
+			+ "when a.is_in_legal = ?1 then ( a.is_in_legal = 1 and is_given_for_legal_process =1 and a.is_legal_case_finalised =1 )\r\n"
+			+ "when a.is_given_for_legal_process = ?2 then ( a.is_in_legal = 0 and a.is_in_arbitration =0 and a.is_given_for_legal_process = 1 and a.is_legal_case_finalised = 1 )\r\n"
+			+ "when a.is_in_arbitration = ?3 then ( is_in_legal = 0 and a.is_in_arbitration = 1 and a.is_legal_case_finalised = 1 and a.is_given_for_legal_process =1 )\r\n"
+			+ "when\r\n"
+			+ "(a.is_in_legal = ?1 and a.is_given_for_legal_process = ?2 and a.is_in_arbitration = ?3) then (a.is_in_legal =1 and a.is_given_for_legal_process =1 and a.is_in_arbitration =1 and a.is_legal_case_finalised =1)\r\n"
+			+ "end", nativeQuery = true)	
+	List<iBikeLegalReport> getLegalFinalised(Boolean legal, Boolean process, Boolean arbitration);
 	
 
 	

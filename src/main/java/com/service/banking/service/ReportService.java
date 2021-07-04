@@ -337,6 +337,31 @@ public class ReportService {
 		return reports;
 	}
 
+	public List<iBikeLegalReport> getBikeNotSoldDueTo() {
+		List<iBikeLegalReport> reports = accountsRepo.getBikeNotSoldDueTo();
+		return reports;
+	}
+
+	public List<iBikeLegalReport> getLegalCaseNotSubmitDueTo() {
+		List<iBikeLegalReport> reports = accountsRepo.getLegalCaseNotSubmitDueTo();// TODO Auto-generated method stub
+		return reports;
+	}
+
+	public List<iBikeLegalReport> getChequeActionPending() {
+		List<iBikeLegalReport> reports = accountsRepo.getChequeActionPending();
+		return reports;
+	}
+
+	public List<iBikeLegalReport> getArbitrationCaseDetailReport() {
+		List<iBikeLegalReport> reports = accountsRepo.getArbitrationCaseDetailReport();
+		return reports;
+	}
+
+	public List<iBikeLegalReport> getLegalFinalised(Boolean legal, Boolean process, Boolean arbitration) {
+		List<iBikeLegalReport> reports = accountsRepo.getLegalFinalised(legal, process, arbitration);
+		return reports;
+	}
+
 
 
 
