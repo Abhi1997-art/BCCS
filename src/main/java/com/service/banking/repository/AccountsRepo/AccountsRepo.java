@@ -530,6 +530,30 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 			+ "(a.is_in_legal = ?1 and a.is_given_for_legal_process = ?2 and a.is_in_arbitration = ?3) then (a.is_in_legal =1 and a.is_given_for_legal_process =1 and a.is_in_arbitration =1 and a.is_legal_case_finalised =1)\r\n"
 			+ "end", nativeQuery = true)	
 	List<iBikeLegalReport> getLegalFinalised(Boolean legal, Boolean process, Boolean arbitration);
+
+	@Query(value = "select a.id , a.AccountNumber from accounts a\r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "where m.id= ?1 and a.account_type = \"SM\" ",
+			nativeQuery = true)
+	List<iMemberReport> getSMAccounts(Integer memberId);
+
+	@Query(value = "select m.id , m.member_no , a.AccountNumber from accounts a \r\n"
+			+ "left join members m on m.id = a.member_id\r\n"
+			+ "where a.account_type = \"SM\" ",
+			nativeQuery = true)
+	List<iMemberReport> getSMMember();
+
+	@Query(value = "select a.AccountNumber from accounts a \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "where a.account_type =  \"Saving\" and m.id = ?1 ",
+			nativeQuery = true)
+	List<iMemberReport> getSaving(Integer memberId);
+
+	@Query(value = "select a.AccountNumber from accounts a \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "where a.ActiveStatus = 0 and m.id = ?1 ",
+			nativeQuery = true)
+	List<iMemberReport> getNonActive(Integer memberId);
 	
 
 	

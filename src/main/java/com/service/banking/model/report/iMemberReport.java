@@ -30,6 +30,13 @@ public interface iMemberReport {
 	public String getRelationWithFatherField();
 	public String getSchemeName();
 	public String getDefaulter_On();
+	public String getRelationWithNominee();
+	public String getPanNo();
+	public String getAdharNumber();
+	public String getMemebr_Type();
+	public Integer getCounts();
+	public String getAccountNumber();
+	
 	
 	
 

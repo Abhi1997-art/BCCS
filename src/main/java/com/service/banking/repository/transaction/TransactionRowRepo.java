@@ -49,9 +49,9 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 			+ " where tr.created_at >= ?1 and tr.created_at < ?2",nativeQuery = true)
 	List<iDayBook> getDayBook(String fromDate, String toDate);
 
-	@Query(value = "select a.AccountNumber , a.created_at, m.title , m.name , m.FatherName ,m.CurrentAddress ,m.PhoneNos ,m.DOB , m.Nominee ,m.RelationWithNominee , a.Amount from accounts a\r\n"
+	@Query(value = "select a.AccountNumber , a.created_at, m.title , m.name , m.FatherName ,m.CurrentAddress ,m.PhoneNos ,m.DOB , m.Nominee ,m.RelationWithNominee , a.Amount, m.memebr_type , m.PanNo , m.AdharNumber , a.ActiveStatus from accounts a\r\n"
 			+ "left join members m on m.id = a.member_id \r\n"
-			+ "where a.account_type = \"Loan Against Deposit\" and a.created_at >= ?1 and a.created_at <=?2 \r\n"
+			+ "where a.account_type = \"Loan Against Deposit\" and a.created_at >= \"2019-05-08\" and a.created_at <=\"2019-05-23\"\r\n"
 			+ "order by a.branch_id" , nativeQuery = true)
 	List<iNewLoanMemberInsuranceReport> getNewLoanMemberInsuranceReport(String fromDate, String toDate);
 	
@@ -77,16 +77,22 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 	List<iEmployee> getFuelReport(Integer accountId);
 
 	@Query(value = "select a.AccountNumber , tr.created_at, m.name ,m.PhoneNos , m.FatherName , m.CurrentAddress , m.landmark , \r\n"
-			+ "tr.amountCr , tr.Narration, \r\n"
+			+ "tr.amountCr , tr.Narration, a.account_type ,\r\n"
 			+ "s2.name as schemeName from transaction_row tr \r\n"
 			+ "left join transactions t on t.id = tr.transaction_id \r\n"
 			+ "left join accounts a on a.id=tr.account_id \r\n"
 			+ "left join agents a2 on a2.id=a.id \r\n"
 			+ "left join members m on m.id = a.member_id \r\n"
 			+ "left join schemes s2 on s2.id=a.scheme_id \r\n"
-			+ "where (a.account_type =\"Recurring\" or a.account_type = \"DDS\") and a.agent_id =?1 and t.transaction_type_id =10\r\n"
-			+ "order by tr.created_at DESC", nativeQuery = true)
-	List<iDepositeReport> getPremiumRecievedList(Integer agentId);
+			+ "where \r\n"
+			+ "(CASE WHEN (EXISTS(select a3.agent_id from accounts a3 where a3.agent_id = ?1)) \r\n"
+			+ " THEN a.agent_id IN (select a4.agent_id from accounts a4 where a4.agent_id = ?1)\r\n"
+			+ " ELSE a.agent_id NOT IN (select a4.agent_id from accounts a4 where a4.agent_id = ?1) END)\r\n"
+			+ " and\r\n"
+			+ "t.transaction_type_id =10\r\n"
+			+ "and tr.created_at >= ?2 and tr.created_at <= ?3  \r\n"
+			+ "order by tr.created_at DESC ", nativeQuery = true)
+	List<iDepositeReport> getPremiumRecievedList(Integer agentId, String dateFrom, String dateTo);
 
 	
 	@Query(value = "select a.AccountNumber, a.created_at , m2.name , m2.PhoneNos , s.SchemeType , m3.name as agentName, a2.code_no , m3.CurrentAddress , m3.is_defaulter , m3.PhoneNos as agentPhoneno, a.ActiveStatus ,\r\n"

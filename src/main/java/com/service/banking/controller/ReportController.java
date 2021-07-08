@@ -68,11 +68,11 @@ public class ReportController {
 
 	
 	//Member Report.............................................................................................................................
-	
-	@GetMapping("/memberReport/{setFirstResult}/{setMaxResults}")
-	public Map<String, Object> getMemberReport(@PathVariable("setFirstResult") Integer setFirstResult, @PathVariable("setMaxResults") Integer setMaxResults){
+	@GetMapping("/member_report/{setFirstResult}/{setMaxResults}")
+	public Map<String, Object> getMemberReport(@PathVariable("setFirstResult") Integer setFirstResult, @PathVariable("setMaxResults") Integer setMaxResults,
+			@RequestParam String search){
 		Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
-		Map<String, Object> list = reportservice.getMemberReport(setPageNumber, setMaxResults);
+		Map<String, Object> list = reportservice.getMemberReport(setPageNumber, setMaxResults, search);
 		return list;
 	}
 	
@@ -97,8 +97,35 @@ public class ReportController {
 		return list;
 	}
 	
+	@GetMapping("/member_without_sm")
+	List<iMemberReport> getMemberWithoutSM(){
+		List<iMemberReport> report = reportservice.getMemberWithoutSM();
+		return report;	}
 	
+	@GetMapping("/member_with_multiple_sm")
+	List<iMemberReport> getMemberWithMultipleSM(){
+		List<iMemberReport> report = reportservice.getMemberWithMultipleSM();
+		return report;	}
 	
+	@GetMapping("/sm_accounts")
+	List<iMemberReport> getSMAccounts(@RequestParam Integer memberId){
+		List<iMemberReport> report = reportservice.getSMAccounts(memberId);
+		return report;	}
+	
+	@GetMapping("/sm_member_without_active")
+	List<iMemberReport> getSMMember(){
+		List<iMemberReport> report = reportservice.getSMMember();
+		return report;	}
+	
+	@GetMapping("/saving_and_current")
+	List<iMemberReport> getSaving(@RequestParam Integer memberId){
+		List<iMemberReport> report = reportservice.getSaving(memberId);
+		return report;	}
+	
+	@GetMapping("/non_active")
+	List<iMemberReport> getNonActive(@RequestParam Integer memberId){
+		List<iMemberReport> report = reportservice.getNonActive(memberId);
+		return report;	}
 	
 	//Dealer / DSA Report.........................................................................................................................
 	
@@ -213,8 +240,8 @@ public class ReportController {
 	
 	//Deposit Report
 	@GetMapping("/premium_recieved_list")
-	List<iDepositeReport> getPremiumRecievedList( @RequestParam("agentId") Integer agentId){
-		List<iDepositeReport> report = reportservice.getPremiumRecievedList(agentId);
+	List<iDepositeReport> getPremiumRecievedList( @RequestParam("agentId") Integer agentId, @RequestParam String dateFrom, @RequestParam String dateTo){
+		List<iDepositeReport> report = reportservice.getPremiumRecievedList(agentId, dateFrom, dateTo);
 		return report;
 	}
 	

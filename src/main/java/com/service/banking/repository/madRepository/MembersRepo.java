@@ -54,12 +54,15 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 				public List<MeberDetail> getSponsor(String name);
 
 
-				@Query(value = "select m.member_no , b.name as branchName, m.title , m.name, m.FatherName , m.RelationWithNominee ,m.CurrentAddress , m.landmark , m.tehsil , m.city , m.PhoneNos, m.created_at ,m.is_active ,m.is_defaulter from members m\r\n"
+				@Query(value = "select  m.member_no , b.name as branchName, m.title , m.name, m.FatherName , m.RelationWithFatherField ,m.CurrentAddress , m.landmark , m.tehsil , m.city , m.PhoneNos, m.created_at ,m.is_active ,m.is_defaulter,\r\n"
+						+ "m.PanNo , m.AdharNumber, m.memebr_type from members m\r\n"
 						+ "left join branches b on m.branch_id = b.id\r\n"
-						+ "order by m.member_no DESC",
-						countQuery = "SELECT count(*) from members m",
+						+ "left join accounts a on a.member_id =m.id \r\n"
+						+ "where concat(m.AdharNumber, m.PhoneNos, m.PanNo, m.name) like %?1% "
+						+ "order by m.member_no desc",
+						countQuery = "SELECT count(*) from members m where concat(m.AdharNumber, m.PhoneNos, m.PanNo, m.name) like ?1%",
 						nativeQuery = true)
-				public Page<iMemberReport> getMemberReport(Pageable pageable);
+				public Page<iMemberReport> getMemberReport(String search, Pageable pageable);
 
 
 				@Query(value = "select a.AccountNumber , s.name as SchemeName, a.created_at, m.title , m.name , m.FatherName ,m.CurrentAddress ,m.PhoneNos ,m.DOB , m.Nominee ,m.RelationWithNominee , a.Amount from accounts a\r\n"
@@ -91,4 +94,25 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 						countQuery = "SELECT count(*) from members m where m.is_defaulter = 1 and  m.defaulter_on >= ?1 and m.defaulter_on <= ?2",
 						nativeQuery = true)
 				public Page<iMemberReport> getDefaulterList(String fromDate, String toDate, Pageable pageable);
+
+
+				@Query(value = "select m.member_no , m.name , count(case when a.account_type = 'SM' then 1 else null end ) as counts from members m \r\n"
+						+ "left join accounts a on a.member_id = m.id\r\n"
+						+ "group by m.id ",
+						nativeQuery = true)
+				public List<iMemberReport> getMemberWithoutSM();
+
+
+				@Query(value = "select m.id , m.member_no , m.name , count(a.id) as counts from members m \r\n"
+						+ "left join accounts a on a.member_id = m.id\r\n"
+						+ "where a.account_type = 'SM'\r\n"
+						+ "group by m.id\r\n"
+						+ "having count(a.id) > 1",
+						nativeQuery = true)
+				public List<iMemberReport> getMemberWithMultipleSM();
+
+
+
+
+				
 }

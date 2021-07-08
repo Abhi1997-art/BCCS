@@ -84,10 +84,9 @@ public class ReportService {
 		return books;
 	}
 
-
-	public Map<String, Object> getMemberReport(Integer setPageNumber, Integer setMaxResults) {
+	public Map<String, Object> getMemberReport(Integer setPageNumber, Integer setMaxResults, String search) {
 		Pageable pageable= PageRequest.of(setPageNumber, setMaxResults);
-		Page<iMemberReport> memberReports = membersRepo.getMemberReport(pageable);
+		Page<iMemberReport> memberReports = membersRepo.getMemberReport(search, pageable);
 		Map<String, Object> tempList = new HashMap<String, Object>();
 		if(memberReports.hasContent()) {
 			tempList.put("pageSize", memberReports.getSize());
@@ -257,8 +256,8 @@ public class ReportService {
 		return reports;
 	}
 
-	public List<iDepositeReport> getPremiumRecievedList( Integer agentId) {
-		List<iDepositeReport> reports = transactionRowRepo.getPremiumRecievedList(agentId);
+	public List<iDepositeReport> getPremiumRecievedList( Integer agentId, String dateFrom, String dateTo) {
+		List<iDepositeReport> reports = transactionRowRepo.getPremiumRecievedList(agentId,dateFrom,dateTo);
 		return reports;
 	}
 
@@ -361,6 +360,37 @@ public class ReportService {
 		List<iBikeLegalReport> reports = accountsRepo.getLegalFinalised(legal, process, arbitration);
 		return reports;
 	}
+
+	public List<iMemberReport> getMemberWithoutSM() {
+		List<iMemberReport> list = membersRepo.getMemberWithoutSM();
+		return list;
+	}
+
+	public List<iMemberReport> getMemberWithMultipleSM() {
+		List<iMemberReport> list = membersRepo.getMemberWithMultipleSM();
+		return list;
+	}
+
+	public List<iMemberReport> getSMAccounts(Integer memberId) {
+		List<iMemberReport> list = accountsRepo.getSMAccounts(memberId);
+		return list;
+	}
+
+	public List<iMemberReport> getSMMember() {
+		List<iMemberReport> list = accountsRepo.getSMMember();
+		return list;
+	}
+
+	public List<iMemberReport> getSaving(Integer memberId) {
+		List<iMemberReport> list = accountsRepo.getSaving(memberId);
+		return list;
+	}
+
+	public List<iMemberReport> getNonActive(Integer memberId) {
+		List<iMemberReport> list = accountsRepo.getNonActive(memberId);
+		return list;
+	}
+
 
 
 
