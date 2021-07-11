@@ -32,11 +32,10 @@ public interface DashBoardSchemeRepo extends JpaRepository<Schemes, Integer> {
 	List<DDSSchemaDetails> getDdsScheme(String schemeType);
 
 	// Get Default type - scheme..........................
-	@Query("select new  com.service.banking.model.dashboardModel.DefaultSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id ,s.name,s.isDepriciable ,s.depriciationPercentAfterSep ,s.depriciationPercentBeforeSep,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.activeStatus,s.maxLimit ,s.minLimit,blnc.name, s.createdAt) from Schemes s \r\n"
+	@Query("select new  com.service.banking.model.dashboardModel.DefaultSchemaDetails(count(distinct  a.id) as totalAccounts, s.id , s.name, s.isDepriciable ,s.depriciationPercentBeforeSep ,s.depriciationPercentAfterSep, s.validTill,s.activeStatus,s.minLimit ,s.maxLimit,blnc.name, s.createdAt) from Schemes s \r\n"
 			+ " left join Accounts a on a.schemeId =s.id \r\n"
 			+ "left join BalanceSheet blnc on blnc.id=s.balanceSheetId "
-			+ " left join Accounts an on an.schemeId =s.id and an.activeStatus =1  \r\n"
-			+ " WHERE s.schemeType = 'Default' \r\n" + " group by(s.name) ")
+			+ " WHERE s.schemeType = 'Default' \r\n" + " group by(s.id) ")
 	List<DefaultSchemaDetails> getDefaultScheme(String schemeType);
 
 	// Get fixandMis type schema ..................................

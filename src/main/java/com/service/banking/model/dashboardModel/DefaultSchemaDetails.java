@@ -42,6 +42,26 @@ public class DefaultSchemaDetails {
 		this.head = head;
 		this.createdAt = DateFormater.getformatDate(createdAt);
 	}
+	
+	
+
+	public DefaultSchemaDetails(Long totalAccounts, Integer id, String schemaName, Byte isDepriciable,
+			String depriciationPercentBeforeSep, String depriciationPercentAfterSep, Date validTill,
+			Boolean activeStatus, Double minLimit, Double maxLimit, String head, Date createdAt) {
+		super();
+		this.totalAccounts = totalAccounts;
+		this.id = id;
+		this.schemaName = schemaName;
+		this.isDepriciable = isDepriciable;
+		this.depriciationPercentBeforeSep = depriciationPercentBeforeSep;
+		this.depriciationPercentAfterSep = depriciationPercentAfterSep;
+		this.validTill = DateFormater.getformatDate(validTill);
+		this.activeStatus = activeStatus;
+		this.minLimit = minLimit;
+		this.maxLimit = maxLimit;
+		this.head = head;
+		this.createdAt = DateFormater.getformatDate(createdAt);
+	}
 
 	public Boolean getActiveStatus() {
 		return activeStatus;

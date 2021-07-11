@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.service.banking.hibernateEntity.TransactionRow;
+import com.service.banking.model.dashboardModel.iCashBankReport;
 import com.service.banking.model.report.BookDayDetail;
 import com.service.banking.model.report.iDayBook;
 import com.service.banking.model.report.iDepositeReport;
@@ -129,10 +130,58 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 			+ "(a2.account_type =\"Recurring\" or a2.account_type =\"FD\" or a2.account_type =\"MIS\" or a2.account_type =\"DDS\" or a2.account_type=\"saving\")\r\n"
 			+ "group by tr2.account_id  )", nativeQuery = true)
 	List<iDepositeReport> getFundsFlow(String fromDate, String toDate);
-	
-	
 
 	
+	@Query(value = "select * from \r\n"
+			+ "(select a.id as firstId, a.AccountNumber, (sum(tr.amountCr) - sum(tr.amountDr)) as OpeningBalance\r\n"
+			+ "from transaction_row tr \r\n"
+			+ "left join accounts a on tr.account_id = a.id \r\n"
+			+ "where a.account_type = \"Default\" and a.group_type = \"Bank Accounts\" and a.PAndLGroup = \"Bank Accounts\"\r\n"
+			+ "and tr.created_at < ?1 \r\n"
+			+ "group by a.id) firstTable\r\n"
+			+ "left join \r\n"
+			+ "(select (sum(tr1.amountCr)) as TodaysPayment,  (sum(tr1.amountDr)) as TodaysReceived, a1.id as secondId\r\n"
+			+ "from transaction_row tr1 \r\n"
+			+ "left join accounts a1 on tr1.account_id = a1.id \r\n"
+			+ "where a1.account_type = \"Default\" and a1.group_type = \"Bank Accounts\" and a1.PAndLGroup = \"Bank Accounts\"\r\n"
+			+ "and (tr1.created_at >= ?1 and tr1.created_at < DATE_ADD( ?1, INTERVAL 1 DAY))\r\n"
+			+ "group by a1.id) secondTable\r\n"
+			+ "on firstTable.firstId = secondTable.secondId", nativeQuery = true)
+	List<iCashBankReport> getCashBankReport1(String date);
+	
+	@Query(value = "select * from \r\n"
+			+ "(select a.id as firstId, a.AccountNumber, (sum(tr.amountCr) - sum(tr.amountDr)) as OpeningBalance\r\n"
+			+ "from transaction_row tr \r\n"
+			+ "left join accounts a on tr.account_id = a.id \r\n"
+			+ "where a.account_type = \"Default\" and a.group_type = \"BANK OD\" and a.PAndLGroup = \"BANK OD\"\r\n"
+			+ "and tr.created_at < ?1 \r\n"
+			+ "group by a.id) firstTable\r\n"
+			+ "left join \r\n"
+			+ "(select (sum(tr1.amountCr)) as TodaysPayment,  (sum(tr1.amountDr)) as TodaysReceived, a1.id as secondId\r\n"
+			+ "from transaction_row tr1 \r\n"
+			+ "left join accounts a1 on tr1.account_id = a1.id \r\n"
+			+ "where a1.account_type = \"Default\" and a1.group_type = \"BANK OD\" and a1.PAndLGroup = \"BANK OD\"\r\n"
+			+ "and (tr1.created_at >= ?1 and tr1.created_at < DATE_ADD(?1, INTERVAL 1 DAY))\r\n"
+			+ "group by a1.id) secondTable\r\n"
+			+ "on firstTable.firstId = secondTable.secondId", nativeQuery = true)
+	List<iCashBankReport> getCashBankReport2(String date);
+
+	@Query(value = "select * from \r\n"
+			+ "(select a.id as firstId, a.AccountNumber, (sum(tr.amountCr) - sum(tr.amountDr)) as OpeningBalance\r\n"
+			+ "from transaction_row tr \r\n"
+			+ "left join accounts a on tr.account_id = a.id \r\n"
+			+ "where a.account_type = \"Default\" and a.group_type = \"Cash Account\" and a.PAndLGroup = \"Cash Account\"\r\n"
+			+ "and tr.created_at < ?1 \r\n"
+			+ "group by a.id) firstTable\r\n"
+			+ "left join \r\n"
+			+ "(select (sum(tr1.amountCr)) as TodaysPayment,  (sum(tr1.amountDr)) as TodaysReceived, a1.id as secondId \r\n"
+			+ "from transaction_row tr1 \r\n"
+			+ "left join accounts a1 on tr1.account_id = a1.id \r\n"
+			+ "where a1.account_type = \"Default\" and a1.group_type = \"Cash Account\" and a1.PAndLGroup = \"Cash Account\"\r\n"
+			+ "and (tr1.created_at >= ?1 and tr1.created_at < DATE_ADD(?1, INTERVAL 1 DAY))\r\n"
+			+ "group by a1.id) secondTable\r\n"
+			+ "on firstTable.firstId = secondTable.secondId", nativeQuery = true)
+	List<iCashBankReport> getCashBankReport3(String date);
 
 
 

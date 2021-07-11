@@ -46,11 +46,14 @@ import com.service.banking.model.dashboardModel.PremiusDetails;
 import com.service.banking.model.dashboardModel.RecurringSchemaDetails;
 import com.service.banking.model.dashboardModel.SavingSchemaDetails;
 import com.service.banking.model.dashboardModel.SchemaDetail;
+import com.service.banking.model.dashboardModel.iAccountDetails;
+import com.service.banking.model.dashboardModel.iCashBankReport;
 import com.service.banking.repository.AccountsRepo.AccountsRepo;
 import com.service.banking.repository.dashBoardRepo.AccountsOpenTodayRepo;
 import com.service.banking.repository.dashBoardRepo.DailyDueRepository;
 import com.service.banking.repository.dashBoardRepo.DashBoardSchemeRepo;
 import com.service.banking.repository.dashBoardRepo.InsuranceDueListRepo;
+import com.service.banking.repository.transaction.TransactionRowRepo;
 import com.service.banking.utils.DateFormater;
 
 @Service
@@ -75,6 +78,9 @@ public class DashBoardService {
 
 	@Autowired
 	AccountsRepo acountsRepo;
+	
+	@Autowired
+	TransactionRowRepo transactionRowRepo;
 
 	private SessionFactory hibernateFactory;
 
@@ -1103,5 +1109,31 @@ public class DashBoardService {
 
 		}
 		return newArrDueToGiveLists;
+	}
+
+	//--------------------------------------------------------------------------------------------------
+	public List<iCashBankReport> getCashBankReport1(String date) {
+		List<iCashBankReport> list = transactionRowRepo.getCashBankReport1(date);
+		return list;
+	}
+	
+	public List<iCashBankReport> getCashBankReport2(String date) {
+		List<iCashBankReport> list = transactionRowRepo.getCashBankReport2(date);
+		return list;
+	}
+	
+	public List<iCashBankReport> getCashBankReport3(String date) {
+		List<iCashBankReport> list = transactionRowRepo.getCashBankReport3(date);
+		return list;
+	}
+
+	public List<iAccountDetails> getAccountDocuments(Integer id) {
+		List<iAccountDetails> list = acountsRepo.getAccountDocuments(id);
+		return list;
+	}
+
+	public List<iAccountDetails> getAccountInsurance(Integer id) {
+		List<iAccountDetails> list = acountsRepo.getAccountInsurance(id);
+		return list;
 	}
 }

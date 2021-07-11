@@ -27,6 +27,7 @@ import com.service.banking.model.accountsModel.SMAccountsDetails;
 import com.service.banking.model.accountsModel.SavingAccountDetails;
 import com.service.banking.model.dashboardModel.AccountsDetails;
 import com.service.banking.model.dashboardModel.AccountsOpenTodayDetails;
+import com.service.banking.model.dashboardModel.iAccountDetails;
 import com.service.banking.model.hodAuthorityModel.AssociationDetails;
 import com.service.banking.model.printingModel.AcountDetails;
 import com.service.banking.model.printingModel.ContentAccount;
@@ -554,6 +555,25 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 			+ "where a.ActiveStatus = 0 and m.id = ?1 ",
 			nativeQuery = true)
 	List<iMemberReport> getNonActive(Integer memberId);
+
+	@Query(value = "select d.name as documentName, a.AccountNumber , m.name , m.FatherName ,ds.Description , d2.name as dealerName, ds.submitted_on,\r\n"
+			+ "a2.code_no , m2.name as agentName, m2.member_no , m2.PermanentAddress , m2.is_defaulter \r\n"
+			+ "from accounts a \r\n"
+			+ "left join documents_submitted ds on ds.accounts_id = a.id \r\n"
+			+ "left join documents d on ds.documents_id = d.id\r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "left join dealers d2 on d2.id = a.dealer_id \r\n"
+			+ "left join agents a2 on a2.id= a.agent_id \r\n"
+			+ "left join members m2 on m2.id = a2.member_id \r\n"
+			+ "where a.id = ?1 ",
+			nativeQuery = true)
+	List<iAccountDetails> getAccountDocuments(Integer id);
+
+	@Query(value = "select mi.insurance_start_date , mi.next_insurance_due_date , mi.narration from accounts a \r\n"
+			+ "left join member_insurance mi on a.member_id = mi.member_id \r\n"
+			+ "where a.id = ?1 ",
+			nativeQuery = true)
+	List<iAccountDetails> getAccountInsurance(Integer id);
 	
 
 	

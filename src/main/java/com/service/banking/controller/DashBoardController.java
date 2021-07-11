@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.service.banking.hibernateEntity.Accounts;
@@ -37,6 +38,8 @@ import com.service.banking.model.dashboardModel.PremiusDetails;
 import com.service.banking.model.dashboardModel.RecurringSchemaDetails;
 import com.service.banking.model.dashboardModel.SavingSchemaDetails;
 import com.service.banking.model.dashboardModel.SchemaDetail;
+import com.service.banking.model.dashboardModel.iAccountDetails;
+import com.service.banking.model.dashboardModel.iCashBankReport;
 import com.service.banking.model.errorHandleModel.DataNotFoundException;
 import com.service.banking.service.DashBoardService;
 import com.service.banking.utils.DateFormater;
@@ -755,6 +758,34 @@ public class DashBoardController {
 		List<SchemaDetail> dds2List = dashService.getDds2Schema(schemeType);
 		return dds2List;
 	}
+	
+	
+	//Cash bank report..............................................................................
+	@GetMapping("/cash_bank_report/bank")
+	List<iCashBankReport> getCashBankReport1(@RequestParam String date) {
+		List<iCashBankReport> report = dashService.getCashBankReport1(date);
+		return report;
+	}
+	
+	@GetMapping("/cash_bank_report/bankOD")
+	List<iCashBankReport> getCashBankReport2(@RequestParam String date) {
+		List<iCashBankReport> report = dashService.getCashBankReport2(date);
+		return report;
+	}
+	
+	@GetMapping("/cash_bank_report/cash")
+	List<iCashBankReport> getCashBankReport3(@RequestParam String date) {
+		List<iCashBankReport> report = dashService.getCashBankReport3(date);
+		return report;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 	// get account details..............................................................
 	@GetMapping("/account_details/{id}")
@@ -770,8 +801,19 @@ public class DashBoardController {
 		return acDetails;
 	}
 	
+	@GetMapping("/account_details/documents/{id}")
+	List<iAccountDetails> getAccountDocuments(@PathVariable("id") Integer id) {
+		List<iAccountDetails>  acDetails = dashService.getAccountDocuments(id);
+		return acDetails;
+	}
 	
-
+	@GetMapping("/account_details/insurance/{id}")
+	List<iAccountDetails> getAccountInsurance(@PathVariable("id") Integer id) {
+		List<iAccountDetails>  acDetails = dashService.getAccountInsurance(id);
+		return acDetails;
+	}
+	
+	
 	// get premium details...........................
 	@GetMapping("/premiums_deatils/{acId}")
 	public List<PremiusDetails> getPremiumDetails(@PathVariable("acId") Integer acId) {

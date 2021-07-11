@@ -17,6 +17,7 @@ public class AccountDetails {
 	Date createdAt;
 	Double amount;
 	Integer schemeId;
+	String groupType;
 
 	public AccountDetails() {
 		super();
@@ -41,6 +42,23 @@ public class AccountDetails {
 		this.createdAt = createdAt;
 		this.amount=amount;
 		this.schemeId=schemeId;
+	}
+
+	
+	
+	public AccountDetails(Integer id, String accountNumber, String name, String fatherName, String accountType,
+			Integer branchId, Date createdAt, Double amount, Integer schemeId, String groupType) {
+		super();
+		this.id = id;
+		this.accountNumber = accountNumber;
+		this.name = name;
+		this.fatherName = fatherName;
+		this.accountType = accountType;
+		this.branchId = branchId;
+		this.createdAt = createdAt;
+		this.amount = amount;
+		this.schemeId = schemeId;
+		this.groupType = groupType;
 	}
 
 	public AccountDetails(Integer id, String accountNumber) {
@@ -136,6 +154,14 @@ public class AccountDetails {
 
 	public void setSchemeId(Integer schemeId) {
 		this.schemeId = schemeId;
+	}
+
+	public String getGroupType() {
+		return groupType;
+	}
+
+	public void setGroupType(String groupType) {
+		this.groupType = groupType;
 	}
 
 	
