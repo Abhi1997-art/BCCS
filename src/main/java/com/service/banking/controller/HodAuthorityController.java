@@ -621,6 +621,11 @@ public class HodAuthorityController {
 			return hodAuthorityService.getDirtyVoucher(branchId,voucherNo,voucherUuid);
 		}
 		
+		@DeleteMapping("/transaction_remove_delete")
+		public void removeTransaction() {
+			hodAuthorityService.removeTransaction();
+		}
+		
 		
 
 		

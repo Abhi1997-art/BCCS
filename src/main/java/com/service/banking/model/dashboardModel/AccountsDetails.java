@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.validator.constraints.Mod11Check.ProcessingDirection;
+
 import com.service.banking.hibernateEntity.AccountGuarantors;
 import com.service.banking.utils.DateFormater;
 
@@ -49,6 +51,7 @@ public class AccountsDetails {
 	public String reducingOrFlatRate;
 	public String agentLandmark;
 	public Integer agentMemberNo;
+	public Boolean processingFeesinPercent; 
 	
 
 	public AccountsDetails() {
@@ -103,7 +106,7 @@ public class AccountsDetails {
 			String premiumMode, Integer maturityPeriod, Integer numberOfPremiums, String schemeType, String type,
 			String schemeGroup, String interestMode, Date insuranceStartDate, Date nextInsuranceDueDate,
 			String narration, Integer memberNo, Date dueDate, String premiumAmount, Integer codeNo, String agentAddress, String reducingOrFlatRate,
-			String agentLandmark, Integer agentMemberNo) {
+			String agentLandmark, Integer agentMemberNo, Boolean processingFeesinPercent) {
 		super();
 		this.id = id;
 		this.accountNumber = accountNumber;
@@ -143,6 +146,7 @@ public class AccountsDetails {
 		this.reducingOrFlatRate=reducingOrFlatRate;
 		this.agentLandmark= agentLandmark;
 		this.agentMemberNo=agentMemberNo;
+		this.processingFeesinPercent=processingFeesinPercent;
 	}
 
 	public String getName() {
@@ -447,6 +451,14 @@ public class AccountsDetails {
 
 	public void setAgentMemberNo(Integer agentMemberNo) {
 		this.agentMemberNo = agentMemberNo;
+	}
+
+	public Boolean getProcessingFeesinPercent() {
+		return processingFeesinPercent;
+	}
+
+	public void setProcessingFeesinPercent(Boolean processingFeesinPercent) {
+		this.processingFeesinPercent = processingFeesinPercent;
 	}
 	
 

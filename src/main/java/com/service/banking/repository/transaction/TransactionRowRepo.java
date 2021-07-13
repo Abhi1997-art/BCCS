@@ -133,7 +133,7 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 
 	
 	@Query(value = "select * from \r\n"
-			+ "(select a.id as firstId, a.AccountNumber, (sum(tr.amountCr) - sum(tr.amountDr)) as OpeningBalance\r\n"
+			+ "(select a.id as firstId, a.AccountNumber, (sum(tr.amountCr) - sum(tr.amountDr)) as OpeningBalance \r\n"
 			+ "from transaction_row tr \r\n"
 			+ "left join accounts a on tr.account_id = a.id \r\n"
 			+ "where a.account_type = \"Default\" and a.group_type = \"Bank Accounts\" and a.PAndLGroup = \"Bank Accounts\"\r\n"
@@ -153,14 +153,14 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 			+ "(select a.id as firstId, a.AccountNumber, (sum(tr.amountCr) - sum(tr.amountDr)) as OpeningBalance, a.bank_account_limit \r\n"
 			+ "from transaction_row tr \r\n"
 			+ "left join accounts a on tr.account_id = a.id \r\n"
-			+ "where a.account_type = \"Default\" and a.group_type = \"BANK OD\" and a.PAndLGroup = \"BANK OD\"\r\n"
+			+ "where a.account_type = \"Default\" and a.group_type = \"BANK OD\" and a.PAndLGroup = \"BANK OD\" and a.ActiveStatus=1\r\n"
 			+ "and tr.created_at < ?1 \r\n"
 			+ "group by a.id) firstTable\r\n"
 			+ "left join \r\n"
 			+ "(select (sum(tr1.amountCr)) as TodaysPayment,  (sum(tr1.amountDr)) as TodaysReceived, a1.id as secondId\r\n"
 			+ "from transaction_row tr1 \r\n"
 			+ "left join accounts a1 on tr1.account_id = a1.id \r\n"
-			+ "where a1.account_type = \"Default\" and a1.group_type = \"BANK OD\" and a1.PAndLGroup = \"BANK OD\"\r\n"
+			+ "where a1.account_type = \"Default\" and a1.group_type = \"BANK OD\" and a1.PAndLGroup = \"BANK OD\" and a1.ActiveStatus=1 \r\n"
 			+ "and (tr1.created_at >= ?1 and tr1.created_at < DATE_ADD(?1, INTERVAL 1 DAY))\r\n"
 			+ "group by a1.id) secondTable\r\n"
 			+ "on firstTable.firstId = secondTable.secondId", nativeQuery = true)

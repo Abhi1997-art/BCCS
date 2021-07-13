@@ -14,5 +14,6 @@ public interface iDeleteVoucherDetails {
 	public String getCreatedAt();
 	public String getNarration();
 	public String getTransactionTypeName();
+	public Integer getRelated_account_Id();
 	
 }

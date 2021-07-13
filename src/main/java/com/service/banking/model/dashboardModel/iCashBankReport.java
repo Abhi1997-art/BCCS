@@ -9,6 +9,7 @@ public interface iCashBankReport {
 	public String getTodaysPayment();
 	public String getTodaysReceived();
 	public Integer getBank_Account_Limit();
+	public String getBalance_On_Limit();
 	
 
 }

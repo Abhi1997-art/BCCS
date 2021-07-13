@@ -19,6 +19,7 @@ public class CCSchemaDetails {
 	Double maxlimits;
 	Double minlimits;
 	String createdAt;
+	Boolean processingFeesinPercent;
 
 	public CCSchemaDetails() {
 		super();
@@ -40,6 +41,25 @@ public class CCSchemaDetails {
 		this.minlimits = minlimits;
 		this.head = head;
 		this.createdAt = DateFormater.getformatDate(createdAt);
+	}
+	
+	public CCSchemaDetails(Long totalAccounts, Long activeAccounts, Integer id, String schemaName, String interest,
+			Double processingFees, String validTill, Boolean activeStatus, Double maxlimits, Double minlimits,
+			String head, Date createdAt,Boolean processingFeesinPercent) {
+		super();
+		this.totalAccounts = totalAccounts;
+		this.activeAccounts = activeAccounts;
+		this.id = id;
+		this.schemaName = schemaName;
+		this.interest = interest;
+		this.processingFees = processingFees;
+		this.validTill = validTill;
+		this.activeStatus = activeStatus;
+		this.maxlimits = maxlimits;
+		this.minlimits = minlimits;
+		this.head = head;
+		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.processingFeesinPercent=processingFeesinPercent;
 	}
 
 	public Long getTotalAccounts() {
@@ -129,6 +149,22 @@ public class CCSchemaDetails {
 
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public Boolean getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Boolean activeStatus) {
+		this.activeStatus = activeStatus;
+	}
+
+	public Boolean getProcessingFeesinPercent() {
+		return processingFeesinPercent;
+	}
+
+	public void setProcessingFeesinPercent(Boolean processingFeesinPercent) {
+		this.processingFeesinPercent = processingFeesinPercent;
 	}
 
 }

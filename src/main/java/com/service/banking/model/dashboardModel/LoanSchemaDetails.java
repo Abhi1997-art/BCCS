@@ -25,6 +25,7 @@ public class LoanSchemaDetails {
 	Integer panelty;
 	Integer paneltyGrace;
 	Boolean processingFeesinPercent;
+	String reducingOrFlatRate;
 
 	public LoanSchemaDetails(Long totalAccounts, Long activeAccounts, String schemaType, Integer numberOfPremiums,
 			String interest, Double processingFees, Double maxlimits, Double minlimits) {
@@ -64,7 +65,8 @@ public class LoanSchemaDetails {
 	
 	public LoanSchemaDetails(Long totalAccounts, Long activeAccounts, Integer id, String schemaType, String schemaName,
 			String interest, String premiumMode, Integer numberOfPremiums, Double processingFees, Boolean activeStatus,
-			String validTill, Double maxlimits, Double minlimits, String head, Date createdAt, Integer panelty, Integer paneltyGrace,Boolean processingFeesinPercent ) {
+			String validTill, Double maxlimits, Double minlimits, String head, Date createdAt, Integer panelty, Integer paneltyGrace,Boolean processingFeesinPercent,
+			String reducingOrFlatRate) {
 		super();
 		this.totalAccounts = totalAccounts;
 		this.activeAccounts = activeAccounts;
@@ -84,6 +86,7 @@ public class LoanSchemaDetails {
 		this.panelty=panelty;
 		this.paneltyGrace=paneltyGrace;
 		this.processingFeesinPercent=processingFeesinPercent;
+		this.reducingOrFlatRate=reducingOrFlatRate;
 	}
 	
 	
@@ -234,6 +237,14 @@ public class LoanSchemaDetails {
 
 	public void setProcessingFeesinPercent(Boolean processingFeesinPercent) {
 		this.processingFeesinPercent = processingFeesinPercent;
+	}
+
+	public String getReducingOrFlatRate() {
+		return reducingOrFlatRate;
+	}
+
+	public void setReducingOrFlatRate(String reducingOrFlatRate) {
+		this.reducingOrFlatRate = reducingOrFlatRate;
 	}
 
 	

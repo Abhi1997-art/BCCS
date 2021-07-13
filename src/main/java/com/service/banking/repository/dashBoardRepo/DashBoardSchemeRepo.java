@@ -15,12 +15,13 @@ import com.service.banking.model.dashboardModel.LoanSchemaDetails;
 import com.service.banking.model.dashboardModel.RecurringSchemaDetails;
 import com.service.banking.model.dashboardModel.SavingSchemaDetails;
 import com.service.banking.model.dashboardModel.SchemaDetail;
+import com.service.banking.model.dashboardModel.iDefaultScheme;
 import com.service.banking.model.superAdminModel.SchemeDetails;
 
 public interface DashBoardSchemeRepo extends JpaRepository<Schemes, Integer> {
 
 	// Get CC type - scheme..........................
-	@Query("select new  com.service.banking.model.dashboardModel.CCSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id,s.name,s.interest,s.processingFees ,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.activeStatus, s.maxLimit, s.minLimit, blnc.name, s.createdAt) from Schemes s "
+	@Query("select new  com.service.banking.model.dashboardModel.CCSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id,s.name,s.interest,s.processingFees ,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.activeStatus, s.maxLimit, s.minLimit, blnc.name, s.createdAt, s.processingFeesinPercent) from Schemes s "
 			+ "left join Accounts a on a.schemeId =s.id " + "left join BalanceSheet blnc on blnc.id=s.balanceSheetId "
 			+ "left join Accounts an on an.schemeId =s.id and an.activeStatus =1  "
 			+ " WHERE s.schemeType = 'cc' group by(s.name) ")
@@ -33,11 +34,22 @@ public interface DashBoardSchemeRepo extends JpaRepository<Schemes, Integer> {
 	List<DDSSchemaDetails> getDdsScheme(String schemeType);
 
 	// Get Default type - scheme..........................
-	@Query("select new  com.service.banking.model.dashboardModel.DefaultSchemaDetails(count(distinct  a.id) as totalAccounts, s.id , s.name, s.isDepriciable ,s.depriciationPercentBeforeSep ,s.depriciationPercentAfterSep, s.validTill,s.activeStatus,s.minLimit ,s.maxLimit,blnc.name, s.createdAt) from Schemes s \r\n"
-			+ " left join Accounts a on a.schemeId =s.id \r\n"
-			+ "left join BalanceSheet blnc on blnc.id=s.balanceSheetId "
-			+ " WHERE s.schemeType = 'Default' \r\n" + " group by(s.id) ")
-	List<DefaultSchemaDetails> getDefaultScheme(String schemeType);
+	@Query(value = "Select * from \r\n"
+			+ "(select s.id as firstId , s.name, count(distinct a.id) as totalAccounts, s.isDepriciable , s.DepriciationPercentAfterSep , s.DepriciationPercentBeforeSep ,\r\n"
+			+ "CASE WHEN (s.valid_till is null or s.valid_till ='00:00:0000')  THEN '0001-11-30' ELSE s.valid_till END  as valid_till, s.ActiveStatus , s.MaxLimit , s.MinLimit , bs.name as head , s.created_at from schemes s \r\n"
+			+ "left join accounts a on a.scheme_id = s.id \r\n"
+			+ "left join balance_sheet bs on bs.id = s.balance_sheet_id \r\n"
+			+ "where s.SchemeType = \"Default\" \r\n"
+			+ "group by s.id ) as firstTable\r\n"
+			+ "left join\r\n"
+			+ "(select s.id as secondId , count(distinct a.id) as activeAccounts from schemes s \r\n"
+			+ "left join accounts a on a.scheme_id = s.id \r\n"
+			+ "left join balance_sheet bs on bs.id = s.balance_sheet_id \r\n"
+			+ "where s.SchemeType = \"Default\" and a.ActiveStatus =1\r\n"
+			+ "group by s.id) as secondTable\r\n"
+			+ "on firstTable.firstId = secondTable.secondId",
+			nativeQuery = true)
+	List<iDefaultScheme> getDefaultScheme(String schemeType);
 
 	// Get fixandMis type schema ..................................
 	@Query("select new  com.service.banking.model.dashboardModel.FixedSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.type,s.id ,s.name,s.interest, s.accountOpenningCommission ,s.crpb ,s.maturityPeriod ,s.percentLoanOnDeposit ,s.noLoanOnDepositTill ,s.preMatureInterests,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.activeStatus,s.maxLimit ,s.minLimit,blnc.name, s.createdAt) from Schemes s \r\n"
@@ -48,7 +60,7 @@ public interface DashBoardSchemeRepo extends JpaRepository<Schemes, Integer> {
 	List<FixedSchemaDetails> getcfixAndMisScheme(String schemeType);
 
 	// Get Loan type schema ..................................
-	@Query("select new  com.service.banking.model.dashboardModel.LoanSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id ,s.type,s.name,s.interest,s.premiumMode,s.numberOfPremiums,s.processingFees , s.activeStatus,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name,s.createdAt, s.panelty,s.paneltyGrace, s.processingFeesinPercent) from Schemes s \r\n"
+	@Query("select new  com.service.banking.model.dashboardModel.LoanSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id ,s.type,s.name,s.interest,s.premiumMode,s.numberOfPremiums,s.processingFees , s.activeStatus,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name,s.createdAt, s.panelty,s.paneltyGrace, s.processingFeesinPercent, s.reducingOrFlatRate) from Schemes s \r\n"
 			+ " left join Accounts a on a.schemeId =s.id \r\n"
 			+ "left join BalanceSheet blnc on blnc.id=s.balanceSheetId "
 			+ " left join Accounts an on an.schemeId =s.id and an.activeStatus =1  \r\n"

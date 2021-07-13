@@ -40,6 +40,7 @@ import com.service.banking.model.dashboardModel.SavingSchemaDetails;
 import com.service.banking.model.dashboardModel.SchemaDetail;
 import com.service.banking.model.dashboardModel.iAccountDetails;
 import com.service.banking.model.dashboardModel.iCashBankReport;
+import com.service.banking.model.dashboardModel.iDefaultScheme;
 import com.service.banking.model.errorHandleModel.DataNotFoundException;
 import com.service.banking.service.DashBoardService;
 import com.service.banking.utils.DateFormater;
@@ -757,8 +758,8 @@ public class DashBoardController {
 
 	// Get Default type - scheme........................................
 	@GetMapping("/scheme/default/{schemetype}")
-	List<DefaultSchemaDetails> getDefaultScheme(@PathVariable("schemetype") String schemeType) {
-		List<DefaultSchemaDetails> defaultScheme = dashService.getDefaultScheme(schemeType);
+	List<iDefaultScheme> getDefaultScheme(@PathVariable("schemetype") String schemeType) {
+		List<iDefaultScheme> defaultScheme = dashService.getDefaultScheme(schemeType);
 		return defaultScheme;
 	}
 

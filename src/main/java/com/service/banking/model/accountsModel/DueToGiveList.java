@@ -16,7 +16,7 @@ public class DueToGiveList {
 	String PhoneNos;
 	BigDecimal CurrentBalanceCr;
 	String CurrentInterest; 
-	String  maturityDate;
+	String  dueDate;
 	Integer codeNo;
 	String agentName;
 	Integer member_no;
@@ -32,7 +32,7 @@ public class DueToGiveList {
 	}
 	public DueToGiveList(Integer id, String accountNumber, String memberName, String fatherName,
 			String permanentAddress, String phoneNos, BigDecimal currentBalanceCr, String currentInterest,
-			String maturityDate, Integer codeNo, String agentName, Integer member_no, String agentAddress,
+			String dueDate, Integer codeNo, String agentName, Integer member_no, String agentAddress,
 			String landmark, Boolean isDefaulter, Integer memberId) {
 		super();
 		this.id = id;
@@ -43,7 +43,7 @@ public class DueToGiveList {
 		PhoneNos = phoneNos;
 		CurrentBalanceCr = currentBalanceCr;
 		CurrentInterest = currentInterest;
-		this.maturityDate = maturityDate;
+		this.dueDate = dueDate;
 		this.codeNo = codeNo;
 		this.agentName = agentName;
 		this.member_no = member_no;
@@ -100,11 +100,12 @@ public class DueToGiveList {
 	public void setCurrentInterest(String currentInterest) {
 		CurrentInterest = currentInterest;
 	}
-	public String getMaturityDate() {
-		return maturityDate;
+
+	public String getDueDate() {
+		return dueDate;
 	}
-	public void setMaturityDate(String maturityDate) {
-		this.maturityDate = maturityDate;
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
 	}
 	public Integer getCodeNo() {
 		return codeNo;

@@ -1194,4 +1194,9 @@ public class HodAuthorityService {
 				return new ArrayList<iDeleteVoucherDetails>();
 			}
 		}
+
+		public void removeTransaction() {
+			// TODO Auto-generated method stub
+			
+		}
 }

@@ -48,6 +48,7 @@ import com.service.banking.model.dashboardModel.SavingSchemaDetails;
 import com.service.banking.model.dashboardModel.SchemaDetail;
 import com.service.banking.model.dashboardModel.iAccountDetails;
 import com.service.banking.model.dashboardModel.iCashBankReport;
+import com.service.banking.model.dashboardModel.iDefaultScheme;
 import com.service.banking.repository.AccountsRepo.AccountsRepo;
 import com.service.banking.repository.dashBoardRepo.AccountsOpenTodayRepo;
 import com.service.banking.repository.dashBoardRepo.DailyDueRepository;
@@ -105,7 +106,7 @@ public class DashBoardService {
 		@SuppressWarnings("rawtypes")
 		SQLQuery sq = s.createSQLQuery(
 				"SELECT DISTINCT a.id as accountId,a.AccountNumber ,m.name as membername, m.FatherName ,m.PermanentAddress as permanentaddress ,m.PhoneNos,a.CurrentBalanceCr,a.CurrentInterest ,\r\n"
-						+ "DATE_ADD(DATE(a.created_at) , INTERVAL sch.MaturityPeriod DAY),\r\n"
+						+ "DATE_ADD(DATE(a.created_at) , INTERVAL sch.MaturityPeriod MONTH),\r\n"
 						+ "agnt.code_no ,mg.name,mg.member_no ,mg.PermanentAddress as agentaddress,mg.landmark ,mg.is_defaulter, a.member_id \r\n"
 						+ "FROM accounts a \r\n" + "left join schemes sch on sch.id=a.scheme_id \r\n"
 						+ "left join members m on m.id=a.member_id \r\n"
@@ -171,7 +172,7 @@ public class DashBoardService {
 			}
 
 			try {
-				dataobj.setMaturityDate(DateFormater.getformatDate((Date) row[8]));
+				dataobj.setDueDate(DateFormater.getformatDate((Date) row[8]));
 
 			} catch (NullPointerException e) {
 				// TODO: handle exception
@@ -307,7 +308,7 @@ public class DashBoardService {
 			}
 
 			try {
-				dataobj.setMaturityDate(DateFormater.getformatDate((Date) row[8]));
+				dataobj.setDueDate(DateFormater.getformatDate((Date) row[8]));
 			} catch (NullPointerException e) {
 				// TODO: handle exception
 				// dataobj.setMaturityDate((Date)row[8]);
@@ -349,6 +350,12 @@ public class DashBoardService {
 				// dataobj.setIsDefaulter((Boolean)row[14]);
 
 			}
+			try {
+				dataobj.setMemberId((Integer) row[15]);
+			} catch (NullPointerException e) {
+				// TODO: handle exception
+				dataobj.setMemberId(0);
+			}
 			newArrDueToGiveLists.add(dataobj);
 			// System.out.println(dataobj);
 		}
@@ -369,8 +376,8 @@ public class DashBoardService {
 
 		@SuppressWarnings("rawtypes")
 		SQLQuery sq = s.createSQLQuery(
-				"SELECT DISTINCT a.id as accountId,a.AccountNumber ,m.name as membername, m.FatherName ,m.PermanentAddress as permanentaddress ,m.PhoneNos,a.CurrentBalanceCr,a.CurrentInterest ,\r\n"
-						+ "DATE_ADD(DATE(a.created_at) , INTERVAL sch.MaturityPeriod DAY),\r\n"
+				"SELECT DISTINCT a.id as accountId,a.AccountNumber , m.name as membername, m.FatherName ,m.PermanentAddress as permanentaddress ,m.PhoneNos,a.CurrentBalanceCr,a.CurrentInterest ,\r\n"
+						+ "DATE_ADD(DATE(a.created_at) , INTERVAL sch.MaturityPeriod MONTH),\r\n"
 						+ "agnt.code_no ,mg.name,mg.member_no ,mg.PermanentAddress as agentaddress, mg.landmark ,mg.is_defaulter, m.id \r\n"
 						+ "FROM accounts a \r\n" + "left join schemes sch on sch.id=a.scheme_id \r\n"
 						+ "left join members m on m.id=a.member_id \r\n"
@@ -435,7 +442,7 @@ public class DashBoardService {
 			}
 
 			try {
-				dataobj.setMaturityDate(DateFormater.getformatDate((Date) row[8]));
+				dataobj.setDueDate(DateFormater.getformatDate((Date) row[8]));
 			} catch (NullPointerException e) {
 				// TODO: handle exception
 				// dataobj.setMaturityDate((Date)row[8]);
@@ -476,6 +483,12 @@ public class DashBoardService {
 				// TODO: handle exception
 				// dataobj.setIsDefaulter((Boolean)row[14]);
 
+			}
+			try {
+				dataobj.setMemberId((Integer) row[15]);
+			} catch (NullPointerException e) {
+				// TODO: handle exception
+				dataobj.setMemberId(0);
 			}
 			newArrDueToGiveLists.add(dataobj);
 			// System.out.println(dataobj);
@@ -1027,12 +1040,12 @@ public class DashBoardService {
 	}
 
 	// Get Default type - scheme........................................
-	public List<DefaultSchemaDetails> getDefaultScheme(String schemeType) {
-		List<DefaultSchemaDetails> defaultScheme = schemeRepo.getDefaultScheme(schemeType);
+	public List<iDefaultScheme> getDefaultScheme(String schemeType) {
+		List<iDefaultScheme> defaultScheme = schemeRepo.getDefaultScheme(schemeType);
 		if (defaultScheme.size() != 0) {
 			return defaultScheme;
 		} else {
-			return new ArrayList<DefaultSchemaDetails>();
+			return new ArrayList<iDefaultScheme>();
 		}
 	}
 

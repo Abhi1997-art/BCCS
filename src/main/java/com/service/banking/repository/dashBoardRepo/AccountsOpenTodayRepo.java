@@ -99,7 +99,7 @@ public interface AccountsOpenTodayRepo extends JpaRepository<Accounts, Integer> 
 			+ "	 		 ,m.permanentAddress ,m.phoneNos ,a.amount ,a.repaymentMode,mg.name ,d.name ,a.maturityToAccountId,\r\n"
 			+ "			  sc.name ,sc.interest ,sc.accountOpenningCommission ,sc.processingFees ,sc.premiumMode ,sc.maturityPeriod ,sc.numberOfPremiums ,\r\n"
 			+ "			 sc.schemeType, sc.type ,sc.schemeGroup,sc.interestMode,  \r\n"
-			+ "			 mi.insuranceStartDate ,mi.nextInsuranceDueDate ,mi.narration,m.memberNo, max(p.dueDate), p.amount, ag.codeNo, mg.permanentAddress, sc.reducingOrFlatRate, mg.landmark, mg.memberNo ) " + "from Accounts a  \r\n"
+			+ "			 mi.insuranceStartDate ,mi.nextInsuranceDueDate ,mi.narration,m.memberNo, max(p.dueDate), p.amount, ag.codeNo, mg.permanentAddress, sc.reducingOrFlatRate, mg.landmark, mg.memberNo, sc.processingFeesinPercent  ) " + "from Accounts a  \r\n"
 			+ "left join Members  m on a.memberId =m.id \r\n" + "left join Schemes sc on sc.id = a.schemeId \r\n"
 			+ "left join Dealers d on a.dealerId = d.id \r\n" + "left join Agents  ag on a.agentId  = ag.id \r\n"
 			+ "left join Members mg on ag.memberId =mg.id \r\n" + "left join Premiums  p on p.accountId  = a.id \r\n"

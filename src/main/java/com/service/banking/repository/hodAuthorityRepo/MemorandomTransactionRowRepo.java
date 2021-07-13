@@ -21,7 +21,7 @@ public interface MemorandomTransactionRowRepo extends JpaRepository<MemorandumTr
 			+ "a.memberId = m.id where mtr.memorandumTransactionId = ?1")
 	public List<MemoRandomTransactionRowDetails> getDetailsMemodandom(Integer memorandomTransactionId);
 
-	@Query(value = "Select a.AccountNumber , m.name as memberName, m.FatherName , tr.amountDr , tr.amountCr, tr.created_at as createdAt, tr.Narration, tt.name as transactionTypeName from transaction_row tr \r\n"
+	@Query(value = "Select a.AccountNumber , m.name as memberName, m.FatherName , tr.amountDr , tr.amountCr, tr.created_at as createdAt, tr.Narration, tt.name as transactionTypeName, a.related_account_id from transaction_row tr \r\n"
 			+ "left join accounts a on tr.account_id =a.id \r\n"
 			+ "left join transaction_types tt on tt.id = tr.transaction_type_id \r\n"
 			+ "left join members m on m.id = a.member_id \r\n"
