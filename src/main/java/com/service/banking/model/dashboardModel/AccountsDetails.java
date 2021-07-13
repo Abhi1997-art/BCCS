@@ -47,6 +47,8 @@ public class AccountsDetails {
 	public Integer codeNo;
 	public String agentAddress;
 	public String reducingOrFlatRate;
+	public String agentLandmark;
+	public Integer agentMemberNo;
 	
 
 	public AccountsDetails() {
@@ -100,7 +102,8 @@ public class AccountsDetails {
 			Integer maturityToAccountId, String name, String interest, String commission, Double processingFees,
 			String premiumMode, Integer maturityPeriod, Integer numberOfPremiums, String schemeType, String type,
 			String schemeGroup, String interestMode, Date insuranceStartDate, Date nextInsuranceDueDate,
-			String narration, Integer memberNo, Date dueDate, String premiumAmount, Integer codeNo, String agentAddress, String reducingOrFlatRate) {
+			String narration, Integer memberNo, Date dueDate, String premiumAmount, Integer codeNo, String agentAddress, String reducingOrFlatRate,
+			String agentLandmark, Integer agentMemberNo) {
 		super();
 		this.id = id;
 		this.accountNumber = accountNumber;
@@ -138,6 +141,8 @@ public class AccountsDetails {
 		this.codeNo = codeNo;
 		this.agentAddress=agentAddress;
 		this.reducingOrFlatRate=reducingOrFlatRate;
+		this.agentLandmark= agentLandmark;
+		this.agentMemberNo=agentMemberNo;
 	}
 
 	public String getName() {
@@ -426,6 +431,22 @@ public class AccountsDetails {
 
 	public void setReducingOrFlatRate(String reducingOrFlatRate) {
 		this.reducingOrFlatRate = reducingOrFlatRate;
+	}
+
+	public String getAgentLandmark() {
+		return agentLandmark;
+	}
+
+	public void setAgentLandmark(String agentLandmark) {
+		this.agentLandmark = agentLandmark;
+	}
+
+	public Integer getAgentMemberNo() {
+		return agentMemberNo;
+	}
+
+	public void setAgentMemberNo(Integer agentMemberNo) {
+		this.agentMemberNo = agentMemberNo;
 	}
 	
 

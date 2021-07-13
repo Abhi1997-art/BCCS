@@ -13,6 +13,8 @@ public class StaffModel {
 	Long totalCount;
 	Integer branchId;
 	String createdAt;
+	Long accounts;
+	Long transactions;
 	
 	public StaffModel(Integer id, String branchName, String staffName, String userName, boolean isActive, String password,
 			String accountNo, String accessLevel,Integer branchId) {
@@ -43,6 +45,41 @@ public class StaffModel {
 	//	this.totalCount=totalCount;
 		this.branchId=branchId;
 		this.createdAt = createdAt;
+	}
+	
+	
+
+	public StaffModel(Integer id, String branchName, String staffName, String userName, boolean isActive,
+			String password, String accountNo, String accessLevel, Integer branchId, String createdAt,
+			Long accounts) {
+		super();
+		this.id = id;
+		this.branchName = branchName;
+		this.staffName = staffName;
+		this.userName = userName;
+		this.isActive = isActive;
+		this.password = password;
+		this.accountNo = accountNo;
+		this.accessLevel = accessLevel;
+		this.branchId = branchId;
+		this.createdAt = createdAt;
+		this.accounts = accounts;
+	}
+
+	public Long getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(Long accounts) {
+		this.accounts = accounts;
+	}
+
+	public Long getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(Long transactions) {
+		this.transactions = transactions;
 	}
 
 	public Integer getBranchId() {
@@ -136,6 +173,7 @@ public class StaffModel {
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
+	
 	
 	
 }

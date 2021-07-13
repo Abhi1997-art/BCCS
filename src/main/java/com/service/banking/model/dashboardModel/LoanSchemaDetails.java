@@ -22,6 +22,9 @@ public class LoanSchemaDetails {
 	Double maxlimits;
 	Double minlimits;
 	String createdAt;
+	Integer panelty;
+	Integer paneltyGrace;
+	Boolean processingFeesinPercent;
 
 	public LoanSchemaDetails(Long totalAccounts, Long activeAccounts, String schemaType, Integer numberOfPremiums,
 			String interest, Double processingFees, Double maxlimits, Double minlimits) {
@@ -58,6 +61,32 @@ public class LoanSchemaDetails {
 		this.head = head;
 		this.createdAt = DateFormater.getformatDate(createdAt);
 	}
+	
+	public LoanSchemaDetails(Long totalAccounts, Long activeAccounts, Integer id, String schemaType, String schemaName,
+			String interest, String premiumMode, Integer numberOfPremiums, Double processingFees, Boolean activeStatus,
+			String validTill, Double maxlimits, Double minlimits, String head, Date createdAt, Integer panelty, Integer paneltyGrace,Boolean processingFeesinPercent ) {
+		super();
+		this.totalAccounts = totalAccounts;
+		this.activeAccounts = activeAccounts;
+		this.id = id;
+		this.schemaType = schemaType;
+		this.schemaName = schemaName;
+		this.interest = interest;
+		this.premiumMode = premiumMode;
+		this.numberOfPremiums = numberOfPremiums;
+		this.processingFees = processingFees;
+		this.activeStatus = activeStatus;
+		this.validTill = validTill;
+		this.maxlimits = maxlimits;
+		this.minlimits = minlimits;
+		this.head = head;
+		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.panelty=panelty;
+		this.paneltyGrace=paneltyGrace;
+		this.processingFeesinPercent=processingFeesinPercent;
+	}
+	
+	
 
 	public LoanSchemaDetails() {
 		super();
@@ -183,4 +212,29 @@ public class LoanSchemaDetails {
 		this.createdAt = createdAt;
 	}
 
+	public Integer getPanelty() {
+		return panelty;
+	}
+
+	public void setPanelty(Integer panelty) {
+		this.panelty = panelty;
+	}
+
+	public Integer getPaneltyGrace() {
+		return paneltyGrace;
+	}
+
+	public void setPaneltyGrace(Integer paneltyGrace) {
+		this.paneltyGrace = paneltyGrace;
+	}
+
+	public Boolean getProcessingFeesinPercent() {
+		return processingFeesinPercent;
+	}
+
+	public void setProcessingFeesinPercent(Boolean processingFeesinPercent) {
+		this.processingFeesinPercent = processingFeesinPercent;
+	}
+
+	
 }

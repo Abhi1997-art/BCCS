@@ -1,5 +1,6 @@
 package com.service.banking.model.dashboardModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.service.banking.utils.DateFormater;
@@ -25,6 +26,7 @@ public class RecurringSchemaDetails {
 	public Double minLimit;
 	public Double maxLimit;
 	public String createdAt;
+	public BigDecimal matureInterestsForUncompleteProduct;
 
 	public RecurringSchemaDetails() {
 		super();
@@ -56,6 +58,35 @@ public class RecurringSchemaDetails {
 		this.head = head;
 		this.createdAt = DateFormater.getformatDate(createdAt);
 	}
+	
+	public RecurringSchemaDetails(Long totalAccounts, Long activeAccounts, Integer id, String name, String interest,
+			Integer maturityPeriod, String premiumMode,Integer numberOfPremiums, Integer crpb, String accountOpenningCommission,
+			String collectorCommissionRate, Integer percentLoanOnDeposit, Integer noLoanOnDepositTill,
+			String preMatureInterests, String validTill, Double minLimit, Double maxLimit, String head,
+			Date createdAt, BigDecimal matureInterestsForUncompleteProduct) {
+		super();
+		this.totalAccounts = totalAccounts;
+		this.activeAccounts = activeAccounts;
+		this.id = id;
+		this.name = name;
+		this.interest = interest;
+		this.maturityPeriod = maturityPeriod;
+		this.premiumMode = premiumMode;
+		this.numberOfPremiums=numberOfPremiums;
+		this.crpb = crpb;
+		this.accountOpenningCommission = accountOpenningCommission;
+		this.collectorCommissionRate = collectorCommissionRate;
+		this.percentLoanOnDeposit = percentLoanOnDeposit;
+		this.noLoanOnDepositTill = noLoanOnDepositTill;
+		this.preMatureInterests = preMatureInterests;
+		this.validTill = validTill;
+		this.minLimit = minLimit;
+		this.maxLimit = maxLimit;
+		this.head = head;
+		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.matureInterestsForUncompleteProduct=matureInterestsForUncompleteProduct;
+	}
+
 
 	public Long getTotalAccounts() {
 		return totalAccounts;
@@ -207,6 +238,14 @@ public class RecurringSchemaDetails {
 
 	public void setNumberOfPremiums(Integer numberOfPremiums) {
 		this.numberOfPremiums = numberOfPremiums;
+	}
+
+	public BigDecimal getMatureInterestsForUncompleteProduct() {
+		return matureInterestsForUncompleteProduct;
+	}
+
+	public void setMatureInterestsForUncompleteProduct(BigDecimal matureInterestsForUncompleteProduct) {
+		this.matureInterestsForUncompleteProduct = matureInterestsForUncompleteProduct;
 	}
 	
 	

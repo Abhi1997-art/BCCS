@@ -574,6 +574,13 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 			+ "where a.id = ?1 ",
 			nativeQuery = true)
 	List<iAccountDetails> getAccountInsurance(Integer id);
+
+	@Query(value = "select m.name, m.member_no , m.PermanentAddress , m.landmark, m.is_defaulter , m.FatherName , m.PhoneNos , m.created_at from accounts a \r\n"
+			+ "left join account_guarantors ag on ag.account_id = a.id \r\n"
+			+ "left join members m on m.id = ag.member_id \r\n"
+			+ "where a.id = ?1 ",
+			nativeQuery = true)
+	List<iAccountDetails> getAccountGaurantors(Integer id);
 	
 
 	

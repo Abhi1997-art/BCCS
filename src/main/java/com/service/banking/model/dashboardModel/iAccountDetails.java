@@ -21,6 +21,9 @@ public interface iAccountDetails {
 	public String getMember_no();
 	public String getPermanentAddress();
 	public String getIs_defaulter();
+	public String getPhoneNos();
+	public String getLandmark();
+	public String getCreated_At();
 	
 	
 }

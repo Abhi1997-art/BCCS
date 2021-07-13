@@ -1,6 +1,7 @@
 package com.service.banking.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -457,6 +458,8 @@ public class SuperAdminService {
 
 	// Add active staff....
 	public void addActiveStaff(Staffs staffs) {
+		Date date = new Date();
+		staffs.setCreatedAt(DateFormater.getformatDate(date));
 		staffs.setIsActive(true);
 		staffRepo.save(staffs);
 	}

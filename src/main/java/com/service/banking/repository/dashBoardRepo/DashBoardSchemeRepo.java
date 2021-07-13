@@ -1,5 +1,6 @@
 package com.service.banking.repository.dashBoardRepo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,7 +48,7 @@ public interface DashBoardSchemeRepo extends JpaRepository<Schemes, Integer> {
 	List<FixedSchemaDetails> getcfixAndMisScheme(String schemeType);
 
 	// Get Loan type schema ..................................
-	@Query("select new  com.service.banking.model.dashboardModel.LoanSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id ,s.type,s.name,s.interest,s.premiumMode,s.numberOfPremiums,s.processingFees , s.activeStatus,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name,s.createdAt) from Schemes s \r\n"
+	@Query("select new  com.service.banking.model.dashboardModel.LoanSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id ,s.type,s.name,s.interest,s.premiumMode,s.numberOfPremiums,s.processingFees , s.activeStatus,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name,s.createdAt, s.panelty,s.paneltyGrace, s.processingFeesinPercent) from Schemes s \r\n"
 			+ " left join Accounts a on a.schemeId =s.id \r\n"
 			+ "left join BalanceSheet blnc on blnc.id=s.balanceSheetId "
 			+ " left join Accounts an on an.schemeId =s.id and an.activeStatus =1  \r\n"
@@ -56,7 +57,7 @@ public interface DashBoardSchemeRepo extends JpaRepository<Schemes, Integer> {
 
 	// Get Recurring type - schema .......................................................................................................
 	@Query("select new  com.service.banking.model.dashboardModel.RecurringSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id ,s.name,s.interest,s.maturityPeriod ,s.premiumMode ,s.numberOfPremiums,s.crpb ,s.accountOpenningCommission ,s.collectorCommissionRate ,s.percentLoanOnDeposit ,"
-			+ "s.noLoanOnDepositTill ,s.preMatureInterests,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name, s.createdAt) from Schemes s "
+			+ "s.noLoanOnDepositTill ,s.preMatureInterests,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name, s.createdAt, s.matureInterestsForUncompleteProduct) from Schemes s "
 			+ " left join Accounts a on a.schemeId =s.id " + "left join BalanceSheet blnc on blnc.id=s.balanceSheetId "
 			+ " left join Accounts an on an.schemeId =s.id and an.activeStatus =1  "
 			+ " where s.schemeType = 'Recurring' group by(s.name) ")

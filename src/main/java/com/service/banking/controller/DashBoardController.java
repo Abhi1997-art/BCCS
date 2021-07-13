@@ -104,6 +104,14 @@ public class DashBoardController {
 				return dailydue;
 		}
 		
+		//Get VL daily due................................................................................................
+		@GetMapping("/dailydue/fvl/{duedate}")
+		List<DueDeatailsModel> getFVLDue(@PathVariable("duedate") String date) {
+			Date dueDate = dateformater.getFromatDate(date);
+			List<DueDeatailsModel> dailydue = dashService.getFVLDailyDue(dueDate);
+				return dailydue;
+		}
+		
 		//Get OTHER daily due................................................................................................
 		@GetMapping("/dailydue/other/{duedate}")
 		List<DueDeatailsModel> getOTHERDue(@PathVariable("duedate") String date) {
@@ -205,6 +213,17 @@ public class DashBoardController {
 		Date startDate = dateformater.getFromatDate(weekDay.get("startDate"));
 		Date endDate = dateformater.getFromatDate(weekDay.get("endDate"));
 		List<DueDeatailsModel> weekDue = dashService.getVLWeeklyDue(startDate, endDate); // null
+		return weekDue;
+	}
+	
+	// Get VL weekly due..........................................................................................................
+	@GetMapping("/weeklydue/fvl/{duedate}")
+	List<DueDeatailsModel> getFVLWeeklyDue(@PathVariable("duedate") String duedate) {
+		dateformater.getMotnYearDay(duedate); // to get month, year, day Separately.......
+		Map<String, String> weekDay = dateformater.getweekDate(); // this will provide start-date,end-date...
+		Date startDate = dateformater.getFromatDate(weekDay.get("startDate"));
+		Date endDate = dateformater.getFromatDate(weekDay.get("endDate"));
+		List<DueDeatailsModel> weekDue = dashService.getFVLWeeklyDue(startDate, endDate); // null
 		return weekDue;
 	}
 	
@@ -378,6 +397,25 @@ public class DashBoardController {
 		System.out.println("####3######## month first day week" + startDate); // month
 		
 		Map<String, Object> monthdue = dashService.getMonthlyVLDue(startDate, endDate, setPageNumber, setMaxResults);
+		return monthdue;
+	}
+	
+	// Get FVL monthly due..................................................................................................
+	@GetMapping("/monthdue/fvl/{duedate}/{setFirstResult}/{setMaxResults}")
+	public Map<String, Object> monthlyFVLDue(@PathVariable("duedate") String duedate,
+			@PathVariable("setFirstResult") Integer setFirstResult,
+			@PathVariable("setMaxResults") Integer setMaxResults) {
+		dateformater.getMotnYearDay(duedate); // to get month, year, day separately.......
+
+		Map<String, String> monthdate = dateformater.getmonthStartAndEndDate(duedate);// get first date and last of
+		Date startDate = dateformater.getFromatDate(monthdate.get("startdatemonth"));
+		Date endDate = dateformater.getFromatDate(monthdate.get("enddatemonth"));
+		System.out.println("####3######## month last  day week" + endDate);
+
+		Integer setPageNumber = DashBoardService.pageNumber(setFirstResult);
+		System.out.println("####3######## month first day week" + startDate); // month
+		
+		Map<String, Object> monthdue = dashService.getMonthlyFVLDue(startDate, endDate, setPageNumber, setMaxResults);
 		return monthdue;
 	}
 	
@@ -804,6 +842,12 @@ public class DashBoardController {
 	@GetMapping("/account_details/documents/{id}")
 	List<iAccountDetails> getAccountDocuments(@PathVariable("id") Integer id) {
 		List<iAccountDetails>  acDetails = dashService.getAccountDocuments(id);
+		return acDetails;
+	}
+	
+	@GetMapping("/account_details/gaurantors/{id}")
+	List<iAccountDetails> getAccountGaurantors(@PathVariable("id") Integer id) {
+		List<iAccountDetails>  acDetails = dashService.getAccountGaurantors(id);
 		return acDetails;
 	}
 	

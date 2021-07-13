@@ -548,6 +548,16 @@ public class DashBoardService {
 		}
 	}
 	
+	//Get FVL daily due .......................................................................................
+	public List<DueDeatailsModel> getFVLDailyDue(Date dueDate) {
+		List<DueDeatailsModel> dueList = dailyduerepo.getFVLDailyDue(dueDate);
+		if (dueList.size() != 0) {
+			return dueList;
+		} else {
+			return new ArrayList<DueDeatailsModel>();
+		}
+	}
+	
 	//Get PL daily due .......................................................................................
 	public List<DueDeatailsModel> getPLDailyDue(Date dueDate) {
 		List<DueDeatailsModel> dueList = dailyduerepo.getPLDailyDue(dueDate);
@@ -611,6 +621,16 @@ public class DashBoardService {
 	// Get VL weekly due..........................................................................................................
 	public List<DueDeatailsModel> getVLWeeklyDue(Date firstdate, Date lastdate) {
 		List<DueDeatailsModel> weekList = dailyduerepo.getVLWeeklyDue(firstdate, lastdate);
+		if (weekList.size() != 0) {
+			return weekList;
+		} else {
+			return new ArrayList<DueDeatailsModel>();
+		}
+	}
+	
+	// Get FVL weekly due..........................................................................................................
+	public List<DueDeatailsModel> getFVLWeeklyDue(Date firstdate, Date lastdate) {
+		List<DueDeatailsModel> weekList = dailyduerepo.getFVLWeeklyDue(firstdate, lastdate);
 		if (weekList.size() != 0) {
 			return weekList;
 		} else {
@@ -716,6 +736,24 @@ public class DashBoardService {
 			Integer setMaxResults) {
 		Pageable paging = PageRequest.of(setFirstResults, setMaxResults);
 		Page<DueDeatailsModel> monthList = dailyduerepo.getMonthlyVLDue(month_firstDay, month_lastday, paging);
+		Map<String, Object> monthMap = new HashMap<String, Object>(); 
+		
+		if (monthList.hasContent()) {
+			monthMap.put("pageSize", monthList.getSize());
+			monthMap.put("totalElement", monthList.getTotalElements());
+			monthMap.put("totalPage", monthList.getTotalPages());
+			monthMap.put("ShareDetail", monthList.getContent());
+			return monthMap;
+		} else {
+			return monthMap;
+		}
+	}
+	
+	// Get FVL monthly due............................................................................................................
+	public Map<String, Object> getMonthlyFVLDue(Date month_firstDay, Date month_lastday, Integer setFirstResults,
+			Integer setMaxResults) {
+		Pageable paging = PageRequest.of(setFirstResults, setMaxResults);
+		Page<DueDeatailsModel> monthList = dailyduerepo.getMonthlyFVLDue(month_firstDay, month_lastday, paging);
 		Map<String, Object> monthMap = new HashMap<String, Object>(); 
 		
 		if (monthList.hasContent()) {
@@ -1136,4 +1174,11 @@ public class DashBoardService {
 		List<iAccountDetails> list = acountsRepo.getAccountInsurance(id);
 		return list;
 	}
+
+	public List<iAccountDetails> getAccountGaurantors(Integer id) {
+		List<iAccountDetails> list = acountsRepo.getAccountGaurantors(id);
+		return list;
+	}
+
+
 }

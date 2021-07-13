@@ -70,6 +70,15 @@ public interface DailyDueRepository extends JpaRepository<Premiums, Integer> {
 			+ "WHERE p.dueDate >=?1 and p.dueDate <=?1  and a.activeStatus ='1'  and p.paid = '0' and a.accountType='Two Wheeler Loan' ")
 	List<DueDeatailsModel> getVLDailyDue(Date dueDate);
 	
+	// Get FVL daily due........................................................................
+	@Query("select new  com.service.banking.model.dashboardModel.DueDeatailsModel(a.id,a.accountNumber,m.name ,m.fatherName ,m.permanentAddress ,m.phoneNos ,p.amount,p.dueDate,\r\n"
+			+ "  ag.codeNo ,mg.name,mg.memberNo ,mg.permanentAddress ,mg.landmark ,mg.isDefaulter ,d.name ,a.accountType, m.id)  from Premiums p \r\n"
+			+ "left join  Accounts a on p.accountId =a.id \r\n" + "left join Dealers d on a.dealerId = d.id \r\n"
+			+ "left join Members  m on a.memberId =m.id \r\n" + "left join Agents  ag on a.agentId  = ag.id \r\n"
+			+ "left join Members mg on ag.memberId =mg.id \r\n" + "left join Schemes sc on sc.id = a.schemeId \r\n"
+			+ "WHERE p.dueDate >=?1 and p.dueDate <=?1  and a.activeStatus ='1'  and p.paid = '0' and a.accountType='Auto Loan' ")
+	List<DueDeatailsModel> getFVLDailyDue(Date dueDate);
+	
 	// Get Other daily due........................................................................
 	@Query("select new  com.service.banking.model.dashboardModel.DueDeatailsModel(a.id,a.accountNumber,m.name ,m.fatherName ,m.permanentAddress ,m.phoneNos ,p.amount,p.dueDate,\r\n"
 			+ "  ag.codeNo ,mg.name,mg.memberNo ,mg.permanentAddress ,mg.landmark ,mg.isDefaulter ,d.name ,a.accountType, m.id)  from Premiums p \r\n"
@@ -114,6 +123,15 @@ public interface DailyDueRepository extends JpaRepository<Premiums, Integer> {
 			+ "left join Members mg on ag.memberId =mg.id \r\n" + "left join Schemes sc on sc.id = a.schemeId \r\n"
 			+ "WHERE p.dueDate >=?1  and p.dueDate <=?2  and a.activeStatus ='1'  and p.paid = '0' and a.accountType='Two Wheeler Loan' ")
 	List<DueDeatailsModel> getVLWeeklyDue(Date firstDate, Date lastDate);
+	
+	// get FVL weekly due...............................................................................................
+	@Query("select new  com.service.banking.model.dashboardModel.DueDeatailsModel(a.id,a.accountNumber,m.name ,m.fatherName ,m.permanentAddress ,m.phoneNos ,p.amount,p.dueDate,\r\n"
+			+ "  ag.codeNo ,mg.name,mg.memberNo ,mg.permanentAddress ,mg.landmark ,mg.isDefaulter ,d.name,a.accountType, m.id)  from Premiums p \r\n"
+			+ "left join  Accounts a on p.accountId =a.id \r\n" + "left join Dealers d on a.dealerId = d.id \r\n"
+			+ "left join Members  m on a.memberId =m.id \r\n" + "left join Agents  ag on a.agentId  = ag.id \r\n"
+			+ "left join Members mg on ag.memberId =mg.id \r\n" + "left join Schemes sc on sc.id = a.schemeId \r\n"
+			+ "WHERE p.dueDate >=?1  and p.dueDate <=?2  and a.activeStatus ='1'  and p.paid = '0' and a.accountType='Auto Loan' ")
+	List<DueDeatailsModel> getFVLWeeklyDue(Date firstDate, Date lastDate);
 	
 	// get ML weekly due...............................................................................................
 	@Query("select new  com.service.banking.model.dashboardModel.DueDeatailsModel(a.id,a.accountNumber,m.name ,m.fatherName ,m.permanentAddress ,m.phoneNos ,p.amount,p.dueDate,\r\n"
@@ -177,6 +195,15 @@ public interface DailyDueRepository extends JpaRepository<Premiums, Integer> {
 			+ "left join Members mg on ag.memberId =mg.id \r\n" + "left join Schemes sc on sc.id = a.schemeId \r\n"
 			+ "WHERE p.dueDate >=?1  and p.dueDate <=?2  and a.activeStatus ='1'  and p.paid = '0' and a.accountType='Two Wheeler Loan'")
 	Page<DueDeatailsModel> getMonthlyVLDue(Date month_firstDay, Date month_lastday, Pageable pageable);
+	
+	// Get FVL monthly due......................................................................................................
+	@Query("select new  com.service.banking.model.dashboardModel.DueDeatailsModel(a.id,a.accountNumber,m.name ,m.fatherName ,m.permanentAddress ,m.phoneNos ,p.amount,p.dueDate,\r\n"
+			+ "  ag.codeNo ,mg.name,mg.memberNo ,mg.permanentAddress ,mg.landmark ,mg.isDefaulter ,d.name,a.accountType, m.id)  from Premiums p \r\n"
+			+ "left join  Accounts a on p.accountId =a.id \r\n" + "left join Dealers d on a.dealerId = d.id \r\n"
+			+ "left join Members  m on a.memberId =m.id \r\n" + "left join Agents  ag on a.agentId  = ag.id \r\n"
+			+ "left join Members mg on ag.memberId =mg.id \r\n" + "left join Schemes sc on sc.id = a.schemeId \r\n"
+			+ "WHERE p.dueDate >=?1  and p.dueDate <=?2  and a.activeStatus ='1'  and p.paid = '0' and a.accountType='Auto Loan'")
+	Page<DueDeatailsModel> getMonthlyFVLDue(Date month_firstDay, Date month_lastday, Pageable pageable);
 	
 	// Get ML monthly due......................................................................................................
 	@Query("select new  com.service.banking.model.dashboardModel.DueDeatailsModel(a.id,a.accountNumber,m.name ,m.fatherName ,m.permanentAddress ,m.phoneNos ,p.amount,p.dueDate,\r\n"

@@ -19,7 +19,7 @@ public interface ShareRepository extends JpaRepository<Share, Integer> {
 
 	// Get share by id................................................................................................
 		@Query("select  new  com.service.banking.model.superAdminModel.ShareDetails(s.id, s.currentMemberId, m.name , CASE WHEN (m.memberNo is null) THEN 0 ELSE m.memberNo END, m.currentAddress ,m.landmark, CASE WHEN (m.isDefaulter is null) THEN false ELSE m.isDefaulter END ,CASE WHEN (s.shareCertificateId is null) THEN 0 ELSE s.shareCertificateId END, s.no,s.buybackLockingMonths ,s.transferLockingMonths ,s.status ,a.accountNumber, a.createdAt, sc.name) from Share s"
-				+ " left join Members m on m.id=s.currentMemberId" + " left join Accounts a on a.memberId=s.currentMemberId left join ShareCertificate sc on s.shareCertificateId = sc.id where a.accountType = 'SM' and m.id= ?1")
+				+ " left join Members m on m.id=s.currentMemberId" + " left join Accounts a on a.memberId=s.currentMemberId left join ShareCertificate sc on s.shareCertificateId = sc.id where a.accountType = 'SM' and sc.id= ?1")
 	List<ShareDetails> getSharebyID(Integer id);
 
 

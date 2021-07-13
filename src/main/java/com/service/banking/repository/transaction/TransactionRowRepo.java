@@ -150,7 +150,7 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 	List<iCashBankReport> getCashBankReport1(String date);
 	
 	@Query(value = "select * from \r\n"
-			+ "(select a.id as firstId, a.AccountNumber, (sum(tr.amountCr) - sum(tr.amountDr)) as OpeningBalance\r\n"
+			+ "(select a.id as firstId, a.AccountNumber, (sum(tr.amountCr) - sum(tr.amountDr)) as OpeningBalance, a.bank_account_limit \r\n"
 			+ "from transaction_row tr \r\n"
 			+ "left join accounts a on tr.account_id = a.id \r\n"
 			+ "where a.account_type = \"Default\" and a.group_type = \"BANK OD\" and a.PAndLGroup = \"BANK OD\"\r\n"
