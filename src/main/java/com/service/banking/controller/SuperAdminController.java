@@ -88,9 +88,8 @@ public class SuperAdminController {
 
 	// Delete Branches....................................................................................
 	@DeleteMapping("/delete_branches/{id}")
-	public String deleteBranches(@PathVariable("id") Integer Id) {
+	public void deleteBranches(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteBranchesDetails(Id);
-		return message;
 	}
 
 	// Update Branches.......................................................................................
@@ -120,9 +119,8 @@ public class SuperAdminController {
 
 	// Delete Balance Sheet.....................................................................................
 	@DeleteMapping("/delete_TopHead_BalanceSheet/{id}")
-	public String deleteTopHeadBalSheet(@PathVariable("id") Integer Id) {
+	public void deleteTopHeadBalSheet(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteBalanceSheet(Id);
-		return message;
 
 	}
 
@@ -154,9 +152,8 @@ public class SuperAdminController {
 
 	// Delete agent cadres.................................................................................
 	@DeleteMapping("/delete_AgentCadres/{id}")
-	public String deleteCadres(@PathVariable("id") Integer Id) {
+	public void deleteCadres(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteAgentCadres(Id);
-		return message;
 	}
 	// get closing.................
 
@@ -176,9 +173,8 @@ public class SuperAdminController {
 
 	// Delete content Management........
 	@DeleteMapping("/delete_content_management/{id}")
-	public String deleteContentManagement(@PathVariable("id") Integer Id) {
+	public void deleteContentManagement(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deletecontentMangement(Id);
-		return message;
 	}
 
 	// Add content Management....send without id
@@ -215,9 +211,8 @@ public class SuperAdminController {
 	}
 
 	@DeleteMapping("/delete_share/{id}")
-	public String deleteShareDetails(@PathVariable("id") Integer id) {
+	public void deleteShareDetails(@PathVariable("id") Integer id) {
 		String message = superAdminService.deleteShareDetails(id);
-		return message;
 	}
 	
 	// Get share history....................................................................................................
@@ -241,9 +236,8 @@ public class SuperAdminController {
 	
 	// Delete share history....................................................................................................
 	@DeleteMapping("/delete_share_history/{id}")
-	public String deleteShareHistory(@PathVariable("id") Integer Id) {
+	public void deleteShareHistory(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteShareHistory(Id);
-		return message;
 	}
 
 	// Get all share certificate.............................................................................................
@@ -266,9 +260,8 @@ public class SuperAdminController {
 	}
 
 	@DeleteMapping("/delete_share_certificate/{id}")
-	public String deleteShareCertificateDetails(@PathVariable("id") Integer id) {
+	public void deleteShareCertificateDetails(@PathVariable("id") Integer id) {
 		String message = superAdminService.deleteShareCertificateDetails(id);
-		return message;
 	}
 	
 	// Get shareCertcate share....................................................................................................
@@ -316,9 +309,8 @@ public class SuperAdminController {
 
 	// Delete acl document................................
 	@DeleteMapping("/delete_acl_document/{Id}")
-	public String deleteAclDocument(@PathVariable("Id") Integer Id) {
+	public void deleteAclDocument(@PathVariable("Id") Integer Id) {
 		String message = superAdminService.deleteAclDocument(Id);
-		return message;
 	}
 
 	// add acl documrnt................................
@@ -355,16 +347,14 @@ public class SuperAdminController {
 
 	// Delete Acl data.................................
 	@DeleteMapping("/delete_staff_acl_data/{id}")
-	public String deleteAclStaff(@PathVariable("id") Integer Id) {
+	public void deleteAclStaff(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteAclStaff(Id);
-		return message;
 	}
 
 	// Delete Acl report..........................
 	@DeleteMapping("/delete_staff_acl_report/{Id}")
-	public String deleteAclStaffReport(@PathVariable("Id") Integer Id) {
+	public void deleteAclStaffReport(@PathVariable("Id") Integer Id) {
 		String message = superAdminService.deleteAclStaffReport(Id);
-		return message;
 	}
 
 	// Acl for staff....report gett
@@ -408,16 +398,14 @@ public class SuperAdminController {
 
 	// Delete active Staff........................
 	@DeleteMapping("/delete_active_staffs/{id}")
-	public String deleteActiveStaffs(@PathVariable("id") Integer Id) {
+	public void deleteActiveStaffs(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteActiveStaff(Id);
-		return message;
 	}
 
 	// Delete Inactive Staff....................
 	@DeleteMapping("/delete_Inactive_staffs/{id}")
-	public String deleteInactiveStaffs(@PathVariable("id") Integer Id) {
+	public void deleteInactiveStaffs(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteInactiveStaff(Id);
-		return message;
 	}
 
 	// preview active and Inactive Staff....................
@@ -466,9 +454,8 @@ public class SuperAdminController {
 
 	// Delete Inactive Staff....................
 	@DeleteMapping("/delete_schema/{id}")
-	public String deleteSchema(@PathVariable("id") Integer Id) {
+	public void deleteSchema(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteSchema(Id);
-		return message;
 	}
 
 	// Head schema.....

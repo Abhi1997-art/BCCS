@@ -1193,5 +1193,18 @@ public class DashBoardService {
 		return list;
 	}
 
+	public iAccountDetails getMaturityDate(Integer id) {
+		String accountType = acountsRepo.getAccountType(id);
+		
+		if(accountType.equals("FD") || accountType.equals("MIS")) {
+			iAccountDetails result = acountsRepo.getMaturityDateFDMIS(id);
+			return result;
+		}
+		else {
+			iAccountDetails result = acountsRepo.getMaturityDate(id);
+			return result;
+		}
+	}
+
 
 }

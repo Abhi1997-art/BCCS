@@ -24,6 +24,7 @@ public interface iAccountDetails {
 	public String getPhoneNos();
 	public String getLandmark();
 	public String getCreated_At();
+	public String getMaturityDate();
 	
 	
 }

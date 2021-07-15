@@ -865,5 +865,10 @@ public class DashBoardController {
 		List<PremiusDetails> prmList = dashService.getPremiumDetails(acId);
 		return prmList;
 	}
+	
+	@GetMapping("/maturityDate/{id}")
+	public iAccountDetails getMaturityDate(@PathVariable("id") Integer id) {
+		return dashService.getMaturityDate(id);
+	}
 
 }

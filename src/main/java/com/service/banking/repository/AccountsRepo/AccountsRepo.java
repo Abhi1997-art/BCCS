@@ -581,6 +581,23 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 			+ "where a.id = ?1 ",
 			nativeQuery = true)
 	List<iAccountDetails> getAccountGaurantors(Integer id);
+
+	@Query(value="select a.account_type from accounts a \r\n"
+			+ "where a.id = ?1 " ,
+			nativeQuery= true)
+	String getAccountType(Integer id);
+
+	@Query(value="select DATE_ADD(DATE(a.created_at) , INTERVAL s.MaturityPeriod DAY) as maturityDate from accounts a \r\n"
+			+ "left join schemes s on s.id = a.scheme_id \r\n"
+			+ "where a.id = ?1" ,
+			nativeQuery= true)
+	iAccountDetails getMaturityDateFDMIS(Integer id);
+
+	@Query(value="select DATE_ADD(DATE(a.created_at) , INTERVAL s.MaturityPeriod MONTH) as maturityDate from accounts a \r\n"
+			+ "left join schemes s on s.id = a.scheme_id \r\n"
+			+ "where a.id = 160546" ,
+			nativeQuery= true)
+	iAccountDetails getMaturityDate(Integer id);
 	
 
 	
