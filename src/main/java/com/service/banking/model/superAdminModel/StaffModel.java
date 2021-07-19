@@ -13,9 +13,18 @@ public class StaffModel {
 	Long totalCount;
 	Integer branchId;
 	String createdAt;
-	Long accounts;
-	Long transactions;
+	Long number;
+	Integer staffId;
 	
+	
+
+
+
+	public StaffModel(Long number) {
+		super();
+		this.number = number;
+	}
+
 	public StaffModel(Integer id, String branchName, String staffName, String userName, boolean isActive, String password,
 			String accountNo, String accessLevel,Integer branchId) {
 		super();
@@ -47,13 +56,10 @@ public class StaffModel {
 		this.createdAt = createdAt;
 	}
 	
-	
-
-	public StaffModel(Integer id, String branchName, String staffName, String userName, boolean isActive,
-			String password, String accountNo, String accessLevel, Integer branchId, String createdAt,
-			Long accounts) {
+	public StaffModel(Integer id, String branchName, String staffName, String userName, boolean isActive, String password,
+			String accountNo, String accessLevel,Integer branchId, String createdAt, Integer staffId) {
 		super();
-		this.id = id;
+		this.id=id;
 		this.branchName = branchName;
 		this.staffName = staffName;
 		this.userName = userName;
@@ -61,25 +67,29 @@ public class StaffModel {
 		this.password = password;
 		this.accountNo = accountNo;
 		this.accessLevel = accessLevel;
-		this.branchId = branchId;
+	//	this.totalCount=totalCount;
+		this.branchId=branchId;
 		this.createdAt = createdAt;
-		this.accounts = accounts;
+		this.staffId=staffId;
+	}
+	
+
+
+
+	public Integer getStaffId() {
+		return staffId;
 	}
 
-	public Long getAccounts() {
-		return accounts;
+	public void setStaffId(Integer staffId) {
+		this.staffId = staffId;
 	}
 
-	public void setAccounts(Long accounts) {
-		this.accounts = accounts;
+	public Long getNumber() {
+		return number;
 	}
 
-	public Long getTransactions() {
-		return transactions;
-	}
-
-	public void setTransactions(Long transactions) {
-		this.transactions = transactions;
+	public void setNumber(Long number) {
+		this.number = number;
 	}
 
 	public Integer getBranchId() {

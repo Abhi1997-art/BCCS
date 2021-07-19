@@ -1,34 +1,34 @@
 package com.service.banking.model.superAdminModel;
 
-import org.hibernate.id.IntegralDataTypeHolder;
-
 public class BalanceSheetHead {
-	
-	Integer id;
-	String name;
 
-	
+	Integer headId;
+	String head;
+
 	public BalanceSheetHead() {
 		super();
 	}
-	public BalanceSheetHead(Integer id, String name) {
+
+	public BalanceSheetHead(Integer headId, String head) {
 		super();
-		this.id = id;
-		this.name = name;
+		this.headId = headId;
+		this.head = head;
 	}
-	public Integer getId() {
-		return id;
+
+	public Integer getHeadId() {
+		return headId;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+
+	public void setHeadId(Integer headId) {
+		this.headId = headId;
 	}
-	public String getName() {
-		return name;
+
+	public String getHead() {
+		return head;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public void setHead(String head) {
+		this.head = head;
 	}
-	
-	
 
 }

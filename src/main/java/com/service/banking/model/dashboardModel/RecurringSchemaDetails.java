@@ -27,6 +27,7 @@ public class RecurringSchemaDetails {
 	public Double maxLimit;
 	public String createdAt;
 	public BigDecimal matureInterestsForUncompleteProduct;
+	public Integer headId;
 
 	public RecurringSchemaDetails() {
 		super();
@@ -63,7 +64,7 @@ public class RecurringSchemaDetails {
 			Integer maturityPeriod, String premiumMode,Integer numberOfPremiums, Integer crpb, String accountOpenningCommission,
 			String collectorCommissionRate, Integer percentLoanOnDeposit, Integer noLoanOnDepositTill,
 			String preMatureInterests, String validTill, Double minLimit, Double maxLimit, String head,
-			Date createdAt, BigDecimal matureInterestsForUncompleteProduct) {
+			Date createdAt, BigDecimal matureInterestsForUncompleteProduct, Integer headId) {
 		super();
 		this.totalAccounts = totalAccounts;
 		this.activeAccounts = activeAccounts;
@@ -85,6 +86,7 @@ public class RecurringSchemaDetails {
 		this.head = head;
 		this.createdAt = DateFormater.getformatDate(createdAt);
 		this.matureInterestsForUncompleteProduct=matureInterestsForUncompleteProduct;
+		this.headId=headId;
 	}
 
 
@@ -247,6 +249,15 @@ public class RecurringSchemaDetails {
 	public void setMatureInterestsForUncompleteProduct(BigDecimal matureInterestsForUncompleteProduct) {
 		this.matureInterestsForUncompleteProduct = matureInterestsForUncompleteProduct;
 	}
+
+	public Integer getHeadId() {
+		return headId;
+	}
+
+	public void setHeadId(Integer headId) {
+		this.headId = headId;
+	}
+	
 	
 	
 

@@ -1203,7 +1203,7 @@ public class TransactionService {
 		Integer scheme = accountDetails.getSchemeId();
 		// Getting scheme details...
 		SchemaDetail schemaDetail = dashBoardSchemeRepo.getSchemeById(scheme);
-		Integer balanceSheet = schemaDetail.getBalanceSheetId();
+		Integer balanceSheet = schemaDetail.getHeadId();
 		return balanceSheet;
 	}
 	

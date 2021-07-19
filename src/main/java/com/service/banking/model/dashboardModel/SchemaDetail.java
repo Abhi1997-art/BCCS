@@ -12,7 +12,7 @@ public class SchemaDetail {
 
 	Long totalAccounts;
 	Long activeAccounts;
-	Integer schemaId;
+	Integer id;
 	String schemaName;
 	String interest;
 	Double processingFees;
@@ -33,44 +33,44 @@ public class SchemaDetail {
 	String accountOpenningCommission;
 	String PremiumMode;
 
-	Integer balanceSheetId;
+	Integer headId;
 
-	public SchemaDetail(Integer schemaId, String schemaName) {
+	public SchemaDetail(Integer id, String schemaName) {
 		super();
-		this.schemaId = schemaId;
+		this.id = id;
 		this.schemaName = schemaName;
 	}
 
-	public SchemaDetail(Integer schemaId, String interest, String preMatureInterests,
+	public SchemaDetail(Integer id, String interest, String preMatureInterests,
 			BigDecimal matureInterestsForUncompleteProduct, Integer maturityPeriod) {
 		super();
-		this.schemaId = schemaId;
+		this.id = id;
 		this.interest = interest;
 		this.preMatureInterests = preMatureInterests;
 		this.matureInterestsForUncompleteProduct = matureInterestsForUncompleteProduct;
 		this.maturityPeriod = maturityPeriod;
 	}
 
-	public SchemaDetail(Integer schemaId, String interest, String preMatureInterests,
-			BigDecimal matureInterestsForUncompleteProduct, Integer maturityPeriod, Integer balanceSheetId) {
+	public SchemaDetail(Integer id, String interest, String preMatureInterests,
+			BigDecimal matureInterestsForUncompleteProduct, Integer maturityPeriod, Integer headId) {
 		super();
-		this.schemaId = schemaId;
+		this.id = id;
 		this.interest = interest;
 		this.preMatureInterests = preMatureInterests;
 		this.matureInterestsForUncompleteProduct = matureInterestsForUncompleteProduct;
 		this.maturityPeriod = maturityPeriod;
-		this.balanceSheetId = balanceSheetId;
+		this.headId = headId;
 	}
 
 	public SchemaDetail(Long totalAccounts, Long activeAccounts, Integer id, String schemaName, String interest,
 			Double processingFees, String validTill, Double maxlimits, Double minlimits, String head, Date createdAt,
 			Integer crpb, Integer percentLoanOnDeposit, Integer noLoanOnDepositTill, String preMatureInterests,
 			BigDecimal matureInterestsForUncompleteProduct, Integer maturityPeriod, Double commission,
-			String collectorCommissionRate, String accountOpenningCommission, String PremiumMode) {
+			String collectorCommissionRate, String accountOpenningCommission, String PremiumMode, Integer headId) {
 		super();
 		this.totalAccounts = totalAccounts;
 		this.activeAccounts = activeAccounts;
-		this.schemaId = id;
+		this.id = id;
 		this.schemaName = schemaName;
 		this.interest = interest;
 		this.processingFees = processingFees;
@@ -89,6 +89,7 @@ public class SchemaDetail {
 		this.collectorCommissionRate = collectorCommissionRate;
 		this.accountOpenningCommission = accountOpenningCommission;
 		this.PremiumMode = PremiumMode;
+		this.headId = headId;
 	}
 
 	public SchemaDetail() {
@@ -111,12 +112,12 @@ public class SchemaDetail {
 		this.activeAccounts = activeAccounts;
 	}
 
-	public Integer getSchemaId() {
-		return schemaId;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setSchemaId(Integer schemaId) {
-		this.schemaId = schemaId;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getSchemaName() {
@@ -269,17 +270,17 @@ public class SchemaDetail {
 		PremiumMode = premiumMode;
 	}
 
-	public Integer getBalanceSheetId() {
-		return balanceSheetId;
+	public Integer getHeadId() {
+		return headId;
 	}
 
-	public void setBalanceSheetId(Integer balanceSheetId) {
-		this.balanceSheetId = balanceSheetId;
+	public void setHeadId(Integer headId) {
+		this.headId = headId;
 	}
 
 	@Override
 	public String toString() {
-		return "SchemaDetail [schemaId=" + schemaId + ", interest=" + interest + ", preMatureInterests="
+		return "SchemaDetail [schemaId=" + id + ", interest=" + interest + ", preMatureInterests="
 				+ preMatureInterests + ", matureInterestsForUncompleteProduct=" + matureInterestsForUncompleteProduct
 				+ "]";
 	}

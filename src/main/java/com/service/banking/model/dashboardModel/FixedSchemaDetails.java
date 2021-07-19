@@ -25,11 +25,12 @@ public class FixedSchemaDetails {
 	String head;
 	Boolean activeStatus;
 	String createdAt;
+	Integer headId;
 
 	public FixedSchemaDetails(Long totalAccounts, Long activeAccounts, String schemaType, Integer id, String name,
 			String interest, String accountOpenningCommission, Integer crpb, Integer maturityPeriod,
 			Integer percentLoanOnDeposit, Integer noLoanOnDepositTill, String preMatureInterests, String validTill,
-			Boolean activeStatus, Double minLimit, Double maxLimit, String head, Date createdAt) {
+			Boolean activeStatus, Double minLimit, Double maxLimit, String head, Date createdAt, Integer headId) {
 		super();
 		this.totalAccounts = totalAccounts;
 		this.activeAccounts = activeAccounts;
@@ -49,6 +50,7 @@ public class FixedSchemaDetails {
 		this.maxLimit = maxLimit;
 		this.head = head;
 		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.headId=headId;
 	}
 
 	public FixedSchemaDetails() {
@@ -206,5 +208,14 @@ public class FixedSchemaDetails {
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	public Integer getHeadId() {
+		return headId;
+	}
+
+	public void setHeadId(Integer headId) {
+		this.headId = headId;
+	}
+	
 
 }

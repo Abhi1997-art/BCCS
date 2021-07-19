@@ -60,7 +60,7 @@ public interface AccountsOpenTodayRepo extends JpaRepository<Accounts, Integer> 
 	List<AccountsOpenTodayDetails> otherAccountsOpenToday(Date date);
 
 	// Get ALL other accounts details - Accounts open today .....................
-	@Query(" select new com.service.banking.model.dashboardModel.AccountsOpenTodayDetails(a.id,a.accountNumber ,m.name,m.fatherName ,m.permanentAddress ,m.phoneNos ,s.name ,a.amount ,d.name ,a.currentBalanceCr, \r\n"
+	@Query(" select new com.service.banking.model.dashboardModel.AccountsOpenTodayDetails(a.id,a.accountNumber ,m.name,m.fatherName ,m.permanentAddress ,m.phoneNos ,s.name ,a.amount ,d.name ,a.currentBalanceCr , \r\n"
 			+ "agnt.codeNo,agntmem.name,agntmem.memberNo ,agntmem.permanentAddress ,agntmem.landmark ,agntmem.isDefaulter) from Accounts a \r\n"
 			+ "left join Members m on m.id=a.memberId \r\n" + "left join Schemes s on s.id=a.schemeId \r\n"
 			+ "left join Agents agnt on agnt.id=a.agentId \r\n"

@@ -39,6 +39,7 @@ import com.service.banking.model.report.iBikeLegalReport;
 import com.service.banking.model.report.iDepositeReport;
 import com.service.banking.model.report.iGeneralReport;
 import com.service.banking.model.report.iMemberReport;
+import com.service.banking.model.superAdminModel.StaffModel;
 import com.service.banking.model.accountsModel.MngLegalCaseHearing;
 import com.service.banking.model.MadModel.MemberInsuDetails;
 
@@ -556,10 +557,10 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 			nativeQuery = true)
 	List<iMemberReport> getNonActive(Integer memberId);
 
-	@Query(value = "select d.name as documentName, a.AccountNumber , m.name , m.FatherName ,ds.Description , d2.name as dealerName, ds.submitted_on,\r\n"
+	@Query(value = "select a.id, d.name as documentName, a.AccountNumber , m.name , m.FatherName ,ds.Description , d2.name as dealerName, ds.submitted_on,\r\n"
 			+ "a2.code_no , m2.name as agentName, m2.member_no , m2.PermanentAddress , m2.is_defaulter \r\n"
-			+ "from accounts a \r\n"
-			+ "left join documents_submitted ds on ds.accounts_id = a.id \r\n"
+			+ "from documents_submitted ds \r\n"
+			+ "left join accounts a on a.id = ds.accounts_id \r\n"
 			+ "left join documents d on ds.documents_id = d.id\r\n"
 			+ "left join members m on m.id = a.member_id \r\n"
 			+ "left join dealers d2 on d2.id = a.dealer_id \r\n"
@@ -595,9 +596,13 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 
 	@Query(value="select DATE_ADD(DATE(a.created_at) , INTERVAL s.MaturityPeriod MONTH) as maturityDate from accounts a \r\n"
 			+ "left join schemes s on s.id = a.scheme_id \r\n"
-			+ "where a.id = 160546" ,
+			+ "where a.id = ?1 " ,
 			nativeQuery= true)
 	iAccountDetails getMaturityDate(Integer id);
+
+	@Query("select new com.service.banking.model.superAdminModel.StaffModel(count(a.id) as accounts) from Accounts a left join Staffs s on s.id = a.staffId \r\n"
+			+ "where s.id = ?1 ")
+	StaffModel getStaffAccounts(Integer id);
 	
 
 	

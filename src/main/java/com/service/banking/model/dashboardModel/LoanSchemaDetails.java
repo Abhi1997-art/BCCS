@@ -26,6 +26,7 @@ public class LoanSchemaDetails {
 	Integer paneltyGrace;
 	Boolean processingFeesinPercent;
 	String reducingOrFlatRate;
+	Integer headId;
 
 	public LoanSchemaDetails(Long totalAccounts, Long activeAccounts, String schemaType, Integer numberOfPremiums,
 			String interest, Double processingFees, Double maxlimits, Double minlimits) {
@@ -66,7 +67,7 @@ public class LoanSchemaDetails {
 	public LoanSchemaDetails(Long totalAccounts, Long activeAccounts, Integer id, String schemaType, String schemaName,
 			String interest, String premiumMode, Integer numberOfPremiums, Double processingFees, Boolean activeStatus,
 			String validTill, Double maxlimits, Double minlimits, String head, Date createdAt, Integer panelty, Integer paneltyGrace,Boolean processingFeesinPercent,
-			String reducingOrFlatRate) {
+			String reducingOrFlatRate, Integer headId) {
 		super();
 		this.totalAccounts = totalAccounts;
 		this.activeAccounts = activeAccounts;
@@ -87,6 +88,7 @@ public class LoanSchemaDetails {
 		this.paneltyGrace=paneltyGrace;
 		this.processingFeesinPercent=processingFeesinPercent;
 		this.reducingOrFlatRate=reducingOrFlatRate;
+		this.headId = headId;
 	}
 	
 	
@@ -245,6 +247,14 @@ public class LoanSchemaDetails {
 
 	public void setReducingOrFlatRate(String reducingOrFlatRate) {
 		this.reducingOrFlatRate = reducingOrFlatRate;
+	}
+
+	public Integer getHeadId() {
+		return headId;
+	}
+
+	public void setHeadId(Integer headId) {
+		this.headId = headId;
 	}
 
 	

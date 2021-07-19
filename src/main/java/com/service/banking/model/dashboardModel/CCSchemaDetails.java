@@ -20,6 +20,7 @@ public class CCSchemaDetails {
 	Double minlimits;
 	String createdAt;
 	Boolean processingFeesinPercent;
+	Integer headId;
 
 	public CCSchemaDetails() {
 		super();
@@ -45,7 +46,7 @@ public class CCSchemaDetails {
 	
 	public CCSchemaDetails(Long totalAccounts, Long activeAccounts, Integer id, String schemaName, String interest,
 			Double processingFees, String validTill, Boolean activeStatus, Double maxlimits, Double minlimits,
-			String head, Date createdAt,Boolean processingFeesinPercent) {
+			String head, Date createdAt,Boolean processingFeesinPercent, Integer headId) {
 		super();
 		this.totalAccounts = totalAccounts;
 		this.activeAccounts = activeAccounts;
@@ -60,6 +61,7 @@ public class CCSchemaDetails {
 		this.head = head;
 		this.createdAt = DateFormater.getformatDate(createdAt);
 		this.processingFeesinPercent=processingFeesinPercent;
+		this.headId=headId;
 	}
 
 	public Long getTotalAccounts() {
@@ -166,5 +168,14 @@ public class CCSchemaDetails {
 	public void setProcessingFeesinPercent(Boolean processingFeesinPercent) {
 		this.processingFeesinPercent = processingFeesinPercent;
 	}
+
+	public Integer getHeadId() {
+		return headId;
+	}
+
+	public void setHeadId(Integer headId) {
+		this.headId = headId;
+	}
+	
 
 }

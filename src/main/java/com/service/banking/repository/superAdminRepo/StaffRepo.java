@@ -13,9 +13,8 @@ import com.service.banking.model.superAdminModel.StaffPreviewDetail;
 public interface StaffRepo extends JpaRepository<Staffs, Integer> {
 
 	// Get active staffs.......................................................................
-	@Query(" select new com.service.banking.model.superAdminModel.StaffModel(s.id,b.name,s.name,s.username,s.isActive,s.password,s.accountNo,s.accessLevel, b.id,s.createdAt, count(a.id) as Accounts) from Staffs s"
+	@Query(" select new com.service.banking.model.superAdminModel.StaffModel(s.id,b.name,s.name,s.username,s.isActive,s.password,s.accountNo,s.accessLevel, b.id,s.createdAt, s.id) from Staffs s"
 			+ " left join Branches b on b.id = s.branchId" 
-			+ " right join Accounts a on a.staffId = s.id"
 			+ " where s.isActive = 1 " 
 			+ " group by s.id ")
 	List<StaffModel> getActiveStaffs();
@@ -23,9 +22,8 @@ public interface StaffRepo extends JpaRepository<Staffs, Integer> {
 	// get all in active staff...........
 	// " left join Accounts a on a.staffId=s.id" + count(distinct a.id) as
 	// totalAccounts,
-	@Query(" select new com.service.banking.model.superAdminModel.StaffModel(s.id,b.name,s.name,s.username,s.isActive,s.password,s.accountNo,s.accessLevel, b.id,s.createdAt, count(a.id) as Accounts) from Staffs s"
+	@Query(" select new com.service.banking.model.superAdminModel.StaffModel(s.id,b.name,s.name,s.username,s.isActive,s.password,s.accountNo,s.accessLevel, b.id,s.createdAt, s.id) from Staffs s"
 			+ " left join Branches b on b.id = s.branchId" 
-			+ " right join Accounts a on a.staffId = s.id"
 			+ " where s.isActive = 0 " 
 			+ " group by s.id ")
 	List<StaffModel> getInActiveStaff();

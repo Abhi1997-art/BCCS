@@ -22,6 +22,8 @@ public class BankingApplication {
 		SpringApplication.run(BankingApplication.class, args);
 
 	}
+	
+	
 
 // to create war file....
 	// extends SpringBootServletInitializer and override below method.........

@@ -45,6 +45,7 @@ import com.service.banking.model.superAdminModel.ShareDetails;
 import com.service.banking.model.superAdminModel.ShareHistoryDetails;
 import com.service.banking.model.superAdminModel.StaffModel;
 import com.service.banking.model.superAdminModel.StaffPreviewDetail;
+import com.service.banking.repository.AccountsRepo.AccountsRepo;
 import com.service.banking.repository.dashBoardRepo.DashBoardSchemeRepo;
 import com.service.banking.repository.hodAuthorityRepo.DocumentsMangmntRepo;
 import com.service.banking.repository.madRepository.MembersRepo;
@@ -59,6 +60,7 @@ import com.service.banking.repository.superAdminRepo.StaffAclRepo;
 import com.service.banking.repository.superAdminRepo.StaffRepo;
 import com.service.banking.repository.superAdminRepo.TopHeadBalSheetRepo;
 import com.service.banking.repository.superAdminRepo.shareHistoryRepository;
+import com.service.banking.repository.transaction.TransactionsRepo;
 import com.service.banking.utils.DateFormater;
 
 import javassist.compiler.ast.NewExpr;
@@ -113,6 +115,12 @@ public class SuperAdminService {
 	
 	@Autowired
 	shareHistoryRepository shareHistoryRepo;
+	
+	@Autowired
+	AccountsRepo accountsRepo;
+	
+	@Autowired
+	TransactionsRepo transactionsRepo;
 
 	// get active staff....................
 	public List<StaffModel> getActiveStaff() {
@@ -762,6 +770,16 @@ public class SuperAdminService {
 				return "Try again after sometime" + e;
 			}
 			return "Item Deleted Successfully";
+		}
+
+		public StaffModel getAccounts(Integer id) {
+			StaffModel staffAccounts = accountsRepo.getStaffAccounts(id);
+			return staffAccounts;
+		}
+
+		public StaffModel getTransactions(Integer id) {
+			StaffModel staffTransactions= transactionsRepo.getTransactions(id);
+			return staffTransactions;
 		}
 
 }

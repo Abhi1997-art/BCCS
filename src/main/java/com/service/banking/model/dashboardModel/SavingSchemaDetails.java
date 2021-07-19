@@ -16,13 +16,15 @@ public class SavingSchemaDetails {
 	Double maxlimits;
 	Double minlimits;
 	String createdAt;
+	Integer headId;
+	String head;
 
 	public SavingSchemaDetails() {
 		super();
 	}
 
 	public SavingSchemaDetails(Long totalAccounts, Long activeAccounts, Integer id, String schemaName, String interest,
-			String accountType, String validTill, Double maxlimits, Double minlimits, Date createdAt) {
+			String accountType, String validTill, Double maxlimits, Double minlimits, Date createdAt, Integer headId, String head) {
 		super();
 		this.totalAccounts = totalAccounts;
 		this.activeAccounts = activeAccounts;
@@ -34,6 +36,25 @@ public class SavingSchemaDetails {
 		this.maxlimits = maxlimits;
 		this.minlimits = minlimits;
 		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.headId=headId;
+		this.head= head;
+	}
+	
+
+	public Integer getHeadId() {
+		return headId;
+	}
+
+	public void setHeadId(Integer headId) {
+		this.headId = headId;
+	}
+
+	public String getHead() {
+		return head;
+	}
+
+	public void setHead(String head) {
+		this.head = head;
 	}
 
 	public Long getTotalAccounts() {

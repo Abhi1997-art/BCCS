@@ -16,6 +16,7 @@ public interface iDefaultScheme {
 	public Double getMaxLimit();
 	public String getHead();
 	public String getCreated_At();
+	public Integer getHeadId();
 	
 	
 

@@ -5,6 +5,8 @@ import java.util.Date;
 
 import com.service.banking.utils.DateFormater;
 
+import springfox.documentation.builders.PathSelectors;
+
 public class DDSSchemaDetails {
 
 	public Integer id;
@@ -22,6 +24,10 @@ public class DDSSchemaDetails {
 	public Double maxLimit;
 	public Boolean activeStatus;
 	public String createdAt;
+	public BigDecimal matureInterestsForUncompleteProduct;
+	public Integer headId;
+	public String head;
+	
 
 	public DDSSchemaDetails() {
 
@@ -30,7 +36,7 @@ public class DDSSchemaDetails {
 	public DDSSchemaDetails(Integer id, String name, String interest, Integer maturityPeriod, Integer crpb,
 			String accountOpenningCommission, String collectorCommissionRate, Integer percentLoanOnDeposit,
 			Integer noLoanOnDepositTill, String preMatureInterests, String validTill, Boolean activestatus,
-			Double minLimit, Double maxLimit, Date createdAt) {
+			Double minLimit, Double maxLimit, Date createdAt, BigDecimal matureInterestsForUncompleteProduct) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -46,7 +52,58 @@ public class DDSSchemaDetails {
 		this.activeStatus = activestatus;
 		this.minLimit = minLimit;
 		this.maxLimit = maxLimit;
+		this.matureInterestsForUncompleteProduct=matureInterestsForUncompleteProduct;
 		this.createdAt = DateFormater.getformatDate(createdAt);
+	}
+	
+	public DDSSchemaDetails(Integer id, String name, String interest, Integer maturityPeriod, Integer crpb,
+			String accountOpenningCommission, String collectorCommissionRate, Integer percentLoanOnDeposit,
+			Integer noLoanOnDepositTill, String preMatureInterests, String validTill, Boolean activestatus,
+			Double minLimit, Double maxLimit, Date createdAt, BigDecimal matureInterestsForUncompleteProduct, String head, Integer headId) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.interest = interest;
+		this.maturityPeriod = maturityPeriod;
+		this.crpb = crpb;
+		this.accountOpenningCommission = accountOpenningCommission;
+		this.collectorCommissionRate = collectorCommissionRate;
+		this.percentLoanOnDeposit = percentLoanOnDeposit;
+		this.noLoanOnDepositTill = noLoanOnDepositTill;
+		this.preMatureInterests = preMatureInterests;
+		this.validTill = validTill;
+		this.activeStatus = activestatus;
+		this.minLimit = minLimit;
+		this.maxLimit = maxLimit;
+		this.matureInterestsForUncompleteProduct=matureInterestsForUncompleteProduct;
+		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.head=head;
+		this.headId=headId;
+	}
+	
+	
+	public Integer getHeadId() {
+		return headId;
+	}
+
+	public void setHeadId(Integer headId) {
+		this.headId = headId;
+	}
+
+	public String getHead() {
+		return head;
+	}
+
+	public void setHead(String head) {
+		this.head = head;
+	}
+
+	public BigDecimal getMatureInterestsForUncompleteProduct() {
+		return matureInterestsForUncompleteProduct;
+	}
+
+	public void setMatureInterestsForUncompleteProduct(BigDecimal matureInterestsForUncompleteProduct) {
+		this.matureInterestsForUncompleteProduct = matureInterestsForUncompleteProduct;
 	}
 
 	public String getAccountOpenningCommission() {

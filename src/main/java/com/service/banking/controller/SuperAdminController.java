@@ -302,7 +302,7 @@ public class SuperAdminController {
 	}
 
 	// edit acl document
-	@PostMapping("/edit_acl_document")
+	@PutMapping("/edit_acl_document")
 	public void editAclDocument(@RequestBody AclDetails acld) {
 		superAdminService.updateDocumentAcl(acld);
 	}
@@ -421,16 +421,14 @@ public class SuperAdminController {
 
 	// in activate the staff for active staff....................
 	@GetMapping("/inActivate_Staff/{id}")
-	public String inActivateStaff(@PathVariable("id") Integer Id) {
+	public void inActivateStaff(@PathVariable("id") Integer Id) {
 		superAdminService.inActivatedTheStaff(Id);
-		return "Staff In Active Successfully";
 	}
 
 	// activate the staff for Inactive staff....................
 	@GetMapping("/activate_Staff/{id}")
-	public String activateStaff(@PathVariable("id") Integer Id) {
+	public void activateStaff(@PathVariable("id") Integer Id) {
 		superAdminService.activatedTheStaff(Id);
-		return "Staff Active Successfully";
 	}
 	
 	// Extra API for JSON
@@ -467,6 +465,18 @@ public class SuperAdminController {
 		} else {
 			return new ArrayList<BalanceSheetHead>();
 		}
+	}
+	
+	@GetMapping("/accounts/{id}")
+	public StaffModel getAccounts(@PathVariable("id") Integer id) {
+		StaffModel staffAccounts= superAdminService.getAccounts(id);
+		return staffAccounts;
+	}
+	
+	@GetMapping("/transactions/{id}")
+	public StaffModel getTransactions(@PathVariable("id") Integer id) {
+		StaffModel staffTransactions= superAdminService.getTransactions(id);
+		return staffTransactions;
 	}
 
 }
