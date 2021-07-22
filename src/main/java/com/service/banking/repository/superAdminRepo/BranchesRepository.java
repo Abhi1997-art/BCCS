@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.service.banking.hibernateEntity.Branches;
+import com.service.banking.model.superAdminModel.Branch;
 import com.service.banking.model.superAdminModel.BranchDetail;
 import com.service.banking.model.superAdminModel.BranchesDetails;
 import com.service.banking.model.superAdminModel.ClosingDetails;
@@ -26,9 +27,12 @@ public interface BranchesRepository extends JpaRepository<Branches, Integer> {
 		List<BranchDetail> getBranches();
 		
 	// get closing...............
-	@Query("select  new com.service.banking.model.superAdminModel.ClosingDetails(b.id,b.name ,c.daily) from Branches b ,Closings c where  b.performClosings ='1' and c.branchId =b.id")
+	@Query("select  new com.service.banking.model.superAdminModel.ClosingDetails(b.id,b.name ,c.daily) from Branches b left join Closings c on c.branchId = b.id where  b.performClosings ='1' ")
 	List<ClosingDetails> closingDetails();
 
 	@Query("select new com.service.banking.model.superAdminModel.BranchDetail(b.id) from Branches b left join Accounts a on a.branchId = b.id where a.id =?1 ")
 	BranchDetail getBranchesId(Integer accountId);
+
+	@Query(value = "select new com.service.banking.model.superAdminModel.BranchDetail(b.id, b.code) from Branches b")
+	List<BranchDetail> getTotalBranches();
 }

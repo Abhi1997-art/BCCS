@@ -14,8 +14,8 @@ import com.service.banking.model.hodAuthorityModel.MoRoDetails;
 public interface MoAssociationRepo extends JpaRepository<MoAgentAssociation, Integer> {
 
 	@Query("select new com.service.banking.model.hodAuthorityModel.AssociationDetails(maa.id, a.id, mo.id, mo.name,  CASE WHEN (a.codeNo is NULL) THEN 0 ELSE a.codeNo END, m.name, CASE WHEN (m.id is NULL) THEN 0 ELSE m.id END, m.permanentAddress, \r\n"
-			+ "m.landmark, CASE WHEN (m.isDefaulter is NULL) THEN false ELSE m.isDefaulter END, maa.fromDate, maa.toDate) from Mos mo \r\n"
-			+ "left join MoAgentAssociation maa on mo.id = maa.moId \r\n"
+			+ "m.landmark, CASE WHEN (m.isDefaulter is NULL) THEN false ELSE m.isDefaulter END, maa.fromDate, maa.toDate) from MoAgentAssociation maa \r\n"
+			+ "left join Mos mo on mo.id = maa.moId \r\n"
 			+ "left join Agents a on maa.agentId = a.id \r\n"
 			+ "left join Members m on a.memberId = m.id ")
 	List<AssociationDetails> getAllMoAssociation();
@@ -38,7 +38,7 @@ public interface MoAssociationRepo extends JpaRepository<MoAgentAssociation, Int
 			+ "left join Members m on a.memberId = m.id where mo.id = ?1")
 	List<AssociationDetails> getMoAgentAssociationByMosId(Integer id);
 
-	@Query("select new com.service.banking.model.hodAuthorityModel.AssociationDetails(a.codeNo, m.name as memberName, m.id, m.permanentAddress, \r\n"
+	@Query("select new com.service.banking.model.hodAuthorityModel.AssociationDetails(a.codeNo, m.name as memberName, a.id, m.permanentAddress, \r\n"
 			+ "m.landmark,m.isDefaulter) from Mos mo \r\n"
 			+ "left join Agents a on mo.id = a.moId \r\n"
 			+ "left join Members m on a.memberId = m.id where Concat( 'BCCSAG', Convert(a.codeNo as CHAR), REPLACE(m.name, ' ', ''), Convert(m.id as CHAR), "

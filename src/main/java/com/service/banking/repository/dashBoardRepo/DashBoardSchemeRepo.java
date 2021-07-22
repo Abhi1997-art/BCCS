@@ -70,14 +70,14 @@ public interface DashBoardSchemeRepo extends JpaRepository<Schemes, Integer> {
 
 	// Get Recurring type - schema .......................................................................................................
 	@Query("select new  com.service.banking.model.dashboardModel.RecurringSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id ,s.name,s.interest,s.maturityPeriod ,s.premiumMode ,s.numberOfPremiums,s.crpb ,s.accountOpenningCommission ,s.collectorCommissionRate ,s.percentLoanOnDeposit ,"
-			+ "s.noLoanOnDepositTill ,s.preMatureInterests,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name, s.createdAt, s.matureInterestsForUncompleteProduct, blnc.id) from Schemes s "
+			+ "s.noLoanOnDepositTill ,s.preMatureInterests,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name, s.createdAt, s.matureInterestsForUncompleteProduct, blnc.id, s.activeStatus) from Schemes s "
 			+ " left join Accounts a on a.schemeId =s.id " + "left join BalanceSheet blnc on blnc.id=s.balanceSheetId "
 			+ " left join Accounts an on an.schemeId =s.id and an.activeStatus =1  "
 			+ " where s.schemeType = 'Recurring' group by(s.name) ")
 	List<RecurringSchemaDetails> getRecurringScheme(String schemeType);
 
 	// Get Saving and Current type - schema ...............................................................................................
-	@Query("select new  com.service.banking.model.dashboardModel.SavingSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id,s.name,s.interest ,s.type ,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit, s.createdAt, blnc.id, blnc.name) from Schemes s \r\n"
+	@Query("select new  com.service.banking.model.dashboardModel.SavingSchemaDetails(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id,s.name,s.interest ,s.type ,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit, s.createdAt, blnc.id, blnc.name, s.activeStatus) from Schemes s \r\n"
 			+ " left join Accounts a on a.schemeId =s.id \r\n"
 			+ " left join BalanceSheet blnc on blnc.id=s.balanceSheetId "
 			+ " left join Accounts an on an.schemeId =s.id and an.activeStatus =1  \r\n"
@@ -85,7 +85,7 @@ public interface DashBoardSchemeRepo extends JpaRepository<Schemes, Integer> {
 	List<SavingSchemaDetails> getsavingAndCurrentScheme(String schemeType);
 
 	// Get DDS2 type - schema ..............................................................................................................
-	@Query("select new  com.service.banking.model.dashboardModel.SchemaDetail(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id, s.name,s.interest ,s.processingFees ,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name, s.createdAt, s.crpb, s.percentLoanOnDeposit, s.noLoanOnDepositTill, s.preMatureInterests, s.matureInterestsForUncompleteProduct, s.maturityPeriod, s.commission, s.collectorCommissionRate, s.accountOpenningCommission, s.premiumMode, blnc.id) from Schemes s \r\n"
+	@Query("select new  com.service.banking.model.dashboardModel.SchemaDetail(count(distinct  a.id) as totalAccounts,count(distinct  an.id) as activeAccounts,s.id, s.name,s.interest ,s.processingFees ,CASE WHEN (s.validTill is null or s.validTill='00:00:0000')  THEN '0001-11-30' ELSE s.validTill END,s.maxLimit ,s.minLimit,blnc.name, s.createdAt, s.crpb, s.percentLoanOnDeposit, s.noLoanOnDepositTill, s.preMatureInterests, s.matureInterestsForUncompleteProduct, s.maturityPeriod, s.commission, s.collectorCommissionRate, s.accountOpenningCommission, s.premiumMode, blnc.id, s.activeStatus) from Schemes s \r\n"
 			+ " left join Accounts a on a.schemeId =s.id \r\n"
 			+ " left join BalanceSheet blnc on blnc.id=s.balanceSheetId "
 			+ " left join Accounts an on an.schemeId =s.id and an.activeStatus =1  \r\n" + " WHERE  s.type='dds2'  \r\n"

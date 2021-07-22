@@ -179,9 +179,8 @@ public class HodAuthorityController {
 
 	// Delete team....
 	@DeleteMapping("/deleteTeam/{id}")
-	public String deleteTeam(@PathVariable("id") Integer id) {
-		String message = hodAuthorityService.deleteTeam(id);
-		return message;
+	public void deleteTeam(@PathVariable("id") Integer id) {
+		hodAuthorityService.deleteTeam(id);
 	}
 
 	// Get all document............................
@@ -205,9 +204,8 @@ public class HodAuthorityController {
 
 	// Delete Documents....
 	@DeleteMapping("/deleteDocuments/{id}")
-	public String deleteDocuments(@PathVariable("id") Integer id) {
-		String message = hodAuthorityService.deleteDocuments(id);
-		return message;
+	public void deleteDocuments(@PathVariable("id") Integer id) {
+		 hodAuthorityService.deleteDocuments(id);
 	}
 
 	// Get all bank list..
@@ -231,9 +229,8 @@ public class HodAuthorityController {
 
 	// Delete bank....
 	@DeleteMapping("/deleteBank/{id}")
-	public String deleteBank(@PathVariable("id") Integer id) {
-		String message = hodAuthorityService.deleteBank(id);
-		return message;
+	public void deleteBank(@PathVariable("id") Integer id) {
+		 hodAuthorityService.deleteBank(id);
 	}
 
 	// Get all bank branches....
@@ -257,9 +254,8 @@ public class HodAuthorityController {
 
 	// Delete bank Branch....
 	@DeleteMapping("/deleteBankBranch/{id}")
-	public String deleteBankBranch(@PathVariable("id") int id) {
-		String message = hodAuthorityService.deleteBankBranch(id);
-		return message;
+	public void deleteBankBranch(@PathVariable("id") int id) {
+		hodAuthorityService.deleteBankBranch(id);
 	}
 
 	// Get all OD LIMIT............................
@@ -321,9 +317,8 @@ public class HodAuthorityController {
 
 	// Delete team....
 	@DeleteMapping("/deleteMoro/{id}")
-	public String deleteMoro(@PathVariable Integer id) {
-		String msg = hodAuthorityService.deleteMoro(id);
-		return msg;
+	public void deleteMoro(@PathVariable Integer id) {
+		hodAuthorityService.deleteMoro(id);
 	}
 
 	// get all tellecaller associations.............................
@@ -347,9 +342,8 @@ public class HodAuthorityController {
 
 	// Delete Telecaller....
 	@DeleteMapping("/deleteTelecaller/{id}")
-	public String deleteTeleCaller(@PathVariable Integer id) {
-		String msg= hodAuthorityService.deleteTeleCaller(id);
-		return msg;
+	public void deleteTeleCaller(@PathVariable Integer id) {
+		hodAuthorityService.deleteTeleCaller(id);
 	}
 		
 		// Add button that appears as pop up box after clicking the Add MoAgentAssociation button present inside Mo Associations tab inside MO/RO Association Edit........................
@@ -366,9 +360,8 @@ public class HodAuthorityController {
 		
 		// delete button inside Mo Association inside MO/RO Association Delete................
 		@DeleteMapping("/deleteMoAgentAssociation/{id}")
-		public String deleteMoAgentAssociation(@PathVariable("id") int id) {
-			String message = hodAuthorityService.deleteMoAgentAssociation(id);
-			return message;
+		public void deleteMoAgentAssociation(@PathVariable("id") int id) {
+			hodAuthorityService.deleteMoAgentAssociation(id);
 		}
 		
 		// filter button controller present inside Mo Associations tab inside MO/RO Association Edit.................
@@ -392,9 +385,8 @@ public class HodAuthorityController {
 		
 		// for "Delete MoAccountAssociation" tab inside "Ro Association" tab inside "MO/RO Association Edit" tab..................
 		@DeleteMapping("/delete_mo_account_association/{id}")
-		public String deleteMoAccountAssociation(@PathVariable("id") Integer id) {
-			String message = hodAuthorityService.deleteMoAccountAssociation(id);
-			return message;
+		public void deleteMoAccountAssociation(@PathVariable("id") Integer id) {
+			hodAuthorityService.deleteMoAccountAssociation(id);
 		}
 		
 		// controller for filter button inside Ro Associations tab inside MO/RO Association Edit.................
@@ -418,9 +410,8 @@ public class HodAuthorityController {
 		
 		// delete TeleCallerAuthorityHistory button controller from Telecaller History tab............................
 		@DeleteMapping("/deleteTelecallerAuthorityHistory/{id}")
-		public String deleteTelecallerAuthorityHistory(@PathVariable("id") Integer id) {
-			String message = hodAuthorityService.deleteTelecallerAuthorityHistory(id);
-			return message;
+		public void deleteTelecallerAuthorityHistory(@PathVariable("id") Integer id) {
+			 hodAuthorityService.deleteTelecallerAuthorityHistory(id);
 		}
 		
 		// Controller for 'filter' button present inside 'Mo Agent Update' tab................
@@ -516,8 +507,8 @@ public class HodAuthorityController {
 
 		// delete agentTds details...............	
 		@DeleteMapping("/delete_agentTds/{id}")
-		public String deleteAgentTds(@PathVariable("id") Integer id) {
-			return hodAuthorityService.deleteAgentTds(id);
+		public void deleteAgentTds(@PathVariable("id") Integer id) {
+			hodAuthorityService.deleteAgentTds(id);
 		}
 		
 		// get all invoice details..............
@@ -554,8 +545,8 @@ public class HodAuthorityController {
 		
 		// API for add detail tab inside invoice tab.............
 		@DeleteMapping("invoice/delete_detail/{id}")
-		public String deleteTransactionRowForInvoice(@PathVariable("id") Integer id) {
-			return hodAuthorityService.deleteTransactionRowForInvoice(id);
+		public void deleteTransactionRowForInvoice(@PathVariable("id") Integer id) {
+			hodAuthorityService.deleteTransactionRowForInvoice(id);
 		}
 		
 
@@ -588,8 +579,8 @@ public class HodAuthorityController {
 		
 		// delete memorandoms.................
 		@DeleteMapping("/delete_memorandoms/{id}")
-		public String deleteMemorandoms(@PathVariable("id") Integer id) {
-			return hodAuthorityService.deleteMemorandoms(id);
+		public void deleteMemorandoms(@PathVariable("id") Integer id) {
+			hodAuthorityService.deleteMemorandoms(id);
 		}
 		
 		// get detail api tab for memorandoms tab......................
@@ -610,21 +601,34 @@ public class HodAuthorityController {
 			hodAuthorityService.updateDetailsMemorandom(details);
 		}
 		
-		// delete detail api for memorandoms tab...............
+		// delete detail API for memorandoms tab...............
 		@DeleteMapping("/memodandom/delete_details/{id}")
-		public String deleteDetailsMemorandom(@PathVariable("id") Integer id) {
-			return hodAuthorityService.deleteDetailsMemorandom(id);
+		public void deleteDetailsMemorandom(@PathVariable("id") Integer id) {
+			 hodAuthorityService.deleteDetailsMemorandom(id);
 		}
 		
-		@GetMapping("/transaction_remove")
-		public List<iDeleteVoucherDetails> getDirtyVoucher(@RequestParam Integer branchId, @RequestParam Integer voucherNo, @RequestParam Integer voucherUuid){
-			return hodAuthorityService.getDirtyVoucher(branchId,voucherNo,voucherUuid);
+		@GetMapping("/dirty_voucher/{currentDate}")
+		public List<iDeleteVoucherDetails> getDirtyVoucher(@RequestParam Integer branchId, @RequestParam Integer voucherNo, @RequestParam Integer voucherUuid,
+				@PathVariable("currentDate") String currentDate) throws Exception{
+			return hodAuthorityService.getDirtyVoucher(branchId,voucherNo,voucherUuid,currentDate);
 		}
 		
 		@DeleteMapping("/transaction_remove_delete")
-		public void removeTransaction() {
-			hodAuthorityService.removeTransaction();
+		public void removeTransaction(@RequestParam Integer branchId, @RequestParam Integer voucherNo, @RequestParam Integer voucherUuid) {
+			hodAuthorityService.removeTransaction(branchId,voucherNo,voucherUuid);
 		}
+		
+		@PutMapping("/narration_edit")
+		public void narrationEdit(@RequestParam Integer branchId, @RequestParam Integer voucherNo, @RequestParam Integer voucherUuid, @RequestParam String narration) {
+			hodAuthorityService.narrationEdit(branchId,voucherNo,voucherUuid,narration);
+		}
+		
+		@PutMapping("/edit_accounts")
+		public void editAccounts(@RequestParam Integer id, @RequestParam Integer accountId) {
+			hodAuthorityService.editAccounts(id, accountId);
+		}
+		
+		
 		
 		
 

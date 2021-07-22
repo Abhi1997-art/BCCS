@@ -3,6 +3,7 @@ package com.service.banking.model.dashboardModel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.service.banking.utils.DateFormater;
 
 public class CCSchemaDetails {

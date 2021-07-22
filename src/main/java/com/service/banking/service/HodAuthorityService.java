@@ -1,6 +1,7 @@
 package com.service.banking.service;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1185,18 +1186,56 @@ public class HodAuthorityService {
 			
 		}
 
-		public List<iDeleteVoucherDetails> getDirtyVoucher(Integer branchId, Integer voucherNo, Integer vouchUuid) {
-			List<iDeleteVoucherDetails> list = memorandomTransactionRowRepo.getDetailsMemodandom(branchId, voucherNo, vouchUuid);
-			if(list.size() != 0) {
-				return list;
+		@SuppressWarnings("deprecation")
+		public List<iDeleteVoucherDetails> getDirtyVoucher(Integer branchId, Integer voucherNo, Integer vouchUuid, String currentDate) throws Exception {
+			
+			Date date = transactionRepo.getDirtyVoucherDate(branchId, voucherNo, vouchUuid);
+			if (date== null) {
+				date=new Date();
+				date.setDate(01);
+				date.setMonth(01);
+				date.setYear(0001);
+			}
+			int year = date.getYear() +1900;  
+			
+			Date cDate= new SimpleDateFormat("yyyy-MM-dd").parse(currentDate);  
+			int cYear = cDate.getYear() + 1900;
+			
+			if(year == cYear) {
+				List<iDeleteVoucherDetails> list = transactionRowRepo.getDirtyVoucher(branchId, voucherNo, vouchUuid);
+				if(list.size() != 0) {
+					return list;
+				}
+				else {
+					return new ArrayList<iDeleteVoucherDetails>();
+				}
 			}
 			else {
 				return new ArrayList<iDeleteVoucherDetails>();
 			}
 		}
 
-		public void removeTransaction() {
-			// TODO Auto-generated method stub
+		public void removeTransaction(Integer branchId, Integer voucherNo, Integer voucherUuid) {
+			transactionRepo.removeTransaction(branchId,voucherNo,voucherUuid);
+			transactionRowRepo.removeTransaction(branchId,voucherNo,voucherUuid);
+		}
+
+		public void narrationEdit(Integer branchId, Integer voucherNo, Integer voucherUuid, String narration) {
+			Transactions transactions = transactionRepo.findById(voucherUuid).get();
+			transactions.setNarration(narration);
+			transactionRepo.save(transactions);
 			
+			List<TransactionRow> transactionRows = transactionRowRepo.getTransactions( branchId,  voucherNo,  voucherUuid);
+			for(TransactionRow tr : transactionRows) {
+				System.out.println(tr.getId());
+				tr.setNarration(narration);
+				transactionRowRepo.save(tr);
+			}	
+		}
+
+		public void editAccounts(Integer id, Integer accountId) {
+			TransactionRow transactionRows = transactionRowRepo.findById(id).get();
+			transactionRows.setAccountId(accountId);
+			transactionRowRepo.save(transactionRows);
 		}
 }

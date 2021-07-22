@@ -13,7 +13,14 @@ import com.service.banking.model.superAdminModel.StaffPreviewDetail;
 public interface StaffRepo extends JpaRepository<Staffs, Integer> {
 
 	// Get active staffs.......................................................................
-	@Query(" select new com.service.banking.model.superAdminModel.StaffModel(s.id,b.name,s.name,s.username,s.isActive,s.password,s.accountNo,s.accessLevel, b.id,s.createdAt, s.id) from Staffs s"
+	@Query(" select new com.service.banking.model.superAdminModel.StaffModel(s.id , b.name, s.name, s.username , s.isActive , s.password , s.accountNo , s.accessLevel ,\r\n"
+			+ "s.branchId , s.createdAt , s.fatherName , s.pfAmount , s.basicPay ,\r\n"
+			+ "s.variablePay ,s.presentAddress , s.parmanentAddress , s.mobileNo , s.landlineNo ,\r\n"
+			+ "s.dob ,s.motherName , s.marriatalStatus , s.bloodGroup , s.empCode , s.emergencyNo ,\r\n"
+			+ "s.panNo , s.role , s.lastQualification , s.designation , s.remark , s.amountOfIncrement ,\r\n"
+			+ "s.yearlyIncrementAmount , s.salary , s.relavingDateIfNotActive , s.securityAmount ,\r\n"
+			+ "s.depositDate , s.totalDepAmount , s.postingAt , s.pfNo , s.bankName , s.lastDateOfIncrement ,\r\n"
+			+ "s.nomineeName ,s.nomineeAge , s.relationWithNominee ) from Staffs s"
 			+ " left join Branches b on b.id = s.branchId" 
 			+ " where s.isActive = 1 " 
 			+ " group by s.id ")
@@ -22,7 +29,14 @@ public interface StaffRepo extends JpaRepository<Staffs, Integer> {
 	// get all in active staff...........
 	// " left join Accounts a on a.staffId=s.id" + count(distinct a.id) as
 	// totalAccounts,
-	@Query(" select new com.service.banking.model.superAdminModel.StaffModel(s.id,b.name,s.name,s.username,s.isActive,s.password,s.accountNo,s.accessLevel, b.id,s.createdAt, s.id) from Staffs s"
+	@Query(" select new com.service.banking.model.superAdminModel.StaffModel(s.id , b.name, s.name, s.username , s.isActive , s.password , s.accountNo , s.accessLevel ,\r\n"
+			+ "s.branchId , s.createdAt , s.fatherName , s.pfAmount , s.basicPay ,\r\n"
+			+ "s.variablePay ,s.presentAddress , s.parmanentAddress , s.mobileNo , s.landlineNo ,\r\n"
+			+ "s.dob ,s.motherName , s.marriatalStatus , s.bloodGroup , s.empCode , s.emergencyNo ,\r\n"
+			+ "s.panNo , s.role , s.lastQualification , s.designation , s.remark , s.amountOfIncrement ,\r\n"
+			+ "s.yearlyIncrementAmount , s.salary , s.relavingDateIfNotActive , s.securityAmount ,\r\n"
+			+ "s.depositDate , s.totalDepAmount , s.postingAt , s.pfNo , s.bankName , s.lastDateOfIncrement ,\r\n"
+			+ "s.nomineeName ,s.nomineeAge , s.relationWithNominee ) from Staffs s"
 			+ " left join Branches b on b.id = s.branchId" 
 			+ " where s.isActive = 0 " 
 			+ " group by s.id ")

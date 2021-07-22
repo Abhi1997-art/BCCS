@@ -31,7 +31,6 @@ public interface MemoRandomRepo extends JpaRepository<MemorandumTransactions, In
 			+ "Max(mtr.tax_amount) as taxAmount, mt.id as memorandomTransactionId from memorandum_transactions mt left join memorandum_transactionsrow mtr \r\n"
 			+ "on mt.id = mtr.memorandum_transaction_id left join accounts a on a.id = mtr.account_id left join members m on a.member_id = m.id \r\n"
 			+ "left join staffs stf on mt.staff_id = stf.id left join branches br on mt.branch_id = br.id "
-			+ " where mt.created_at < '2019-12-21 18:11:47' "
-			+ " GROUP by mtr.memorandum_transaction_id", countQuery = "select count(mt.id) from memorandum_transactions mt where mt.created_at < '2019-12-22 18:11:47' ", nativeQuery = true)
+			+ " GROUP by mtr.memorandum_transaction_id", countQuery = "select count(mt.id) from memorandum_transactions mt ", nativeQuery = true)
 	public Page<Object[]> getAllMemorandoms(Pageable pageable);
 }

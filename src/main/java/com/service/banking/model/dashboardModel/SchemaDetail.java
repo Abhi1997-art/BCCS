@@ -34,6 +34,7 @@ public class SchemaDetail {
 	String PremiumMode;
 
 	Integer headId;
+	Boolean activeStatus;
 
 	public SchemaDetail(Integer id, String schemaName) {
 		super();
@@ -90,6 +91,46 @@ public class SchemaDetail {
 		this.accountOpenningCommission = accountOpenningCommission;
 		this.PremiumMode = PremiumMode;
 		this.headId = headId;
+	}
+	
+	public SchemaDetail(Long totalAccounts, Long activeAccounts, Integer id, String schemaName, String interest,
+			Double processingFees, String validTill, Double maxlimits, Double minlimits, String head, Date createdAt,
+			Integer crpb, Integer percentLoanOnDeposit, Integer noLoanOnDepositTill, String preMatureInterests,
+			BigDecimal matureInterestsForUncompleteProduct, Integer maturityPeriod, Double commission,
+			String collectorCommissionRate, String accountOpenningCommission, String PremiumMode, Integer headId, Boolean activeStatus) {
+		super();
+		this.totalAccounts = totalAccounts;
+		this.activeAccounts = activeAccounts;
+		this.id = id;
+		this.schemaName = schemaName;
+		this.interest = interest;
+		this.processingFees = processingFees;
+		this.validTill = validTill;
+		this.maxlimits = maxlimits;
+		this.minlimits = minlimits;
+		this.head = head;
+		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.crpb = crpb;
+		this.percentLoanOnDeposit = percentLoanOnDeposit;
+		this.noLoanOnDepositTill = noLoanOnDepositTill;
+		this.preMatureInterests = preMatureInterests;
+		this.matureInterestsForUncompleteProduct = matureInterestsForUncompleteProduct;
+		this.maturityPeriod = maturityPeriod;
+		this.commission = commission;
+		this.collectorCommissionRate = collectorCommissionRate;
+		this.accountOpenningCommission = accountOpenningCommission;
+		this.PremiumMode = PremiumMode;
+		this.headId = headId;
+		this.activeStatus=activeStatus;
+	}
+
+	
+	public Boolean getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Boolean activeStatus) {
+		this.activeStatus = activeStatus;
 	}
 
 	public SchemaDetail() {

@@ -28,6 +28,7 @@ public class RecurringSchemaDetails {
 	public String createdAt;
 	public BigDecimal matureInterestsForUncompleteProduct;
 	public Integer headId;
+	Boolean activeStatus;
 
 	public RecurringSchemaDetails() {
 		super();
@@ -88,7 +89,45 @@ public class RecurringSchemaDetails {
 		this.matureInterestsForUncompleteProduct=matureInterestsForUncompleteProduct;
 		this.headId=headId;
 	}
+	
+	public RecurringSchemaDetails(Long totalAccounts, Long activeAccounts, Integer id, String name, String interest,
+			Integer maturityPeriod, String premiumMode,Integer numberOfPremiums, Integer crpb, String accountOpenningCommission,
+			String collectorCommissionRate, Integer percentLoanOnDeposit, Integer noLoanOnDepositTill,
+			String preMatureInterests, String validTill, Double minLimit, Double maxLimit, String head,
+			Date createdAt, BigDecimal matureInterestsForUncompleteProduct, Integer headId, Boolean activeStatus) {
+		super();
+		this.totalAccounts = totalAccounts;
+		this.activeAccounts = activeAccounts;
+		this.id = id;
+		this.name = name;
+		this.interest = interest;
+		this.maturityPeriod = maturityPeriod;
+		this.premiumMode = premiumMode;
+		this.numberOfPremiums=numberOfPremiums;
+		this.crpb = crpb;
+		this.accountOpenningCommission = accountOpenningCommission;
+		this.collectorCommissionRate = collectorCommissionRate;
+		this.percentLoanOnDeposit = percentLoanOnDeposit;
+		this.noLoanOnDepositTill = noLoanOnDepositTill;
+		this.preMatureInterests = preMatureInterests;
+		this.validTill = validTill;
+		this.minLimit = minLimit;
+		this.maxLimit = maxLimit;
+		this.head = head;
+		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.matureInterestsForUncompleteProduct=matureInterestsForUncompleteProduct;
+		this.headId=headId;
+		this.activeStatus=activeStatus;
+	}
 
+
+	public Boolean getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Boolean activeStatus) {
+		this.activeStatus = activeStatus;
+	}
 
 	public Long getTotalAccounts() {
 		return totalAccounts;

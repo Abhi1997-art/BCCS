@@ -29,6 +29,15 @@ public class BranchDetail {
 		this.id = id;
 	}
 
+	
+
+
+	public BranchDetail(Integer id, String code) {
+		super();
+		this.id = id;
+		this.code = code;
+	}
+
 
 
 	//b.id, b.name, b.address , b.code ,b.allowLogin ,b.performClosings ,b.published, b.sendSMS , c.daily

@@ -4,10 +4,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.service.banking.hibernateEntity.TransactionRow;
 import com.service.banking.model.dashboardModel.iCashBankReport;
+import com.service.banking.model.hodAuthorityModel.iDeleteVoucherDetails;
 import com.service.banking.model.report.BookDayDetail;
 import com.service.banking.model.report.iDayBook;
 import com.service.banking.model.report.iDepositeReport;
@@ -182,6 +185,27 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 			+ "group by a1.id) secondTable\r\n"
 			+ "on firstTable.firstId = secondTable.secondId", nativeQuery = true)
 	List<iCashBankReport> getCashBankReport3(String date);
+
+	@Transactional
+	@Modifying
+	@Query(value = "Delete from transaction_row where transaction_id = ?3 and voucher_no = ?2 and branch_id = ?1", nativeQuery = true)
+	void removeTransaction(Integer branchId, Integer voucherNo, Integer voucherUuid);
+
+	@Query(value="select * from transaction_row tr where tr.transaction_id = ?3 and tr.voucher_no = ?2 and tr.branch_id = ?1 ", nativeQuery = true)
+	List<TransactionRow> getTransactions(Integer branchId, Integer voucherNo, Integer voucherUuid);
+
+	@Query(value="select * from transaction_row tr where tr.transaction_id = ?3 and tr.voucher_no = ?2 and tr.branch_id = ?1 ", nativeQuery = true)
+	TransactionRow getTransactionsAccount(Integer id);
+
+	@Query(value = "Select tr.id, a.AccountNumber , m.name as memberName, m.FatherName , tr.amountDr , tr.amountCr, tr.created_at as createdAt, tr.Narration, tt.name as transactionTypeName, a2.id as related_account_id , a2.AccountNumber as related_account_number from transaction_row tr\r\n"
+			+ "left join accounts a on tr.account_id =a.id\r\n"
+			+ "left join transaction_types tt on tt.id = tr.transaction_type_id \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "left join accounts a2 on a2.id = tr.reference_account_id \r\n"
+			+ "where tr.transaction_id = ?3 and tr.voucher_no = ?2 and tr.branch_id = ?1 ", nativeQuery = true)
+	public List<iDeleteVoucherDetails> getDirtyVoucher(Integer branchId, Integer voucherNo, Integer vouchUuid);
+	
+
 
 
 

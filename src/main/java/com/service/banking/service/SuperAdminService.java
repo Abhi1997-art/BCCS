@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.service.banking.hibernateEntity.Accounts;
 import com.service.banking.hibernateEntity.Acls;
 import com.service.banking.hibernateEntity.BalanceSheet;
 import com.service.banking.hibernateEntity.Branches;
@@ -670,14 +671,31 @@ public class SuperAdminService {
 	}
 
 	// add schema ....
-	public Schemes addSchemes(Schemes scheme) {
-		Schemes schema = null;
-		try {
-			schema = schemaRepo.save(scheme);
-		} catch (Exception e) {
-			return new Schemes();
-		}
-		return schema;
+	public void addSchemes(Schemes scheme) {
+		Schemes schema = new Schemes();;
+			//schema = schemaRepo.save(scheme);
+			
+			String[] arr = {"Interest Received On", "Pre Interest Received On", "Penal Interest Received On", "Time Over Interest On"};  
+			
+			List<BranchDetail> branches = branchesRepository.getTotalBranches();
+			int countBranch = branches.size();
+			System.out.println(countBranch);
+			for (BranchDetail b : branches) {
+				System.out.println(b);
+				for(int i = 0 ; i < 4; i++) {
+					
+					Accounts accounts = new Accounts();
+					accounts.setAccountNumber(b.getCode() + " " + arr[i] + " " + scheme.getName());
+					
+					
+				}
+				
+				
+			}
+			
+			
+
+		
 	}
 
 	// update schema ....

@@ -18,13 +18,14 @@ public class SavingSchemaDetails {
 	String createdAt;
 	Integer headId;
 	String head;
+	Boolean activeStatus;
 
 	public SavingSchemaDetails() {
 		super();
 	}
 
 	public SavingSchemaDetails(Long totalAccounts, Long activeAccounts, Integer id, String schemaName, String interest,
-			String accountType, String validTill, Double maxlimits, Double minlimits, Date createdAt, Integer headId, String head) {
+			String accountType, String validTill, Double maxlimits, Double minlimits, Date createdAt, Integer headId, String head, Boolean activeStatus) {
 		super();
 		this.totalAccounts = totalAccounts;
 		this.activeAccounts = activeAccounts;
@@ -38,8 +39,17 @@ public class SavingSchemaDetails {
 		this.createdAt = DateFormater.getformatDate(createdAt);
 		this.headId=headId;
 		this.head= head;
+		this.activeStatus=activeStatus;
 	}
 	
+
+	public Boolean getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Boolean activeStatus) {
+		this.activeStatus = activeStatus;
+	}
 
 	public Integer getHeadId() {
 		return headId;
