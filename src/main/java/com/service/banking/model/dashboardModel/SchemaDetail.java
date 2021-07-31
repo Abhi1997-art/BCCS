@@ -35,10 +35,12 @@ public class SchemaDetail {
 
 	Integer headId;
 	Boolean activeStatus;
+	
+	Integer scemeId;
 
-	public SchemaDetail(Integer id, String schemaName) {
+	public SchemaDetail(Integer scemeId, String schemaName) {
 		super();
-		this.id = id;
+		this.scemeId = scemeId;
 		this.schemaName = schemaName;
 	}
 
@@ -125,6 +127,14 @@ public class SchemaDetail {
 	}
 
 	
+	public Integer getScemeId() {
+		return scemeId;
+	}
+
+	public void setScemeId(Integer scemeId) {
+		this.scemeId = scemeId;
+	}
+
 	public Boolean getActiveStatus() {
 		return activeStatus;
 	}

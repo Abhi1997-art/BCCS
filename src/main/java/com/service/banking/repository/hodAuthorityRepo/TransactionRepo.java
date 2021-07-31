@@ -20,9 +20,9 @@ public interface TransactionRepo extends JpaRepository<Transactions, Integer> {
 	List<Transactions> allTransactions();
 
 
-	@Query(value = "select t.id as id, tt.id as transactionTypeId, tt.name as transactionTypeName, s.id as StaffId, s.name as StaffName, \r\n"
-			+ "a.AccountNumber as referenceAccountNumber, a.id as referenceAccountId, m.id as referenceMemberId, \r\n"
-			+ "m.name as referenceMemberName, m.FatherName as referenceFatherName, b.id as branchId, b.name as branchName, \r\n"
+	@Query(value = "select t.id as transactionId, tt.id as transactionTypeId, tt.name as transactionTypeName, s.id as StaffId, s.name as StaffName, \r\n"
+			+ "a.AccountNumber, a.id , m.id as memberId, \r\n"
+			+ "m.name as name, m.FatherName, b.id as branchId, b.name as branchName, \r\n"
 			+ "t.voucher_no_original as voucherNoOriginal, t.voucher_no as VoucherNo, t.narration as narration, t.created_at as createdAt, \r\n"
 			+ "t.updated_at as updatedAt, t.invoice_no as invoiceNo, t.is_invoice_cancel as isInvoiceCancel, \r\n"
 			+ "tr.id as transactionRowId,  SUM(tr.amountCr) as CrSum, sum(tr.amountDr) as DrSum from \r\n"
@@ -45,11 +45,11 @@ public interface TransactionRepo extends JpaRepository<Transactions, Integer> {
 
 	@Query("select new com.service.banking.model.hodAuthorityModel.TransactionRowDetails(t.id, tr.accountId, a.accountNumber, m.id, m.name, m.fatherName, "
 			+ "sc.id, sc.name, bl.id, bl.name, tr.amountDr, tr.amountCr, tr.side, tr.accountsInSide, tr.createdAt, tr.voucherNo, tr.narration, tt.id, "
-			+ "tt.name, b.id, b.name, a1.id, a1.accountNumber, m1.id, m1.name, m1.fatherName) "
-			+ "from Transactions t left join TransactionRow tr on t.id = tr.transactionId left join TransactionTypes tt on tr.transactionTypeId = tt.id"
+			+ "tt.name, b.id, b.name, a1.id, a1.accountNumber, m1.id, m1.name, m1.fatherName, tr.id) "
+			+ "from Transactions t left join TransactionRow tr on t.id = tr.transactionId left join TransactionTypes tt on t.transactionTypeId = tt.id"
 			+ " left join Accounts a on tr.accountId = a.id left join Members m "
 			+ "on m.id = a.memberId left join Schemes sc on tr.schemeId = sc.id left join BalanceSheet bl on bl.id = tr.balanceSheetId left join Branches b "
-			+ "on b.id = tr.branchId left join Accounts a1 on tr.referenceAccountId = a1.id left join Members m1 on m1.id = a1.memberId "
+			+ "on b.id = t.branchId left join Accounts a1 on tr.referenceAccountId = a1.id left join Members m1 on m1.id = a1.memberId "
 			+ "where t.id = ?1")
 	public List<TransactionRowDetails> getTransactionRowForInvoice(Integer id);
 

@@ -18,6 +18,8 @@ public class AccountDetails {
 	Double amount;
 	Integer schemeId;
 	String groupType;
+	Integer accountId;
+	Integer referenceAccountId;
 
 	public AccountDetails() {
 		super();
@@ -83,6 +85,18 @@ public class AccountDetails {
 		this.fatherName = fatherName;
 		this.accountType = accountType;
 	}
+	
+	public AccountDetails(Integer id, String accountNumber, String name, String fatherName, String accountType, Integer accountId, Integer referenceAccountId) {
+		super();
+		this.id = id;
+		this.accountNumber = accountNumber;
+		this.name = name;
+		this.fatherName = fatherName;
+		this.accountType = accountType;
+		this.accountId=accountId;
+		this.referenceAccountId=referenceAccountId;
+	}
+
 
 	public Integer getId() {
 		return id;
@@ -162,6 +176,22 @@ public class AccountDetails {
 
 	public void setGroupType(String groupType) {
 		this.groupType = groupType;
+	}
+
+	public Integer getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
+	}
+
+	public Integer getReferenceAccountId() {
+		return referenceAccountId;
+	}
+
+	public void setReferenceAccountId(Integer referenceAccountId) {
+		this.referenceAccountId = referenceAccountId;
 	}
 
 	

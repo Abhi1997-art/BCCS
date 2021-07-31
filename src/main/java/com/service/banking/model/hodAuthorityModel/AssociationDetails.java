@@ -109,10 +109,10 @@ public class AssociationDetails {
 	}
 	
 	
-	public AssociationDetails(Integer codeNo, String memberName, Integer memberId, String permanentAddress, String landmark,Boolean isDefaulter) {
+	public AssociationDetails(Integer codeNo, String memberName, Integer agentId, String permanentAddress, String landmark,Boolean isDefaulter) {
 		this.codeNo = codeNo;
 		this.memberName = memberName;
-		this.memberId = memberId;
+		this.agentId = agentId;
 		this.permanentAddress = permanentAddress;
 		this.landmark = landmark;
 		this.isDefaulter=isDefaulter;

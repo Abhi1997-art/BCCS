@@ -14,6 +14,7 @@ public class LockUnlockAcntDetails {
 	String lockReason;
 	Boolean isActive;
 	String fatherName;
+	String landmark;
 
 	public LockUnlockAcntDetails() {
 
@@ -21,7 +22,7 @@ public class LockUnlockAcntDetails {
 
 	public LockUnlockAcntDetails(Integer accountId, String accountNumber, String branch, String staffName,
 			Integer memberId, String memberName, String memberAddress, Boolean isDefaulter, Boolean lockingStatus,
-			Boolean maturedStatus, String lockReason, Boolean isActive) {
+			Boolean maturedStatus, String lockReason, Boolean isActive, String landmark) {
 		super();
 		this.accountId = accountId;
 		this.accountNumber = accountNumber;
@@ -35,6 +36,7 @@ public class LockUnlockAcntDetails {
 		this.maturedStatus = maturedStatus;
 		this.lockReason = lockReason;
 		this.isActive = isActive;
+		this.landmark=landmark;
 	}
 
 	public LockUnlockAcntDetails(Integer accountId, String accountNumber, Integer memberId, String memberName,
@@ -150,4 +152,13 @@ public class LockUnlockAcntDetails {
 		this.fatherName = fatherName;
 	}
 
+	public String getLandmark() {
+		return landmark;
+	}
+
+	public void setLandmark(String landmark) {
+		this.landmark = landmark;
+	}
+
+	
 }

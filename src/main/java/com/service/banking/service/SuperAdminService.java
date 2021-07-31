@@ -669,34 +669,104 @@ public class SuperAdminService {
 		}
 
 	}
-
+	
+	
 	// add schema ....
-	public void addSchemes(Schemes scheme) {
-		Schemes schema = new Schemes();;
-			//schema = schemaRepo.save(scheme);
-			
+	public void addSchemes(Schemes schema) {
+		Schemes scheme = new Schemes();
+		scheme = schemaRepo.save(schema);		
+	}
+	
+
+	// add schema for CC and LOAN....
+	public void addSchemaLOAN(Schemes scheme) {
+		Schemes schema = new Schemes();
+		schema = schemaRepo.save(scheme);
+		
 			String[] arr = {"Interest Received On", "Pre Interest Received On", "Penal Interest Received On", "Time Over Interest On"};  
+			//String[] arr1 = {"Interest Received On", "Processing Fee Received On", "Penalty Due To Late Payment On", "For Close Account On", "Time Over Charge On", "Conveyence Charge Received On", "Rent Charge Received On","Legal Charge Received On"};  
 			
 			List<BranchDetail> branches = branchesRepository.getTotalBranches();
-			int countBranch = branches.size();
-			System.out.println(countBranch);
 			for (BranchDetail b : branches) {
-				System.out.println(b);
-				for(int i = 0 ; i < 4; i++) {
+				
+				Integer memberId = memebrRepo.getDefaultBranchMember(b.getId());
+				for(int i = 0 ; i < arr.length; i++) {
 					
+					//Creating accounts
 					Accounts accounts = new Accounts();
 					accounts.setAccountNumber(b.getCode() + " " + arr[i] + " " + scheme.getName());
-					
-					
+					accounts.setAmount(0.0);
+					accounts.setMemberId(memberId);
+					accounts.setSchemeId(14);
+					accounts.setBranchId(b.getId());
+					accounts.setActiveStatus(true);
+					accounts.setAccountType("Loan");
+					accounts.setModeOfOperation("Self");
+					accounts.setNewOrRenew("New");
+					accounts.setRepaymentMode("Cash");
+					Date date = new Date();
+					accounts.setCreatedAt(date);
+					accounts.setLastCurrentInterestUpdatedAt(date);
+					accounts.setStaffId(1);
+					accounts.setPandLgroup(arr[i]);
+					accounts.setGroupType(arr[i]);
+					accounts.setDealerId(0);
+					accounts.setIsDirty((byte) 0);
+					accounts.setBikeSurrendered((byte) 0);
+					accounts.setIsInLegal((byte) 0);
+					accounts.setInsuranceTenure(" ");
+					accounts.setBankAccountLimit(0);
+					accountsRepo.save(accounts);
+
 				}
-				
-				
 			}
+		}
+	
+	// add schema for CC and LOAN....
+	public void addSchemaCC(Schemes scheme) {
+		Schemes schema = new Schemes();
+		schema = schemaRepo.save(scheme);
+		
+			String[] arr = {"Interest Received On", "Processing Fee Received On", "Renewal Charges Received On", "CC Overdue Charges Received On"};  
+			//String[] arr1 = {"Interest Received On", "Processing Fee Received On", "Penalty Due To Late Payment On", "For Close Account On", "Time Over Charge On", "Conveyence Charge Received On", "Rent Charge Received On","Legal Charge Received On"};  
 			
+			List<BranchDetail> branches = branchesRepository.getTotalBranches();
+			for (BranchDetail b : branches) {
+				
+				Integer memberId = memebrRepo.getDefaultBranchMember(b.getId());
+				for(int i = 0 ; i < arr.length; i++) {
+					
+					//Creating accounts
+					Accounts accounts = new Accounts();
+					accounts.setAccountNumber(b.getCode() + " " + arr[i] + " " + scheme.getName());
+					accounts.setAmount(0.0);
+					accounts.setMemberId(memberId);
+					accounts.setSchemeId(14);
+					accounts.setBranchId(b.getId());
+					accounts.setActiveStatus(true);
+					accounts.setAccountType("Loan");
+					accounts.setModeOfOperation("Self");
+					accounts.setNewOrRenew("New");
+					accounts.setRepaymentMode("Cash");
+					Date date = new Date();
+					accounts.setCreatedAt(date);
+					accounts.setLastCurrentInterestUpdatedAt(date);
+					accounts.setStaffId(1);
+					accounts.setPandLgroup(arr[i]);
+					accounts.setGroupType(arr[i]);
+					accounts.setDealerId(0);
+					accounts.setIsDirty((byte) 0);
+					accounts.setBikeSurrendered((byte) 0);
+					accounts.setIsInLegal((byte) 0);
+					accounts.setInsuranceTenure(" ");
+					accounts.setBankAccountLimit(0);
+					accountsRepo.save(accounts);
+
+				}
+			}
+		}
 			
 
-		
-	}
 
 	// update schema ....
 	public Schemes updateSchemes(Schemes scheme) {
@@ -711,12 +781,33 @@ public class SuperAdminService {
 
 	// Delete scheme ....
 	public String deleteSchema(Integer id) {
-		try {
-			schemaRepo.deleteById(id);
-		} catch (Exception e) {
-			return "Try again after sometime" + e;
+		
+		Integer accountCount = accountsRepo.getAccountCount(id);
+		System.out.println(accountCount);
+		
+		if(accountCount > 0) {
+			System.out.println("Scheme Contains Accounts created under this, cannot delete");
+			return "Scheme Contains Accounts created under this, cannot delete";
 		}
-		return "Item Deleted Successfully";
+		
+		Integer transactionCount = accountsRepo.getTransactionCount(id);
+		
+		if(transactionCount > 0) {
+			System.out.println( "Account Contains Transactions, Cannot Delete");
+			return  "Account Contains Transactions, Cannot Delete";
+		}
+		
+		Schemes schemes = schemaRepo.findById(id).get();
+		System.out.println(schemes.getName());
+		List<BranchDetail> branch = branchesRepository.getTotalBranches();
+		System.out.println(branch.size());
+		
+		for(BranchDetail bDetail: branch) {
+			List<Accounts> accountIds = accountsRepo.getSchemeDefaultAccounts(schemes.getName(), bDetail.getCode());
+			accountsRepo.deleteAll(accountIds);
+		}
+			schemaRepo.deleteById(id);
+		return "Scheme Deleted Successfully";
 	}
 
 	// Delete share certificate staff....
@@ -799,5 +890,6 @@ public class SuperAdminService {
 			StaffModel staffTransactions= transactionsRepo.getTransactions(id);
 			return staffTransactions;
 		}
+
 
 }

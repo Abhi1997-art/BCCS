@@ -21,18 +21,20 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 	
 	   
 	// @Query("Select new com.service.banking.model.MadModel.MemberDetails() from Members m ,Branches b where  m.isActive =1 and m.branchId =b.id")
-	@Query(value="Select new com.service.banking.model.MadModel.MemberDetails(m.id, m.memberNo, b.id, b.name as branchName ,m.title,m.name,m.cast ,m.phoneNos ,m.fatherName ,m.landmark ,m.tehsil ,m.district ,m.city, \r\n" + 
+	@Query("select new com.service.banking.model.MadModel.MemberDetails(m.id, m.memberNo, b.id, b.name as branchName ,m.title,m.name,m.cast ,m.phoneNos ,m.fatherName ,m.landmark ,m.tehsil ,m.district ,m.city, \r\n" + 
 			"m.state ,m.pinCode ,m.currentAddress ,\r\n" + 
 			"m.username ,m.password ,m.relationWithParent ,m.occupation ,m.dob ,m.witness1name ,m.witness1fatherName ,m.witness1address \r\n" + 
 			",m.witness2name ,m.witness2fatherName ,\r\n" + 
 			"m.witness2address ,m.createdAt ,m.isActive ,m.isDefaulter , m.defaulterOn, m.panNo ,m.adharNumber ,m.gstin ,m.bankbranchAId \r\n" + 
 			",m.bankAccountNumber1 ,\r\n" + 
 			"m.bankbranchBId ,m.bankAccountNumber2 ,m.memebrType ,m.isAgent ,a.nominee,a.nomineeAge,a.relationWithNominee \r\n" + 
-			",m.relationWithFatherField, a.minorNomineeDob ,m.parentName,a.accountNumber, m.filledForm60, a.sigImageId \r\n" + 
-			")from Members m,Branches b, Accounts a where  m.isActive =1 and m.branchId =b.id and m.id = a.memberId and a.accountType='SM' order by m.memberNo DESC",
-			countQuery = "SELECT count(*) from Members m,Branches b where  m.isActive =1 and m.branchId =b.id")	
-	public Page<MemberDetails> getAllMembers(Pageable pageable);
-	    
+			",m.relationWithFatherField, a.minorNomineeDob ,m.parentName,a.accountNumber, m.filledForm60, a.sigImageId, count(s.id) \r\n" + 
+			") from Members m "
+			+ "left join Branches b on m.branchId = b.id "
+			+ "left join Accounts a on m.id = a.memberId "
+			+ "left join Share s on s.currentMemberId = m.id "
+			+ "group by m.id order by m.id DESC")	
+	public Page<MemberDetails> getAllMembers(Pageable pageable);	    
 
 	     // get all member for printing 
 		 @Query("select new com.service.banking.model.printingModel.MemberDetail(m.id,m.name ,m.permanentAddress,m.memberNo ,m.landmark,m.isDefaulter) from  Members m where m.name LIKE %?1% ")
@@ -110,6 +112,13 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 						+ "having count(a.id) > 1",
 						nativeQuery = true)
 				public List<iMemberReport> getMemberWithMultipleSM();
+
+
+				@Query(value = "select m.id from members m \r\n"
+						+ "left join branches b on b.id = m.branch_id \r\n"
+						+ "where m.name like '%Default' and b.id = ?1",
+						nativeQuery = true)
+				public Integer getDefaultBranchMember(Integer id);
 
 
 

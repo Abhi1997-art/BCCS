@@ -38,7 +38,9 @@ import com.service.banking.model.MadModel.SalaryStructureReq;
 import com.service.banking.model.MadModel.iMemberInsuDetails;
 import com.service.banking.model.accountsModel.AccountDetails;
 import com.service.banking.model.hodAuthorityModel.MoRoDetails;
+import com.service.banking.model.hodAuthorityModel.iCommentDetails;
 import com.service.banking.model.superAdminModel.MeberDetail;
+import com.service.banking.service.HodAuthorityService;
 import com.service.banking.service.MadService;
 
 @RestController
@@ -55,7 +57,8 @@ public class MadController {
 	@GetMapping("/members/{setFirstResult}/{setMaxResults}")
 	public Map<String, Object> getallMembers(@PathVariable("setFirstResult") Integer setFirstResult,
 			@PathVariable("setMaxResults") Integer setMaxResults) {
-		Map<String, Object> memeberList = madservice.getAllmember(setFirstResult, setMaxResults);																							
+		Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
+		Map<String, Object> memeberList = madservice.getAllmember(setPageNumber, setMaxResults);																							
 		return memeberList;
 	}
 	
@@ -73,16 +76,14 @@ public class MadController {
 	
 	//Update active of member of MAD...................................................................
 	@PutMapping("/update_member/active/{id}")
-	public boolean activeMember(@PathVariable("id") Integer id) {
-		boolean activeStatus = madservice.activeMember(id);
-		return activeStatus;
+	public void activeMember(@PathVariable("id") Integer id) {
+		 madservice.activeMember(id);
 	}
 	
 	//Update defaulter of member of MAD................................................................
 	@PutMapping("/update_member/defaulter/{id}")
-	public MemberDetails defaulterMember(@PathVariable("id") Integer id) {
-		MemberDetails memberDetails = madservice.defaulterMember(id);
-		return memberDetails;
+	public void defaulterMember(@PathVariable("id") Integer id) {
+		madservice.defaulterMember(id);
 	}
 	
 	//Comment MAD Member...............................................................................
@@ -91,18 +92,24 @@ public class MadController {
 		madservice.commentMember(id,narration);
 	}
 	
+	@GetMapping("/comments")
+	public List<iCommentDetails> getComments(@RequestParam Integer memberId) {
+		List<iCommentDetails> comments = madservice.getComments(memberId);
+		return comments;
+	}
+	
 	//Delete MAD Member................................................................................
 	@DeleteMapping("/delete_member/{id}")
-	public String deleteMember(@PathVariable("id") Integer id) {
-		String msg = madservice.deleteMember(id);
-		return msg;
+	public void deleteMember(@PathVariable("id") Integer id) {
+		madservice.deleteMember(id);
 	}
 
 	// Get all Agents of MAD............................................................................
 	@GetMapping("/agents/{setFirstResult}/{setMaxResults}")
 	public Map<String, Object> getallAgents(@PathVariable("setFirstResult") Integer setFirstResult,
 			@PathVariable("setMaxResults") Integer setMaxResults) {
-		Map<String, Object> agentsList = madservice.getallAgents(setFirstResult, setMaxResults);
+		Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
+		Map<String, Object> agentsList = madservice.getallAgents(setPageNumber, setMaxResults);
 		return agentsList;
 	}
 
@@ -120,9 +127,8 @@ public class MadController {
 	
 	//Delete MAD agents................................................................................
 	@DeleteMapping("/delete_agents/{id}")
-	public String deleteAgents(@PathVariable("id") Integer id) {
-		String msg = madservice.deleteAgents(id);
-		return msg;
+	public void deleteAgents(@PathVariable("id") Integer id) {
+		madservice.deleteAgents(id);
 	}
 	
 	// Get all dealers.................................................................................

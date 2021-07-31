@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.taglibs.standard.lang.jstl.test.beans.PublicBean1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,12 +26,15 @@ import com.service.banking.hibernateEntity.MemorandumTransactions;
 import com.service.banking.hibernateEntity.Teams;
 import com.service.banking.hibernateEntity.Telecaller;
 import com.service.banking.hibernateEntity.Transactions;
+import com.service.banking.model.dashboardModel.AccountsDetails;
+import com.service.banking.model.dashboardModel.iAccountDetails;
 import com.service.banking.model.hodAuthorityModel.AccountAndMemberDetails;
 import com.service.banking.model.hodAuthorityModel.AgentTdsDetail;
 import com.service.banking.model.hodAuthorityModel.AssociationDetails;
 import com.service.banking.model.hodAuthorityModel.BankBranchesDetails;
 import com.service.banking.model.hodAuthorityModel.BranchDetails;
 import com.service.banking.model.hodAuthorityModel.FilterMoAgentUpdateDetails;
+import com.service.banking.model.hodAuthorityModel.IBranchDetails;
 import com.service.banking.model.hodAuthorityModel.InvoiceDetails;
 import com.service.banking.model.hodAuthorityModel.LockUnlockAcntDetails;
 import com.service.banking.model.hodAuthorityModel.LogCheckDetails;
@@ -46,8 +50,10 @@ import com.service.banking.model.hodAuthorityModel.TransactionRowDetails;
 import com.service.banking.model.hodAuthorityModel.UnlockAccountsDetails;
 import com.service.banking.model.hodAuthorityModel.changeMoDetail;
 import com.service.banking.model.hodAuthorityModel.iDeleteVoucherDetails;
+import com.service.banking.model.superAdminModel.BranchDetail;
 import com.service.banking.model.superAdminModel.MeberDetail;
 import com.service.banking.model.superAdminModel.ShareCertificateDetail;
+import com.service.banking.model.superAdminModel.StaffModel;
 import com.service.banking.service.HodAuthorityService;
 
 import net.bytebuddy.asm.Advice.Return;
@@ -112,6 +118,11 @@ public class HodAuthorityController {
 	public List<PremiumDetails> getPremiums(@PathVariable("accountNumber") String accountNumber) {
 		List<PremiumDetails> premiums = hodAuthorityService.getPremiums(accountNumber);
 		return premiums;
+	}
+	
+	@PutMapping("/update_premiums")
+	public void updatePremiums(@RequestBody PremiumDetails premiumDetails) {
+				hodAuthorityService.updatePremiums(premiumDetails);
 	}
 
 	// Get all log check............................
@@ -479,9 +490,9 @@ public class HodAuthorityController {
 		}
 		
 		@GetMapping("/agentsTds/{setFirstResult}/{setMaxResults}")
-		public Map<String, Object> getAllAgentTds(@PathVariable("setFirstResult") Integer setFirstResult, @PathVariable("setMaxResults") Integer setMaxResults) {
+		public Map<String, Object> getAllAgentTds(@PathVariable("setFirstResult") Integer setFirstResult, @PathVariable("setMaxResults") Integer setMaxResults,@RequestParam Integer agentId, @RequestParam Integer accountId ) {
 			Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
-			Map<String, Object> agentsTds = hodAuthorityService.getAllAgentTds(setPageNumber, setMaxResults);
+			Map<String, Object> agentsTds = hodAuthorityService.getAllAgentTds(agentId, accountId, setPageNumber, setMaxResults);
 			return agentsTds;
 		}
 		
@@ -614,8 +625,8 @@ public class HodAuthorityController {
 		}
 		
 		@DeleteMapping("/transaction_remove_delete")
-		public void removeTransaction(@RequestParam Integer branchId, @RequestParam Integer voucherNo, @RequestParam Integer voucherUuid) {
-			hodAuthorityService.removeTransaction(branchId,voucherNo,voucherUuid);
+		public void removeTransaction(@RequestParam Integer branchId, @RequestParam Integer voucherNo, @RequestParam Integer voucherUuid, @RequestParam Integer accountId) {
+			hodAuthorityService.removeTransaction(branchId,voucherNo,voucherUuid, accountId);
 		}
 		
 		@PutMapping("/narration_edit")
@@ -628,9 +639,29 @@ public class HodAuthorityController {
 			hodAuthorityService.editAccounts(id, accountId);
 		}
 		
+		//3 letter search.............................................................
+		@GetMapping("/staffName")
+		public List<StaffModel> getStaffName(@RequestParam("search") String search){
+			List<StaffModel> staffModels = hodAuthorityService.getStaffName(search);
+			return staffModels;
+		}
 		
+		@GetMapping("/branchName")
+		public List<IBranchDetails> getBranchName(@RequestParam("search") String search){
+			List<IBranchDetails> branch = hodAuthorityService.getBranchName(search);
+			return branch;
+		}
 		
+		@GetMapping("/dirty_accounts")
+		public List<iAccountDetails> getDirtyAccounts(){
+			List<iAccountDetails> accounts = hodAuthorityService.getDirtyAccounts();
+			return accounts;
+		}
 		
+		@PutMapping("/clear")
+		public void clearDirtyAccount(@RequestParam Integer accountId) {
+			hodAuthorityService.clearDirtyAccount(accountId);
+		}
 
 		
 		 

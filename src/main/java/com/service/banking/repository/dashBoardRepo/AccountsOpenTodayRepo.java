@@ -79,7 +79,7 @@ public interface AccountsOpenTodayRepo extends JpaRepository<Accounts, Integer> 
 	public List<ODLimitsDetails> getOdLimits();
 
 	// Get Lock and Unlock accounts....
-	@Query("select new com.service.banking.model.hodAuthorityModel.LockUnlockAcntDetails( a.id, a.accountNumber, b.name, s.username , m.id, m.name, m.currentAddress ,m.isDefaulter,a.lockingStatus ,a.maturedStatus,a.lockStatusChangedReason ,a.activeStatus)  from Accounts a "
+	@Query("select new com.service.banking.model.hodAuthorityModel.LockUnlockAcntDetails( a.id, a.accountNumber, b.name, s.name , m.id, m.name, m.currentAddress ,m.isDefaulter,a.lockingStatus ,a.maturedStatus,a.lockStatusChangedReason ,a.activeStatus, m.landmark)  from Accounts a "
 			+ "left join Branches b on b.id = a.branchId " + "left join Staffs s on s.id = a.staffId "
 			+ "left join Members m on m.id = a.memberId " + "where a.accountNumber = ?1 ")
 	public List<LockUnlockAcntDetails> getAccounts(String accountNumber);

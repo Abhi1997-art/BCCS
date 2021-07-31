@@ -22,6 +22,7 @@ public class PremiumDetails {
 	private BigDecimal paneltyPosted;
 	private Date createdAt;
 	private Date updatedAt;
+	private Integer accountId;
 
 	public PremiumDetails() {
 		super();
@@ -51,7 +52,7 @@ public class PremiumDetails {
 	public PremiumDetails(Integer id, String accountNumber, String name, String fatherName, String amount, Integer paid,
 			Boolean skipped, Date dueDate, Date paidOn, Boolean agentCommissionSend, Double agentCommissionPercentage,
 			Boolean agentCollectionChargesSend, BigDecimal agentCollectionChargesPercentage, BigDecimal paneltyCharged,
-			BigDecimal paneltyPosted, Date createdAt, Date updatedAt) {
+			BigDecimal paneltyPosted, Date createdAt, Date updatedAt, Integer accountId) {
 		super();
 		this.id = id;
 		this.accountNumber = accountNumber;
@@ -70,7 +71,22 @@ public class PremiumDetails {
 		this.paneltyPosted = paneltyPosted;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.accountId=accountId;
 	}
+
+	
+	
+	public Integer getAccountId() {
+		return accountId;
+	}
+
+
+
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
+	}
+
+
 
 	/**
 	 * @return the id

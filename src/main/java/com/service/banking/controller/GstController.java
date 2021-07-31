@@ -84,9 +84,8 @@ public class GstController {
 				
 	//Delete supplier..
 	@DeleteMapping("/delete_supplier/{id}")
-	public String deleteBranches(@PathVariable("id") Integer Id) {
-		String message =gstService.deleteSupplier(Id);
-		return message;
+	public void deleteBranches(@PathVariable("id") Integer Id) {
+		gstService.deleteSupplier(Id);
 	}
 	
 	// custom api for Table column names......................

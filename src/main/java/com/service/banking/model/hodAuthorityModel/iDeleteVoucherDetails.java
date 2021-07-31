@@ -7,7 +7,7 @@ public interface iDeleteVoucherDetails {
 	
 	public Integer getId();
 	public String getAccountNumber();
-	public String getMemberName();
+	public String getName();
 	public String getFatherName();
 	public Double getAmountDr();
 	public Double getAmountCr();
@@ -15,5 +15,11 @@ public interface iDeleteVoucherDetails {
 	public String getNarration();
 	public String getTransactionTypeName();
 	public Integer getRelated_account_Id();
+	public Integer getSchemeId();
+	public String getSchemeName();
+	public Integer getBranchId();
+	public String getBranchName();
+	public Integer getVoucher_No();
+	public Integer getTransaction_Id();
 	
 }

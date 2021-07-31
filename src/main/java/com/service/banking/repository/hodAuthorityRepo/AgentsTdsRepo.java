@@ -18,10 +18,11 @@ public interface AgentsTdsRepo extends JpaRepository<AgentTds, Integer> {
 	
 	@Query("select new com.service.banking.model.hodAuthorityModel.AgentTdsDetail(agtds.id, ag.id, m.id, ag.codeNo, m.name, m.memberNo, m.currentAddress, "
 			+ "m.landmark, m.isDefaulter, a.id, a.accountNumber, m1.id, m1.name, m1.fatherName, agtds.createdAt, agtds.totalCommission, "
-			+ "agtds.tds, agtds.netCommission, a.branchId, b.name) from AgentTds agtds left join "
+			+ "agtds.tds, agtds.netCommission, a.branchId, b.name, m.permanentAddress) from AgentTds agtds left join "
 			+ "Agents ag on agtds.agents.id = ag.id left join Members m on ag.memberId = m.id left join Accounts a on a.id = agtds.accounts.id "
-			+ "left join Members m1 on m1.id = a.memberId left join Branches b on b.id = a.branchId")
-	public Page<AgentTdsDetail> allAgentTds(Pageable pageable);
+			+ "left join Members m1 on m1.id = a.memberId left join Branches b on b.id = a.branchId "
+			+ "where ag.id = IFNULL(?1, ag.id) and a.id = IFNULL(?2,a.id) ")
+	public Page<AgentTdsDetail> allAgentTds(Integer agentId, Integer accountId, Pageable pageable);
 
 	// get filtered agentTds details..............
 	@Query(value = "select agtds.id as id, ag.id as agentId, m.id as memberId, ag.code_no as codeNo, m.name as memberName, m.member_no as memberNo, m.CurrentAddress as currentAddress, \r\n"

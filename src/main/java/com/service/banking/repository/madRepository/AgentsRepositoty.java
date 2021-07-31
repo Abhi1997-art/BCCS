@@ -24,7 +24,7 @@ public interface AgentsRepositoty extends JpaRepository<Agents, Integer> {
 			+ "left  Join Accounts ac on a.accountId =ac.id \r\n" + "left  Join Members mr on a.memberId =mr.id \r\n"
 			+ "left Join  Cadres cd on a.cadreId =cd.id \r\n" + "left  Join Mos mo on a.moId =mo.id \r\n"
 			+ "left join Agents a2 on a2.id =a.sponsorId \r\n" + "left join Members m3 on m3.id=a2.memberId \r\n"
-			+ "left join Cadres c2 on c2.id = a2.cadreId order by a.codeNo DESC")
+			+ "left join Cadres c2 on c2.id = a2.cadreId order by a.id DESC")
 	public Page<AgentDetails> getAllAgents(Pageable pageable);
 
 	@Query("select new com.service.banking.model.MadModel.AgentGuarantorDetails(a.id, m.id, m.name, m.currentAddress, m.landmark, m.isDefaulter, "

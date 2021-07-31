@@ -45,6 +45,7 @@ import com.service.banking.model.MadModel.TotalMember;
 import com.service.banking.model.MadModel.iMemberInsuDetails;
 import com.service.banking.model.accountsModel.AccountDetails;
 import com.service.banking.model.hodAuthorityModel.MoRoDetails;
+import com.service.banking.model.hodAuthorityModel.iCommentDetails;
 import com.service.banking.model.superAdminModel.MeberDetail;
 import com.service.banking.repository.AccountsRepo.AccountsRepo;
 import com.service.banking.repository.dashBoardRepo.AccountsOpenTodayRepo;
@@ -95,8 +96,8 @@ public class MadService {
 
 
 	//Get all members of MAD.....................................................................
-	public Map<String, Object> getAllmember(int firstSet, int maxSize) {
-		Pageable paging = PageRequest.of(firstSet, maxSize);
+	public Map<String, Object> getAllmember(int setPageNumber, int maxSize) {
+		Pageable paging = PageRequest.of(setPageNumber, maxSize);
 		Page<MemberDetails> memberList = membersRepo.getAllMembers(paging);
 		Map<String, Object> members = new HashMap<String, Object>(); 
 		if (memberList.hasContent()) {
@@ -186,8 +187,10 @@ public class MadService {
 		members.setWitness2fatherName(memberDetails.getWitness2fatherName());
 		members.setWitness2address(memberDetails.getWitness2address());
 		members.setIsActive(memberDetails.getIsActive());
+		members.setMemberNo(memberDetails.getMemberNo());
 		members.setUsername(memberDetails.getUsername());
 		members.setPassword(memberDetails.getPassword());	
+		members.setParentMemberId(0);
 		membersRepo.save(members);
 		
 	}
@@ -246,8 +249,8 @@ public class MadService {
 	
 
 	// Get All Agents of MAD.............................................................................
-	public Map<String, Object> getallAgents(int firstSet, int maxSize) {
-		Pageable paging = PageRequest.of(firstSet, maxSize);
+	public Map<String, Object> getallAgents(int setPageNumber, int maxSize) {
+		Pageable paging = PageRequest.of(setPageNumber, maxSize);
 		Page<AgentDetails> agentsList = agentsRepo.getAllAgents(paging);
 		Map<String, Object> agents = new HashMap<String, Object>(); 
 		if (agentsList.hasContent()) {
@@ -712,6 +715,13 @@ public class MadService {
 				return new ArrayList<iMemberInsuDetails>();
 			}
 		}
+
+		public List<iCommentDetails> getComments(Integer memberId) {
+			List<iCommentDetails> comments = commentRepo.getComments(memberId);
+			return comments;
+		}
+
+
 
 
 

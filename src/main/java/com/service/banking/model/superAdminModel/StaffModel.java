@@ -2,6 +2,10 @@ package com.service.banking.model.superAdminModel;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class StaffModel {
 
 	private Integer id;
@@ -50,13 +54,22 @@ public class StaffModel {
 	private String nomineeName;
 	private String nomineeAge;
 	private String relationWithNominee;
+	private Integer staffId;
 
 	public StaffModel(Long number) {
 		super();
 		this.number = number;
 	}
 
-	public StaffModel(Integer id, String branchName, String staffName, String userName, boolean isActive,
+	
+	public StaffModel(Integer staffId, String staffName) {
+		super();
+		this.staffId = staffId;
+		this.staffName = staffName;
+	}
+
+
+	public StaffModel(Integer id, String branchName, String staffName, String userName, Boolean isActive,
 			String password, String accountNo, String accessLevel, Integer branchId) {
 		super();
 		this.id = id;
@@ -71,7 +84,7 @@ public class StaffModel {
 		this.branchId = branchId;
 	}
 
-	public StaffModel(Integer id, String branchName, String staffName, String userName, boolean isActive,
+	public StaffModel(Integer id, String branchName, String staffName, String userName, Boolean isActive,
 			String password, String accountNo, String accessLevel, Integer branchId, String createdAt) {
 		super();
 		this.id = id;
@@ -86,7 +99,7 @@ public class StaffModel {
 		this.createdAt = createdAt;
 	}
 
-	public StaffModel(Integer id, String branchName, String staffName, String userName, boolean isActive,
+	public StaffModel(Integer id, String branchName, String staffName, String userName, Boolean isActive,
 			String password, String accountNo, String accessLevel, Integer branchId, String createdAt,
 			Integer staffId) {
 		super();
@@ -163,6 +176,17 @@ public class StaffModel {
 		this.relationWithNominee = relationWithNominee;
 	}
 
+	
+	public Integer getStaffId() {
+		return staffId;
+	}
+
+
+	public void setStaffId(Integer staffId) {
+		this.staffId = staffId;
+	}
+
+
 	public Long getNumber() {
 		return number;
 	}
@@ -195,7 +219,7 @@ public class StaffModel {
 		this.id = id;
 	}
 
-	public void setActive(boolean isActive) {
+	public void setActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
 
@@ -223,13 +247,12 @@ public class StaffModel {
 		this.userName = userName;
 	}
 
-	public boolean getIsActive() {
+
+
+	public Boolean getIsActive() {
 		return isActive;
 	}
 
-	public void setIsActive(boolean isActive) {
-		this.isActive = isActive;
-	}
 
 	public String getPassword() {
 		return password;

@@ -197,11 +197,17 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 	@Query(value="select * from transaction_row tr where tr.transaction_id = ?3 and tr.voucher_no = ?2 and tr.branch_id = ?1 ", nativeQuery = true)
 	TransactionRow getTransactionsAccount(Integer id);
 
-	@Query(value = "Select tr.id, a.AccountNumber , m.name as memberName, m.FatherName , tr.amountDr , tr.amountCr, tr.created_at as createdAt, tr.Narration, tt.name as transactionTypeName, a2.id as related_account_id , a2.AccountNumber as related_account_number from transaction_row tr\r\n"
+	@Query(value = "Select tr.id, a.AccountNumber , m.name, m.FatherName , tr.amountDr , tr.amountCr, \r\n"
+			+ "tr.created_at as createdAt, tr.Narration, tt.name as transactionTypeName, a2.id as related_account_id , \r\n"
+			+ "a2.AccountNumber as related_account_number, s.id as schemeId, s.name as schemeName, b.id as branchId, b.name as branchName,\r\n"
+			+ "tr.voucher_no , tr.transaction_id \r\n"
+			+ "from transaction_row tr\r\n"
 			+ "left join accounts a on tr.account_id =a.id\r\n"
 			+ "left join transaction_types tt on tt.id = tr.transaction_type_id \r\n"
 			+ "left join members m on m.id = a.member_id \r\n"
 			+ "left join accounts a2 on a2.id = tr.reference_account_id \r\n"
+			+ "left join schemes s on s.id = tr.scheme_id \r\n"
+			+ "left join branches b on b.id = tr.branch_id \r\n"
 			+ "where tr.transaction_id = ?3 and tr.voucher_no = ?2 and tr.branch_id = ?1 ", nativeQuery = true)
 	public List<iDeleteVoucherDetails> getDirtyVoucher(Integer branchId, Integer voucherNo, Integer vouchUuid);
 	

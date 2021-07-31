@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -439,10 +440,22 @@ public class SuperAdminController {
 	}
 
 	// add schema Staff.....
-	@PostMapping("/add_schema")
-	public void addSchema(@RequestBody Schemes schema) {
-		superAdminService.addSchemes(schema);
+	@PostMapping("/add_schema_loan")
+	public void addSchemaLOAN(@RequestBody Schemes schema) {
+		superAdminService.addSchemaLOAN(schema);
 	}
+
+	// add schema Staff.....
+	@PostMapping("/add_schema_cc")
+	public void addSchemaCC(@RequestBody Schemes schema) {
+		superAdminService.addSchemaCC(schema);
+	}
+
+	// add schema Staff.....
+		@PostMapping("/add_schema")
+		public void addSchema(@RequestBody Schemes schema) {
+			superAdminService.addSchemes(schema);
+		}
 
 	// Update schema Staff.....
 	@PutMapping("/update_schema")
@@ -452,8 +465,9 @@ public class SuperAdminController {
 
 	// Delete Inactive Staff....................
 	@DeleteMapping("/delete_schema/{id}")
-	public void deleteSchema(@PathVariable("id") Integer Id) {
+	public ResponseEntity<String> deleteSchema(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteSchema(Id);
+		return ResponseEntity.ok(message);
 	}
 
 	// Head schema.....

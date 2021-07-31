@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Find;
 import com.service.banking.hibernateEntity.Accounts;
 import com.service.banking.hibernateEntity.AgentTds;
 import com.service.banking.hibernateEntity.Agents;
@@ -27,6 +28,7 @@ import com.service.banking.hibernateEntity.MemorandumTransactionsrow;
 import com.service.banking.hibernateEntity.MoAccountAssociation;
 import com.service.banking.hibernateEntity.MoAgentAssociation;
 import com.service.banking.hibernateEntity.Mos;
+import com.service.banking.hibernateEntity.Premiums;
 import com.service.banking.hibernateEntity.Staffs;
 import com.service.banking.hibernateEntity.Teams;
 import com.service.banking.hibernateEntity.Telecaller;
@@ -34,6 +36,7 @@ import com.service.banking.hibernateEntity.TelecallerAccountHistory;
 import com.service.banking.hibernateEntity.TransactionRow;
 import com.service.banking.hibernateEntity.Transactions;
 import com.service.banking.model.dashboardModel.DailyDueResultModel;
+import com.service.banking.model.dashboardModel.iAccountDetails;
 import com.service.banking.model.hodAuthorityModel.AccountAndMemberDetails;
 import com.service.banking.model.hodAuthorityModel.AgentTdsDetail;
 import com.service.banking.model.hodAuthorityModel.AssociationDetails;
@@ -41,6 +44,7 @@ import com.service.banking.model.hodAuthorityModel.BankBranchesDetails;
 import com.service.banking.model.hodAuthorityModel.BranchDetails;
 import com.service.banking.model.hodAuthorityModel.FilterMoAgentUpdateDetails;
 import com.service.banking.model.hodAuthorityModel.IAgentTdsDetail;
+import com.service.banking.model.hodAuthorityModel.IBranchDetails;
 import com.service.banking.model.hodAuthorityModel.IInvoiceDetails;
 import com.service.banking.model.hodAuthorityModel.InvoiceDetails;
 import com.service.banking.model.hodAuthorityModel.LockUnlockAcntDetails;
@@ -57,6 +61,7 @@ import com.service.banking.model.hodAuthorityModel.TransactionRowDetails;
 import com.service.banking.model.hodAuthorityModel.UnlockAccountsDetails;
 import com.service.banking.model.hodAuthorityModel.changeMoDetail;
 import com.service.banking.model.hodAuthorityModel.iDeleteVoucherDetails;
+import com.service.banking.model.superAdminModel.StaffModel;
 import com.service.banking.repository.AccountsRepo.AccountsRepo;
 import com.service.banking.repository.dashBoardRepo.AccountsOpenTodayRepo;
 import com.service.banking.repository.hodAuthorityRepo.AgentsTdsRepo;
@@ -815,9 +820,9 @@ public class HodAuthorityService {
 			return associationDetails;
 		}
 
-		public Map<String, Object> getAllAgentTds(Integer setPageNumber, Integer setMaxResults) {
+		public Map<String, Object> getAllAgentTds(Integer agentId, Integer accountId, Integer setPageNumber, Integer setMaxResults) {
 			Pageable pageable = PageRequest.of(setPageNumber, setMaxResults);
-			Page<AgentTdsDetail> agentTds = agentsTdsRepo.allAgentTds(pageable);
+			Page<AgentTdsDetail> agentTds = agentsTdsRepo.allAgentTds(agentId, accountId, pageable);
 			Map<String, Object> monthMap = new HashMap<String, Object>();
 			if(agentTds.hasContent()) {
 				monthMap.put("pageSize", agentTds.getSize());
@@ -1175,21 +1180,54 @@ public class HodAuthorityService {
 
 		//Change Mo in the MO agent update.....
 		public void changeMo(changeMoDetail changeMoDetail) {
-			 for (Integer ids : changeMoDetail.getIds()) { 
-				 Agents agents = agentsRepo.getOne(ids);
-				 agents.setMoId(changeMoDetail.getMoId());
-				 if(changeMoDetail.getRemoveMo() == true) {
-					 agents.setMoId(null);
-				 }
-		           agentsRepo.save(agents);
-		      }
-			
+			for (Integer ids : changeMoDetail.getIds()) {
+				Agents agents = agentsRepo.getOne(ids);
+
+				if (agents.getMoId() == null && changeMoDetail.getRemoveMo() == false) {
+					MoAgentAssociation maa = new MoAgentAssociation();
+					maa.setMoId(changeMoDetail.getMoId());
+					maa.setAgentId(ids);
+					Date date = new Date();
+					maa.setFromDate(date);
+					moAssociationRepo.save(maa);
+					agents.setMoId(changeMoDetail.getMoId());
+					agentsRepo.save(agents);
+				} 
+				
+			 if ((agents.getMoId() != changeMoDetail.getMoId()) && changeMoDetail.getRemoveMo() == false) {
+					Integer moAgentAssociationId = moAssociationRepo.getMoAgentAssociationId(agents.getId(),agents.getMoId());
+					MoAgentAssociation moAgentAssociation = moAssociationRepo.findById(moAgentAssociationId).get();
+					Date date = new Date();
+					moAgentAssociation.setToDate(date);
+					moAssociationRepo.save(moAgentAssociation);
+					agents.setMoId(changeMoDetail.getMoId());
+					agentsRepo.save(agents);
+
+					MoAgentAssociation maa = new MoAgentAssociation();
+					maa.setMoId(changeMoDetail.getMoId());
+					maa.setAgentId(ids);
+					maa.setFromDate(date);
+					moAssociationRepo.save(maa);
+
+				}
+
+			 if (changeMoDetail.getRemoveMo() == true && agents.getMoId() != null) {
+					Integer moAgentAssociationId = moAssociationRepo.getMoAgentAssociationId(agents.getId(), agents.getMoId());
+					MoAgentAssociation moAgentAssociation = moAssociationRepo.findById(moAgentAssociationId).get();
+					Date date = new Date();
+					moAgentAssociation.setToDate(date);
+					moAssociationRepo.save(moAgentAssociation);
+					agents.setMoId(null);
+					agentsRepo.save(agents);
+				}
+			}
 		}
 
 		@SuppressWarnings("deprecation")
 		public List<iDeleteVoucherDetails> getDirtyVoucher(Integer branchId, Integer voucherNo, Integer vouchUuid, String currentDate) throws Exception {
 			
 			Date date = transactionRepo.getDirtyVoucherDate(branchId, voucherNo, vouchUuid);
+			System.out.println(date);
 			if (date== null) {
 				date=new Date();
 				date.setDate(01);
@@ -1197,10 +1235,10 @@ public class HodAuthorityService {
 				date.setYear(0001);
 			}
 			int year = date.getYear() +1900;  
-			
+			System.out.println(year);
 			Date cDate= new SimpleDateFormat("yyyy-MM-dd").parse(currentDate);  
 			int cYear = cDate.getYear() + 1900;
-			
+			System.out.println(cYear);
 			if(year == cYear) {
 				List<iDeleteVoucherDetails> list = transactionRowRepo.getDirtyVoucher(branchId, voucherNo, vouchUuid);
 				if(list.size() != 0) {
@@ -1215,9 +1253,14 @@ public class HodAuthorityService {
 			}
 		}
 
-		public void removeTransaction(Integer branchId, Integer voucherNo, Integer voucherUuid) {
+		public void removeTransaction(Integer branchId, Integer voucherNo, Integer voucherUuid, Integer accountId) {
 			transactionRepo.removeTransaction(branchId,voucherNo,voucherUuid);
 			transactionRowRepo.removeTransaction(branchId,voucherNo,voucherUuid);
+			
+			Accounts accounts= accountsRepo.findById(accountId).get();
+			accounts.setIsDirty((byte)1);
+			accountsRepo.save(accounts);
+			
 		}
 
 		public void narrationEdit(Integer branchId, Integer voucherNo, Integer voucherUuid, String narration) {
@@ -1237,5 +1280,38 @@ public class HodAuthorityService {
 			TransactionRow transactionRows = transactionRowRepo.findById(id).get();
 			transactionRows.setAccountId(accountId);
 			transactionRowRepo.save(transactionRows);
+		}
+
+		public List<StaffModel> getStaffName(String search) {
+			List<StaffModel> name = staffRepo.getStaffName(search);
+			return name;
+		}
+
+		public List<IBranchDetails> getBranchName(String search) {
+			List<IBranchDetails> name = branchRepo.getBranchName(search);
+			return name;
+		}
+
+		public List<iAccountDetails> getDirtyAccounts() {
+			List<iAccountDetails> accounts = accountsRepo.getDirtyAccounts();
+			return accounts;
+		}
+
+		public void updatePremiums(PremiumDetails premiumDetails) {
+			Premiums premiums = premiumRepo.findById(premiumDetails.getId()).get();
+			premiums.setPaid(premiumDetails.getPaid());
+			premiums.setPaidOn(premiumDetails.getPaidOn());
+			premiums.setAgentCommissionSend(premiumDetails.getAgentCommissionSend());
+			premiums.setAgentCommissionPercentage(premiumDetails.getAgentCommissionPercentage());
+			premiums.setAgentCollectionChargesSend(premiumDetails.getAgentCollectionChargesSend());
+			premiums.setAgentCollectionChargesPercentage(premiumDetails.getAgentCollectionChargesPercentage());
+			premiumRepo.save(premiums);	
+		}
+
+		public void clearDirtyAccount(Integer accountId) {
+			Accounts accounts = accountsRepo.findById(accountId).get();
+			accounts.setIsDirty((byte)0);
+			accountsRepo.save(accounts);
+			
 		}
 }

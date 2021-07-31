@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public interface iAccountDetails {
 	
+	public Integer getId();
 	public String getDocumentName();
 	public String getAccountNumber();
 	public String getName();
@@ -25,6 +26,7 @@ public interface iAccountDetails {
 	public String getLandmark();
 	public String getCreated_At();
 	public String getMaturityDate();
+	public String getSchemeName();
 	
 	
 }

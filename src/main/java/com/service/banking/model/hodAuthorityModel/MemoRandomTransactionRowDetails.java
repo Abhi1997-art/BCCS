@@ -11,11 +11,11 @@ public class MemoRandomTransactionRowDetails {
 	
 	Integer memorandomTransactionRowId;
 	Integer memorandumTransactionId;
-	Integer name;
+	Integer memorandumName;
 	Integer accountId;
 	String accountNumber;
 	Integer memberId;
-	String memberName;
+	String name;
 	String fatherName;
 	String tax;
 	BigDecimal taxPercentage;
@@ -46,7 +46,7 @@ public class MemoRandomTransactionRowDetails {
 	
 	
 	public MemoRandomTransactionRowDetails(Integer memorandomTransactionRowId, Integer memorandumTransactionId,
-		Integer name, Integer accountId, String accountNumber, Integer memberId, String memberName, String fatherName,
+		Integer memorandumName, Integer accountId, String accountNumber, Integer memberId, String name, String fatherName,
 		String tax, BigDecimal taxPercentage, BigDecimal taxAmount, String taxNarration,String taxExcludedAmount, BigDecimal amountCr, BigDecimal amountDr, Date createdAt,
 		String memorandumType) {
 			super();
@@ -56,7 +56,7 @@ public class MemoRandomTransactionRowDetails {
 			this.accountId = accountId;
 			this.accountNumber = accountNumber;
 			this.memberId = memberId;
-			this.memberName = memberName;
+			this.memorandumName = memorandumName;
 			this.fatherName = fatherName;
 			this.tax = tax;
 			this.taxPercentage = taxPercentage;
@@ -86,11 +86,21 @@ public class MemoRandomTransactionRowDetails {
 		this.memorandumTransactionId = memorandumTransactionId;
 	}
 
-	public Integer getName() {
+
+
+	public Integer getMemorandumName() {
+		return memorandumName;
+	}
+
+	public void setMemorandumName(Integer memorandumName) {
+		this.memorandumName = memorandumName;
+	}
+
+	public String getName() {
 		return name;
 	}
 
-	public void setName(Integer name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -118,13 +128,6 @@ public class MemoRandomTransactionRowDetails {
 		this.memberId = memberId;
 	}
 
-	public String getMemberName() {
-		return memberName;
-	}
-
-	public void setMemberName(String memberName) {
-		this.memberName = memberName;
-	}
 
 	public String getFatherName() {
 		return fatherName;

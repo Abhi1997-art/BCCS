@@ -53,4 +53,9 @@ public interface MoAssociationRepo extends JpaRepository<MoAgentAssociation, Int
 			+ "REPLACE(m.permanentAddress, ' ', ''), REPLACE(m.landmark, ' ', '') ) like %?1% OR Concat( 'BCCSAG', Convert(a.codeNo as CHAR), REPLACE(m.name, ' ', ''), '[', Convert(m.id as CHAR), ']', \r\n"
 			+ " '::', REPLACE(m.permanentAddress, ' ', ''), '[', REPLACE(m.landmark, ' ', ''), ']' ) like %?1%")
 	List<AgentDetailsList> getAgentAssociationList(String name);
+
+	@Query(value = "select maa.id from mo_agent_association maa \r\n"
+			+ "where maa.agent_id = ?1 and maa.mo_id = ?2 and maa.from_date IS NOT NULL and maa.`_to_date` IS NULL",
+			nativeQuery = true)
+	Integer getMoAgentAssociationId(Integer id, Integer moId);
 }

@@ -254,7 +254,7 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 
 	// Search for accounts in MAD -
 	// Agent.............................................................................
-	@Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.accountNumber, m.name, m.fatherName, a.accountType) from Accounts a left join Members m on m.id= a.memberId where a.accountNumber LIKE %?1% or m.name LIKE %?1% order by a.accountNumber")
+	@Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.accountNumber, m.name, m.fatherName, a.accountType, a.id, a.id) from Accounts a left join Members m on m.id= a.memberId where a.accountNumber LIKE %?1% or m.name LIKE %?1% order by a.accountNumber")
 	List<AccountDetails> getAllAccounts(String name);
 	
 	@Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.accountNumber, m.name, m.fatherName, a.accountType) from Accounts a left join Members m on m.id= a.memberId where (a.accountNumber LIKE %?1% or m.name LIKE %?1%) and (NOT a.groupType = 'Loan') and (a.activeStatus = 1) order by a.accountNumber")
@@ -603,6 +603,28 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 	@Query("select new com.service.banking.model.superAdminModel.StaffModel(count(a.id) as accounts) from Accounts a left join Staffs s on s.id = a.staffId \r\n"
 			+ "where s.id = ?1 ")
 	StaffModel getStaffAccounts(Integer id);
+
+	@Query(value="select a.id, a.AccountNumber , m.name , m.FatherName , m.PermanentAddress , m.is_defaulter , s.name as schemeName from accounts a \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "left join schemes s on s.id = a.scheme_id \r\n"
+			+ "where a.is_dirty = 1" ,
+			nativeQuery= true)
+	List<iAccountDetails> getDirtyAccounts();
+
+	@Query(value="select count(*) from accounts a \r\n"
+			+ "where a.scheme_id = ?1 " ,
+			nativeQuery= true)
+	Integer getAccountCount(Integer id);
+
+	@Query(value="select count(*) from transaction_row tr \r\n"
+			+ "where tr.scheme_id = ?1 " ,
+			nativeQuery= true)
+	Integer getTransactionCount(Integer Id);
+
+	@Query(value="select * from accounts a \r\n"
+			+ "where a.AccountNumber LIKE CONCAT(?2,'%',?1)" ,
+			nativeQuery= true)
+	List<Accounts> getSchemeDefaultAccounts(String name, String code);
 	
 
 	

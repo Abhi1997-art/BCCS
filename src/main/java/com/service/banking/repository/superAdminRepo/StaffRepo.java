@@ -49,4 +49,8 @@ public interface StaffRepo extends JpaRepository<Staffs, Integer> {
 			+ " where s.id=?1 ")
 	StaffPreviewDetail getStaff(Integer id);
 
+	@Query(" select new com.service.banking.model.superAdminModel.StaffModel(s.id as staffId , s.name as staffName) from Staffs s"
+			+ " where s.name LIKE CONCAT(?1,'%') ")
+	List<StaffModel> getStaffName(String search);
+
 }
