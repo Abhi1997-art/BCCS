@@ -27,9 +27,9 @@ public interface AgentsRepositoty extends JpaRepository<Agents, Integer> {
 			+ "left join Cadres c2 on c2.id = a2.cadreId order by a.id DESC")
 	public Page<AgentDetails> getAllAgents(Pageable pageable);
 
-	@Query("select new com.service.banking.model.MadModel.AgentGuarantorDetails(a.id, m.id, m.name, m.currentAddress, m.landmark, m.isDefaulter, "
+	@Query("select new com.service.banking.model.MadModel.AgentGuarantorDetails(ag.id, m.id, m.memberNo, m.name, m.currentAddress, m.landmark, m.isDefaulter, "
 			+ "a.codeNo, mbr.id, mbr.name, mbr.currentAddress, mbr.landmark, mbr.isDefaulter) from Agents a "
-			+ "left join AgentGuarantors ag on a.id = ag.agents.id left join Members m "
+			+ "right join AgentGuarantors ag on a.id = ag.agents.id left join Members m "
 			+ "on m.id = ag.members.id left join Members mbr on a.memberId = mbr.id where a.id = ?1")
 	public List<AgentGuarantorDetails> getAgentGuarantorInAgent(Integer id);
 

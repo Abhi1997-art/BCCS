@@ -58,6 +58,10 @@ public class MemberDetails {
 	public Byte filledForm60;
 	public Integer sigImageId;
 	public Long shareCount;
+	public String bankBranchAName;
+	public String bankBranchBName;
+	public String bankBranchAIFSC;
+	public String bankBranchBIFSC;
 	
 	
 	
@@ -135,7 +139,8 @@ public class MemberDetails {
 			Boolean isDefaulter, Date defaulterOn, String panNo, String adharNumber, String gstin, Integer bankbranchAId,
 			String bankAccountNumber1, Integer bankbranchBId, String bankAccountNumber2, String memebrType,
 			Boolean isAgent, String nominee, Short nomineeAge, String relationWithNominee, String relationWithFather, String minorDob,
-			String parentName, String accountNumber, Byte filledForm60, Integer sigImageId, Long shareCount) {
+			String parentName, String accountNumber, Byte filledForm60, Integer sigImageId, Long shareCount, String bankBranchAName, String bankBranchBName,
+			String bankBranchAIFSC, String bankBranchBIFSC) {
 		super();
 		this.id = id;
 		this.memberNo=memberNo;
@@ -187,6 +192,10 @@ public class MemberDetails {
 		this.filledForm60=filledForm60;
 		this.sigImageId=sigImageId;
 		this.shareCount=shareCount;
+		this.bankBranchAName=bankBranchAName;
+		this.bankBranchBName= bankBranchBName;
+		this.bankBranchAIFSC= bankBranchAIFSC;
+		this.bankBranchBIFSC=bankBranchBIFSC;
 	}
 
 
@@ -252,69 +261,8 @@ public class MemberDetails {
 		this.filledForm60 = filledForm60;
 		this.sigImageId = sigImageId;
 	}
+
 	
-	public MemberDetails(Integer id, Integer memberNo, Integer branchId, String branchName, String title, String name,
-			String cast, String phoneNos, String fatherName, String landmark, String tehsil, String district,
-			String city, String state, String pinCode, String currentAddress, String username, String password,
-			String relationWithParent, String occupation, String dob, String witness1name, String witness1fatherName,
-			String witness1address, String witness2name, String witness2fatherName, String witness2address,
-			String createdAt, Boolean isActive, Boolean isDefaulter, String defaulterOn, String panNo,
-			String adharNumber, String gstin, Integer bankbranchAId, String bankAccountNumber1, Integer bankbranchBId,
-			String bankAccountNumber2, String memebrType, Boolean isAgent, String nominee, Short nomineeAge,
-			String relationWithNominee, String relationWithFather, String minorDob, String parentName,
-			String accountNumber, Byte filledForm60, Integer sigImageId, Long shareCount) {
-		super();
-		this.id = id;
-		this.memberNo = memberNo;
-		this.branchId = branchId;
-		this.branchName = branchName;
-		this.title = title;
-		this.name = name;
-		this.cast = cast;
-		this.phoneNos = phoneNos;
-		this.fatherName = fatherName;
-		this.landmark = landmark;
-		this.tehsil = tehsil;
-		this.district = district;
-		this.city = city;
-		this.state = state;
-		this.pinCode = pinCode;
-		this.currentAddress = currentAddress;
-		this.username = username;
-		this.password = password;
-		this.relationWithParent = relationWithParent;
-		this.occupation = occupation;
-		this.dob = dob;
-		this.witness1name = witness1name;
-		this.witness1fatherName = witness1fatherName;
-		this.witness1address = witness1address;
-		this.witness2name = witness2name;
-		this.witness2fatherName = witness2fatherName;
-		this.witness2address = witness2address;
-		this.createdAt = createdAt;
-		this.isActive = isActive;
-		this.isDefaulter = isDefaulter;
-		this.defaulterOn = defaulterOn;
-		this.panNo = panNo;
-		this.adharNumber = adharNumber;
-		this.gstin = gstin;
-		this.bankbranchAId = bankbranchAId;
-		this.bankAccountNumber1 = bankAccountNumber1;
-		this.bankbranchBId = bankbranchBId;
-		this.bankAccountNumber2 = bankAccountNumber2;
-		this.memebrType = memebrType;
-		this.isAgent = isAgent;
-		this.nominee = nominee;
-		this.nomineeAge = nomineeAge;
-		this.relationWithNominee = relationWithNominee;
-		this.relationWithFather = relationWithFather;
-		this.minorDob = minorDob;
-		this.parentName = parentName;
-		this.accountNumber = accountNumber;
-		this.filledForm60 = filledForm60;
-		this.sigImageId = sigImageId;
-		this.shareCount=shareCount;
-	}
 
 	public Integer getId() {
 		return id;
@@ -716,6 +664,38 @@ public class MemberDetails {
 
 	public void setShareCount(Long shareCount) {
 		this.shareCount = shareCount;
+	}
+
+	public String getBankBranchAName() {
+		return bankBranchAName;
+	}
+
+	public void setBankBranchAName(String bankBranchAName) {
+		this.bankBranchAName = bankBranchAName;
+	}
+
+	public String getBankBranchBName() {
+		return bankBranchBName;
+	}
+
+	public void setBankBranchBName(String bankBranchBName) {
+		this.bankBranchBName = bankBranchBName;
+	}
+
+	public String getBankBranchAIFSC() {
+		return bankBranchAIFSC;
+	}
+
+	public void setBankBranchAIFSC(String bankBranchAIFSC) {
+		this.bankBranchAIFSC = bankBranchAIFSC;
+	}
+
+	public String getBankBranchBIFSC() {
+		return bankBranchBIFSC;
+	}
+
+	public void setBankBranchBIFSC(String bankBranchBIFSC) {
+		this.bankBranchBIFSC = bankBranchBIFSC;
 	}
 	
 	

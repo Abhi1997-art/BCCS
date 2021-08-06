@@ -953,7 +953,7 @@ public class HodAuthorityService {
 			tr.setSide(details.getSide());
 			tr.setAccountsInSide(details.getAccountsInSide());
 			tr.setCreatedAt(details.getCreatedAt());
-			tr.setVoucherNo(details.getVoucherNo());
+			tr.setVoucherNo(details.getVoucherNo().longValue());
 			tr.setNarration(details.getNarration());
 			tr.setTransactionTypeId(details.getTransactionTypeId());
 			tr.setBranchId(details.getBranchId());
@@ -974,7 +974,7 @@ public class HodAuthorityService {
 			tr.setAccountsInSide(details.getAccountsInSide());
 			tr.setCreatedAt(details.getCreatedAt());
 			tr.setUpdatedAt(new Date());
-			tr.setVoucherNo(details.getVoucherNo());
+			tr.setVoucherNo(details.getVoucherNo().longValue());
 			tr.setNarration(details.getNarration());
 			tr.setTransactionTypeId(details.getTransactionTypeId());
 			tr.setBranchId(details.getBranchId());
@@ -1116,6 +1116,7 @@ public class HodAuthorityService {
 		public String deleteMemorandoms(Integer id) {
 			try {
 				memoRandomRepo.deleteById(id);
+				memorandomTransactionRowRepo.deleteByMemorandumTransactionId(id);
 			}
 			catch (Exception e) {
 				return "Try again after sometime"+e;

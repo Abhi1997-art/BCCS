@@ -12,7 +12,7 @@ import com.service.banking.model.MadModel.EmployeeDetails;
 public interface EmployeeRepo extends JpaRepository<XbankEmployees,Integer> {
 	// new com.service.banking.model.MadModel.DsaDetails
 	
-	@Query("SELECT new com.service.banking.model.MadModel.EmployeeDetails(xe.id,b.name as branches ,xe.empCode ,xe.name ,xe.designation ,xe.contactNo ,xe.department,xe.dateOfJoining ,xe.emergencyNo ,\r\n" + 
+	@Query("SELECT new com.service.banking.model.MadModel.EmployeeDetails(xe.id,b.id, b.name as branches ,xe.empCode ,xe.name ,xe.designation ,xe.contactNo ,xe.department,xe.dateOfJoining ,xe.emergencyNo ,\r\n" + 
 			"xe.fatherName,xe.motherName ,xe.dob ,xe.maritalStatus ,xe.lastQualification ,xe.emailId ,xe.permanentAddress \r\n" + 
 			",xe.presentAddress ,xe.panNo,xe.drivingLicenceNo ,xe.validityOfDrivingLicence ,xe.bankName ,xe.bankAccountNo ,xe.experince \r\n" + 
 			",xe.prevCompany ,xe.prevDepartment ,xe.prevLeavingCompanyDate ,xe.leavingResion ,xe.pfJoiningDate ,xe.pfNo ,xe.pfNominee \r\n" + 
@@ -26,7 +26,7 @@ public interface EmployeeRepo extends JpaRepository<XbankEmployees,Integer> {
 	
 	
 	// get inactive employee.......
-	@Query("SELECT new com.service.banking.model.MadModel.EmployeeDetails(xe.id,b.name as branches ,xe.empCode ,xe.name ,xe.designation ,xe.contactNo ,xe.department,xe.dateOfJoining ,xe.emergencyNo ,\r\n" + 
+	@Query("SELECT new com.service.banking.model.MadModel.EmployeeDetails(xe.id,b.id, b.name as branches ,xe.empCode ,xe.name ,xe.designation ,xe.contactNo ,xe.department,xe.dateOfJoining ,xe.emergencyNo ,\r\n" + 
 			"xe.fatherName,xe.motherName ,xe.dob ,xe.maritalStatus ,xe.lastQualification ,xe.emailId ,xe.permanentAddress\r\n" + 
 			",xe.presentAddress ,xe.panNo,xe.drivingLicenceNo ,xe.validityOfDrivingLicence ,xe.bankName ,xe.bankAccountNo ,xe.experince\r\n" + 
 			",xe.prevCompany ,xe.prevDepartment ,xe.prevLeavingCompanyDate ,xe.leavingResion ,xe.pfJoiningDate ,xe.pfNo ,xe.pfNominee\r\n" + 

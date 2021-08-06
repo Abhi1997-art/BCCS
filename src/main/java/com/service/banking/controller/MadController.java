@@ -35,6 +35,7 @@ import com.service.banking.model.MadModel.MultipleMemberInsuranceDetails;
 import com.service.banking.model.MadModel.SalaryManagement;
 import com.service.banking.model.MadModel.SalaryManagementReq;
 import com.service.banking.model.MadModel.SalaryStructureReq;
+import com.service.banking.model.MadModel.iBankBranchDetails;
 import com.service.banking.model.MadModel.iMemberInsuDetails;
 import com.service.banking.model.accountsModel.AccountDetails;
 import com.service.banking.model.hodAuthorityModel.MoRoDetails;
@@ -56,9 +57,9 @@ public class MadController {
 	//Get all members......................................................................................................
 	@GetMapping("/members/{setFirstResult}/{setMaxResults}")
 	public Map<String, Object> getallMembers(@PathVariable("setFirstResult") Integer setFirstResult,
-			@PathVariable("setMaxResults") Integer setMaxResults) {
+			@PathVariable("setMaxResults") Integer setMaxResults, @RequestParam String search) {
 		Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
-		Map<String, Object> memeberList = madservice.getAllmember(setPageNumber, setMaxResults);																							
+		Map<String, Object> memeberList = madservice.getAllmember(setPageNumber, setMaxResults,search );																							
 		return memeberList;
 	}
 	
@@ -140,21 +141,20 @@ public class MadController {
 	
 	// Add dealers........................................................................................
 	@PostMapping("/add_dealers")
-	public void addDealers(@RequestBody Dealers dealers) {
+	public void addDealers(@RequestBody DealerDeatails dealers) {
 		madservice.addDealers(dealers);
 	}
 	
 	// Update dealers........................................................................................
 	@PutMapping("/update_dealers")
-	public void updateDealers(@RequestBody Dealers dealers) {
+	public void updateDealers(@RequestBody DealerDeatails dealers) {
 		madservice.updateDealers(dealers);
 	}
 
 	//Delete dealers....................................................................................
 	@DeleteMapping("/delete_dealers/{id}")
-	public String deleteDealers(@PathVariable("id") Integer id) {
-		String msg = madservice.deleteDealers(id);
-		return msg;
+	public void deleteDealers(@PathVariable("id") Integer id) {
+		madservice.deleteDealers(id);
 	}
 	
 	// get all DSA....................
@@ -166,21 +166,20 @@ public class MadController {
 
 	// Add DSA........................................................................................
 	@PostMapping("/add_dsa")
-	public void addDSA(@RequestBody Dsa dsa) {
+	public void addDSA(@RequestBody DsaDetails dsa) {
 		madservice.addDSA(dsa);
 	}
 	
 	// Update DSA........................................................................................
 	@PutMapping("/update_dsa")
-	public void updateDSA(@RequestBody Dsa dsa) {
+	public void updateDSA(@RequestBody DsaDetails dsa) {
 		madservice.updateDSA(dsa);
 	}
 
 	//Delete DSA....................................................................................
 	@DeleteMapping("/delete_dsa/{id}")
-	public String deleteDSA(@PathVariable("id") Integer id) {
-		String msg = madservice.deleteDSA(id);
-		return msg;
+	public void deleteDSA(@PathVariable("id") Integer id) {
+		madservice.deleteDSA(id);
 	}
 	
 	// get all member insurance....................
@@ -205,9 +204,8 @@ public class MadController {
 	
 	//Delete Member Insurance....................................................................................
 	@DeleteMapping("/delete_member_insurance/{id}")
-	public String deleteMemberInsurance(@PathVariable("id") Integer id) {
-		String msg = madservice.deleteMemberInsurance(id);
-		return msg;
+	public void deleteMemberInsurance(@PathVariable("id") Integer id) {
+		madservice.deleteMemberInsurance(id);
 	}
 	
 	// Get multiple member insurance....
@@ -249,17 +247,15 @@ public class MadController {
 	
 	// Deactivate active EMPLOYEE........................................................................................
 	@PutMapping("/deactivate_active_employee/{id}")
-	public String deActivateEmployee(@PathVariable("id") Integer id) {
-		String msg = madservice.deActivateEmployee(id);
-		return msg;
+	public void deActivateEmployee(@PathVariable("id") Integer id) {
+		madservice.deActivateEmployee(id);
 	}
 	
 
 	//Delete active EMPLOYEE....................................................................................
 	@DeleteMapping("/delete_employee/{id}")
-	public String deleteEmployee(@PathVariable("id") Integer id) {
-		String msg = madservice.deleteEmployee(id);
-		return msg;
+	public void deleteEmployee(@PathVariable("id") Integer id) {
+		madservice.deleteEmployee(id);
 	}
 	
 	// get all In active employee....................
@@ -283,9 +279,8 @@ public class MadController {
 	
 	// Activate InActive EMPLOYEE........................................................................................
 	@PutMapping("/activate_active_employee/{id}")
-	public String ActivateEmployee(@PathVariable("id") Integer id) {
-		String msg = madservice.ActivateEmployee(id);
-		return msg;
+	public void ActivateEmployee(@PathVariable("id") Integer id) {
+		madservice.ActivateEmployee(id);
 	}
 
 	//Salary management for employement tab................................................................................
@@ -381,8 +376,8 @@ public class MadController {
 		
 		// delete Agent Guarantors in Agent........
 		@DeleteMapping("/agents/delete_agent_guarantor/{id}")
-		public String deleteAgentGuarantorInAgent(@PathVariable Integer id) {
-			return madservice.deleteAgentGuarantorInAgent(id);
+		public void deleteAgentGuarantorInAgent(@PathVariable Integer id) {
+			 madservice.deleteAgentGuarantorInAgent(id);
 		}
 		
 		// get dsa guarantor............
@@ -405,9 +400,12 @@ public class MadController {
 		
 		// delete agentGuarantor associated with agent......
 		@DeleteMapping("dsa/delete_dsa_guarantor/{id}")
-		public String deleteDsaGuarantor(@PathVariable Integer id) {
-			return madservice.deleteDsaGuarantor(id);
+		public void deleteDsaGuarantor(@PathVariable Integer id) {
+			 madservice.deleteDsaGuarantor(id);
 		}
 		
-		
+		@GetMapping("/bank_branches")
+		public List<iBankBranchDetails> getBankBranch(){
+			return madservice.getBankBranch();
+		}
 }

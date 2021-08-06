@@ -28,13 +28,16 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 			"m.witness2address ,m.createdAt ,m.isActive ,m.isDefaulter , m.defaulterOn, m.panNo ,m.adharNumber ,m.gstin ,m.bankbranchAId \r\n" + 
 			",m.bankAccountNumber1 ,\r\n" + 
 			"m.bankbranchBId ,m.bankAccountNumber2 ,m.memebrType ,m.isAgent ,a.nominee,a.nomineeAge,a.relationWithNominee \r\n" + 
-			",m.relationWithFatherField, a.minorNomineeDob ,m.parentName,a.accountNumber, m.filledForm60, a.sigImageId, count(s.id) \r\n" + 
+			",m.relationWithFatherField, a.minorNomineeDob ,m.parentName,a.accountNumber, m.filledForm60, a.sigImageId, count(s.id), bb.name, bb2.name, bb.ifsc, bb2.ifsc \r\n" + 
 			") from Members m "
 			+ "left join Branches b on m.branchId = b.id "
 			+ "left join Accounts a on m.id = a.memberId "
 			+ "left join Share s on s.currentMemberId = m.id "
+			+ "left join BankBranches bb on bb.id = m.bankbranchAId "
+			+ "left join BankBranches bb2 on bb2.id = m.bankbranchBId "
+			+ "where m.name like ?1% or m.memberNo  like ?1% "
 			+ "group by m.id order by m.id DESC")	
-	public Page<MemberDetails> getAllMembers(Pageable pageable);	    
+	public Page<MemberDetails> getAllMembers(Pageable pageable, String search);	    
 
 	     // get all member for printing 
 		 @Query("select new com.service.banking.model.printingModel.MemberDetail(m.id,m.name ,m.permanentAddress,m.memberNo ,m.landmark,m.isDefaulter) from  Members m where m.name LIKE %?1% ")
@@ -51,7 +54,7 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 				List<MeberDetail> getMember(String memberName);
 
 				//Search for sponsor name for MAD - Agent..............................................................................
-				@Query("select new com.service.banking.model.superAdminModel.MeberDetail(m.id, m.name , CASE WHEN (m.memberNo is null) THEN 0 ELSE m.memberNo END, m.currentAddress , CASE WHEN (m.isDefaulter is null) THEN false ELSE m.isDefaulter END,m.landmark, ag.codeNo) from Members m " +  
+				@Query("select new com.service.banking.model.superAdminModel.MeberDetail(ag.id, m.name , CASE WHEN (m.memberNo is null) THEN 0 ELSE m.memberNo END, m.currentAddress , CASE WHEN (m.isDefaulter is null) THEN false ELSE m.isDefaulter END,m.landmark, ag.codeNo, m.name) from Members m " +  
 						" left join Agents ag on ag.memberId=m.id where m.isAgent = 1 and m.name LIKE %?1% ")
 				public List<MeberDetail> getSponsor(String name);
 
@@ -119,6 +122,12 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 						+ "where m.name like '%Default' and b.id = ?1",
 						nativeQuery = true)
 				public Integer getDefaultBranchMember(Integer id);
+
+				@Query(value = "select m.member_no from members m \r\n"
+						+ "order by m.id DESC\r\n"
+						+ "limit 1 ",
+						nativeQuery = true)
+				public Integer getLastMemberNo();
 
 
 

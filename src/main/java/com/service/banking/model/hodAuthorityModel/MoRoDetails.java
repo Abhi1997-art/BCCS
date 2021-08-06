@@ -7,16 +7,15 @@ public class MoRoDetails {
 	private Byte isActive;
 	private Integer branchId;
 	private String branchName; // branch name.............
+	private Integer moId;
 
 	public MoRoDetails() {
 		super();
 	}
 
-	
-	
-	public MoRoDetails(Integer id, String moName) {
+	public MoRoDetails(Integer moId, String moName) {
 		super();
-		this.id = id;
+		this.moId = moId;
 		this.moName = moName;
 	}
 
@@ -27,6 +26,14 @@ public class MoRoDetails {
 		this.isActive = isActive;
 		this.branchId = branchId;
 		this.branchName = branchName;
+	}
+
+	public Integer getMoId() {
+		return moId;
+	}
+
+	public void setMoId(Integer moId) {
+		this.moId = moId;
 	}
 
 	/**

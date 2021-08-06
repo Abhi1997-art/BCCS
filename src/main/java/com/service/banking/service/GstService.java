@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.service.banking.hibernateEntity.Accounts;
 import com.service.banking.hibernateEntity.Supplier;
 import com.service.banking.hibernateEntity.TransactionTypes;
 import com.service.banking.model.GstModel.AccountDetail;
@@ -17,11 +18,14 @@ import com.service.banking.model.GstModel.TransactionType;
 import com.service.banking.model.GstModel.UpdateSupplierDetails;
 import com.service.banking.model.dashboardModel.DailyDueResultModel;
 import com.service.banking.model.printingModel.FDAccountDetails;
+import com.service.banking.model.superAdminModel.BranchDetail;
 import com.service.banking.repository.AccountsRepo.AccountsRepo;
 import com.service.banking.repository.gstRepository.MemorandomAccountStatement;
 import com.service.banking.repository.gstRepository.SupplierRepo;
 import com.service.banking.repository.gstRepository.TransactionTypeRepo;
 import com.service.banking.repository.hodAuthorityRepo.MemoRandomRepo;
+import com.service.banking.repository.madRepository.MembersRepo;
+import com.service.banking.repository.superAdminRepo.BranchesRepository;
 
 @Service
 public class GstService {
@@ -34,6 +38,15 @@ public class GstService {
 	
 	@Autowired
 	MemoRandomRepo transRepo;
+	
+	@Autowired
+	BranchesRepository branchesRepository;
+	
+	@Autowired
+	MembersRepo memebrRepo;
+	
+	@Autowired
+	AccountsRepo accountsRepo;
 	
 	
 	@Autowired
@@ -73,8 +86,9 @@ public class GstService {
 		  
 	// Add  Supplier .....................................................
 	public Supplier  addSupllier(UpdateSupplierDetails supplierDetail) {
-		Supplier supplier =new Supplier();
-		try {
+		
+			Supplier supplier =new Supplier();
+			Date date = new Date();
 			supplier.setName(supplierDetail.getName());
 			supplier.setOrganization(supplierDetail.getOrganization());
 			supplier.setGstin(supplierDetail.getGstin());
@@ -82,13 +96,41 @@ public class GstService {
 			supplier.setPhoneNos(supplierDetail.getPhoneNos());
 			supplier.setAddress(supplierDetail.getAddress());
 			supplier.setIsActive((byte)(supplierDetail.getIsActive() ? 1 : 0));
-			supplier.setCreatedAt(supplierDetail.getCreatedAt());
+			supplier.setCreatedAt(date);
 			supplier=supplierRepo.save(supplier);
-			}
-			catch(Exception e)
-			{
-			return supplier;
-			}
+			
+			List<BranchDetail> branches = branchesRepository.getTotalBranches();
+			
+			for (BranchDetail b : branches) {
+				
+				Integer memberId = memebrRepo.getDefaultBranchMember(b.getId());
+					
+					//Creating accounts
+					Accounts accounts = new Accounts();
+					accounts.setAccountNumber(b.getCode() + " " + supplierDetail.getName() + " (" + supplierDetail.getOrganization() + ")");
+					accounts.setAmount(0.0);
+					accounts.setMemberId(memberId);
+					accounts.setSchemeId(23);
+					accounts.setBranchId(b.getId());
+					accounts.setActiveStatus(true);
+					accounts.setAccountType("Default");
+					accounts.setModeOfOperation("Self");
+					accounts.setNewOrRenew("New");
+					accounts.setRepaymentMode("Cash");
+					accounts.setCreatedAt(date);
+					accounts.setLastCurrentInterestUpdatedAt(date);
+					accounts.setStaffId(1);
+					accounts.setPandLgroup("Sundry Creditor");
+					accounts.setGroupType("Sundry Creditor");
+					accounts.setDealerId(0);
+					accounts.setIsDirty((byte) 0);
+					accounts.setBikeSurrendered((byte) 0);
+					accounts.setIsInLegal((byte) 0);
+					accounts.setInsuranceTenure(" ");
+					accounts.setBankAccountLimit(0);
+					accountsRepo.save(accounts);
+				}
+
 		return supplier;
 	}
 		

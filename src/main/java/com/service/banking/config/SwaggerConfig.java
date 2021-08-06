@@ -27,7 +27,7 @@ public class SwaggerConfig {
 	}
 
 	private Predicate<String> productPaths() {
-		return or(regex("/service/report.*"), regex("/service/transaction.*"), regex("/service/dashboard.*"),  regex("/service/hod_authority.*"),  regex("/service/mad.*"), regex("/service/superadmin.*"));
+		return or(regex("/service/report.*"), regex("/service/transaction.*"), regex("/service/dashboard.*"),  regex("/service/hod_authority.*"),  regex("/service/mad.*"), regex("/service/superadmin.*"), regex("/service/gst.*"));
 	}
 
 	private ApiInfo apiInfo() {

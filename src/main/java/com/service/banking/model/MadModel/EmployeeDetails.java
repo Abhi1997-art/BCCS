@@ -8,9 +8,10 @@ import com.service.banking.hibernateEntity.Branches;
 
 public class EmployeeDetails {
 	private Integer id;
-	private String branches;
-	private String empCode;
+	private Integer branchId;
 	private String name;
+	private String empCode;
+	private String employeeName ;
 	private String designation;
 	private String contactNo;
 	private String department;
@@ -54,7 +55,7 @@ public class EmployeeDetails {
 	private Boolean isActive;
 	private Date effectiveClDate;
 	private String openingCl;
-	public EmployeeDetails(Integer id, String branches, String empCode, String name, String designation,
+	public EmployeeDetails(Integer id,  Integer branchId, String branches, String empCode, String name, String designation,
 			String contactNo, String department, Date dateOfJoining, String emergencyNo, String fatherName,
 			String motherName, Date dob, String maritalStatus, String lastQualification, String emailId,
 			String permanentAddress, String presentAddress, String panNo, String drivingLicenceNo,
@@ -67,9 +68,10 @@ public class EmployeeDetails {
 			Date effectiveClDate, String openingCl) {
 		super();
 		this.id = id;
-		this.branches = branches;
+		this.branchId=branchId;
+		this.name = branches;
 		this.empCode = empCode;
-		this.name = name;
+		this.employeeName  = name;
 		this.designation = designation;
 		this.contactNo = contactNo;
 		this.department = department;
@@ -119,7 +121,7 @@ public class EmployeeDetails {
 	public EmployeeDetails(Integer id, String name) {
 		super();
 		this.id = id;
-		this.name = name;
+		this.employeeName  = name;
 	}
 
 
@@ -134,24 +136,44 @@ public class EmployeeDetails {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public String getBranches() {
-		return branches;
+
+	public String getName() {
+		return name;
 	}
-	public void setBranches(String branches) {
-		this.branches = branches;
+
+
+	public void setName(String name) {
+		this.name = name;
 	}
+
+
 	public String getEmpCode() {
 		return empCode;
 	}
 	public void setEmpCode(String empCode) {
 		this.empCode = empCode;
 	}
-	public String getName() {
-		return name;
+
+	public String getEmployeeName() {
+		return employeeName;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
 	}
+
+
+	public Integer getBranchId() {
+		return branchId;
+	}
+
+
+	public void setBranchId(Integer branchId) {
+		this.branchId = branchId;
+	}
+
+
 	public String getDesignation() {
 		return designation;
 	}

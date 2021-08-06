@@ -20,7 +20,7 @@ public interface MoRoRepository extends JpaRepository<Mos, Integer> {
 	@Query("select new com.service.banking.model.hodAuthorityModel.MoRoDetails(b.id,b.name as moName) from Mos b")
 	List<MoRoDetails> getMos();
 	
-	@Query("select new com.service.banking.model.hodAuthorityModel.MoRoDetails(m.id,m.name as moName) from Mos m " +  
+	@Query("select new com.service.banking.model.hodAuthorityModel.MoRoDetails(m.id as moId,m.name as moName) from Mos m " +  
 			"where m.name LIKE %?1% ")
 	List<MoRoDetails> getMo(String name);
 

@@ -84,7 +84,7 @@ public class GstController {
 				
 	//Delete supplier..
 	@DeleteMapping("/delete_supplier/{id}")
-	public void deleteBranches(@PathVariable("id") Integer Id) {
+	public void deleteSupplier(@PathVariable("id") Integer Id) {
 		gstService.deleteSupplier(Id);
 	}
 	

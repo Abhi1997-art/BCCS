@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.service.banking.hibernateEntity.Accounts;
 import com.service.banking.hibernateEntity.AgentGuarantors;
 import com.service.banking.hibernateEntity.Agents;
+import com.service.banking.hibernateEntity.BankBranches;
 import com.service.banking.hibernateEntity.Branches;
 import com.service.banking.hibernateEntity.Comment;
 import com.service.banking.hibernateEntity.Dealers;
@@ -42,6 +43,7 @@ import com.service.banking.model.MadModel.SalaryManagement;
 import com.service.banking.model.MadModel.SalaryManagementReq;
 import com.service.banking.model.MadModel.SalaryStructureReq;
 import com.service.banking.model.MadModel.TotalMember;
+import com.service.banking.model.MadModel.iBankBranchDetails;
 import com.service.banking.model.MadModel.iMemberInsuDetails;
 import com.service.banking.model.accountsModel.AccountDetails;
 import com.service.banking.model.hodAuthorityModel.MoRoDetails;
@@ -49,6 +51,7 @@ import com.service.banking.model.hodAuthorityModel.iCommentDetails;
 import com.service.banking.model.superAdminModel.MeberDetail;
 import com.service.banking.repository.AccountsRepo.AccountsRepo;
 import com.service.banking.repository.dashBoardRepo.AccountsOpenTodayRepo;
+import com.service.banking.repository.hodAuthorityRepo.BankBranchRepo;
 import com.service.banking.repository.hodAuthorityRepo.MoRoRepository;
 import com.service.banking.repository.madRepository.AgentGuarantorRepo;
 import com.service.banking.repository.madRepository.AgentsRepositoty;
@@ -90,15 +93,16 @@ public class MadService {
 	MembersRepo mRepo;
 	@Autowired
 	AgentGuarantorRepo agentGuarantorRepo;
-	
 	@Autowired
 	DsaGuarantorRepo dsgRepo;
+	@Autowired
+	BankBranchRepo bankBranchRepo;
 
 
 	//Get all members of MAD.....................................................................
-	public Map<String, Object> getAllmember(int setPageNumber, int maxSize) {
+	public Map<String, Object> getAllmember(int setPageNumber, int maxSize, String search) {
 		Pageable paging = PageRequest.of(setPageNumber, maxSize);
-		Page<MemberDetails> memberList = membersRepo.getAllMembers(paging);
+		Page<MemberDetails> memberList = membersRepo.getAllMembers(paging, search);
 		Map<String, Object> members = new HashMap<String, Object>(); 
 		if (memberList.hasContent()) {
 			members.put("pageSize", memberList.getSize());
@@ -114,6 +118,7 @@ public class MadService {
 	//Update member of MAD........................................................................
 	public void updateMembers(MemberDetails memberDetails) {
 		Members members= membersRepo.getOne(memberDetails.getId());
+		Date date = new Date();
 		members.setBranchId(memberDetails.getBranchId());
 		members.setTitle(memberDetails.getTitle());
 		members.setName(memberDetails.getName());
@@ -148,12 +153,14 @@ public class MadService {
 		members.setMemberNo(memberDetails.getMemberNo());
 		members.setUsername(memberDetails.getUsername());
 		members.setPassword(memberDetails.getPassword());	
+		members.setUpdatedAt(date);
 		membersRepo.save(members);
 	}
 	
 	//Add MAD member..................................................................................
 	public void addMembers(MemberDetails memberDetails) {
 		Members members= new Members();
+		Date date = new Date();
 		members.setAccountNumber(memberDetails.getAccountNumber());
 		members.setFilledForm60(memberDetails.getFilledForm60());
 		members.setBranchId(memberDetails.getBranchId());
@@ -187,12 +194,24 @@ public class MadService {
 		members.setWitness2fatherName(memberDetails.getWitness2fatherName());
 		members.setWitness2address(memberDetails.getWitness2address());
 		members.setIsActive(memberDetails.getIsActive());
-		members.setMemberNo(memberDetails.getMemberNo());
 		members.setUsername(memberDetails.getUsername());
 		members.setPassword(memberDetails.getPassword());	
+		members.setCreatedAt(date);
+		members.setUpdatedAt(date);
 		members.setParentMemberId(0);
+		members.setIsDefaulter(false);
+		
+		Integer lastMemberNo = membersRepo.getLastMemberNo();
+		Integer currentMemberNo = lastMemberNo+1;
+		members.setMemberNo(currentMemberNo);
+		
 		membersRepo.save(members);
 		
+		Members savedMembers = membersRepo.findById(members.getId()).get();
+		savedMembers.setUsername(members.getId().toString());
+		savedMembers.setPassword(members.getId().toString() + members.getMemberNo());	
+		membersRepo.save(savedMembers);
+	
 	}
 
 	//Update active of member of MAD................................................................
@@ -267,7 +286,8 @@ public class MadService {
 	//Add MAD agents..................................................................................
 	public void addAgents(AgentDetails agentDetails) {
 		Agents agents=new Agents();
-		agents.setMoId(agentDetails.getModId());
+		Date date = new Date();
+		agents.setMoId(agentDetails.getMoId());
 		agents.setMemberId(agentDetails.getMemberId());
 		agents.setSponsorId(agentDetails.getSponsorId());
 		agents.setAccountId(agentDetails.getAccountId());
@@ -277,13 +297,16 @@ public class MadService {
 		agents.setCodeNo(agentDetails.getCodeNo());
 		agents.setAddedBy(agentDetails.getAddedBy());
 		agents.setActiveStatus(agentDetails.getActiveStatus());
+		agents.setCreatedAt(date);
+		agents.setUpdatedAt(date);
 		agentsRepo.save(agents);	
 	}
 	
 	//Update MAD agents..................................................................................
 	public void updateAgents(AgentDetails agentDetails) {
 		Agents agents=agentsRepo.getOne(agentDetails.getId());
-		agents.setMoId(agentDetails.getModId());
+		Date date = new Date();
+		agents.setMoId(agentDetails.getMoId());
 		agents.setSponsorId(agentDetails.getSponsorId());
 		agents.setAccountId(agentDetails.getAccountId());
 		agents.setCadreId(agentDetails.getCadreId());
@@ -292,6 +315,7 @@ public class MadService {
 		agents.setCodeNo(agentDetails.getCodeNo());
 		agents.setAddedBy(agentDetails.getAddedBy());
 		agents.setActiveStatus(agentDetails.getActiveStatus());
+		agents.setUpdatedAt(date);
 		agentsRepo.save(agents);		
 	}
 
@@ -413,13 +437,50 @@ public class MadService {
 	}
 
 	// Add dealers........................................................................................
-	public void addDealers(Dealers dealers) {
-		dealerRepo.save(dealers);
+	public void addDealers(DealerDeatails dealers) {
+		Dealers d = new Dealers();
+		
+		Dsa dsa = dsaRepo.findById(dealers.getDsid()).get();
+		d.setDsa(dsa);
+		
+		d.setName(dealers.getName());
+		d.setProperitorName(dealers.getProperitorName());
+		d.setProperitorPhoneNo1(dealers.getProperitorPhoneNo1());
+		d.setProperitorPhoneNo2(dealers.getProperitorPhoneNo2());
+		d.setEmailId1(dealers.getEmailId1());
+		d.setEmailId2(dealers.getEmailId2());
+		d.setProduct(dealers.getProduct());
+		d.setUsername(dealers.getUsername());
+		d.setPassword(dealers.getPassword());
+		d.setAddress(dealers.getAddress());
+		d.setLoanPaneltyPerDay(dealers.getLoanPaneltyPerDay());
+		d.setTimeOverCharge(dealers.getTimeOverCharge());
+		d.setDealerMonthlyDate(dealers.getDealerMonthlyDate());
+		d.setActiveStatus(dealers.getActiveStatus());
+		dealerRepo.save(d);
 	}
 
 	//Update dealers......................................................................................
-	public void updateDealers(Dealers dealers) {
-		dealerRepo.save(dealers);
+	public void updateDealers(DealerDeatails dealers) {
+		Dealers d = dealerRepo.findById(dealers.getId()).get();
+		
+		Dsa dsa = dsaRepo.findById(dealers.getDsid()).get();
+		d.setDsa(dsa);
+		
+		d.setName(dealers.getName());
+		d.setProperitorName(dealers.getProperitorName());
+		d.setProperitorPhoneNo1(dealers.getProperitorPhoneNo1());
+		d.setProperitorPhoneNo2(dealers.getProperitorPhoneNo2());
+		d.setEmailId1(dealers.getEmailId1());
+		d.setEmailId2(dealers.getEmailId2());
+		d.setProduct(dealers.getProduct());
+		d.setUsername(dealers.getUsername());
+		d.setPassword(dealers.getPassword());
+		d.setAddress(dealers.getAddress());
+		d.setLoanPaneltyPerDay(dealers.getLoanPaneltyPerDay());
+		d.setTimeOverCharge(dealers.getTimeOverCharge());
+		d.setDealerMonthlyDate(dealers.getDealerMonthlyDate());
+		dealerRepo.save(d);
 	}
 
 	//Delete dealers......................................................................................
@@ -434,13 +495,37 @@ public class MadService {
 	}
 
 	// Add DSA........................................................................................
-	public void addDSA(Dsa dsa) {
-		dsaRepo.save(dsa);
+	public void addDSA(DsaDetails dsa) {
+		Dsa d = new Dsa();
+		d.setName(dsa.getName());
+		d.setUsername(dsa.getUsername());
+		d.setPassword(dsa.getPassword());
+		d.setPhoneNo1(dsa.getPhoneNo1());
+		d.setPhoneNo2(dsa.getPhoneNo2());
+		d.setEmailId1(dsa.getEmailId1());
+		d.setEmailId2(dsa.getEmailId2());
+		
+		Members members = membersRepo.findById(dsa.getMemberId()).get();
+		d.setMembers(members);
+		
+		dsaRepo.save(d);
 	}
 
 	//Update DSA......................................................................................
-	public void updateDSA(Dsa dsa) {
-		dsaRepo.save(dsa);
+	public void updateDSA(DsaDetails dsa) {
+		Dsa d = dsaRepo.findById(dsa.getId()).get();
+		d.setName(dsa.getName());
+		d.setUsername(dsa.getUsername());
+		d.setPassword(dsa.getPassword());
+		d.setPhoneNo1(dsa.getPhoneNo1());
+		d.setPhoneNo2(dsa.getPhoneNo2());
+		d.setEmailId1(dsa.getEmailId1());
+		d.setEmailId2(dsa.getEmailId2());
+		
+		Members members = membersRepo.findById(dsa.getMemberId()).get();
+		d.setMembers(members);
+		
+		dsaRepo.save(d);
 	}
 
 	//Delete DSA.......................................................................................
@@ -719,6 +804,11 @@ public class MadService {
 		public List<iCommentDetails> getComments(Integer memberId) {
 			List<iCommentDetails> comments = commentRepo.getComments(memberId);
 			return comments;
+		}
+
+		public List<iBankBranchDetails> getBankBranch() {
+			List<iBankBranchDetails> bankBranchDetails= bankBranchRepo.getBankBranch();
+			return bankBranchDetails;
 		}
 
 

@@ -24,7 +24,7 @@ public class TransactionRowDetails {
 	private Integer accountsInSide;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Kolkata")
 	private Date createdAt;
-	private Long voucherNo;
+	private BigDecimal voucherNo;
 	private String narration;
 	private Integer transactionTypeId;
 	private String transactionTypeName;
@@ -44,7 +44,7 @@ public class TransactionRowDetails {
 	public TransactionRowDetails(Integer transactionId, Integer accountId, String accountNumber, Integer memberId,
 			String memberName, String fatherName, Integer scemeId, String schemeName, Integer balanceId,
 			String balanceName, BigDecimal debit, BigDecimal credit, String side, Integer accountsInSide,
-			Date createdAt, Long voucherNo, String narration, Integer transactionTypeId, String transactionTypeName,
+			Date createdAt, BigDecimal voucherNo, String narration, Integer transactionTypeId, String transactionTypeName,
 			Integer branchId, String branchName, Integer referenceAccountId, String referenceAccountNumber,
 			Integer referenceMemberId, String referenceMemberName, String referenceFatherName) {
 		super();
@@ -80,7 +80,7 @@ public class TransactionRowDetails {
 	public TransactionRowDetails(Integer transactionId, Integer accountId, String accountNumber, Integer memberId,
 			String memberName, String fatherName, Integer scemeId, String schemeName, Integer balanceId,
 			String balanceName, BigDecimal debit, BigDecimal credit, String side, Integer accountsInSide,
-			Date createdAt, Long voucherNo, String narration, Integer transactionTypeId, String transactionTypeName,
+			Date createdAt, BigDecimal voucherNo, String narration, Integer transactionTypeId, String transactionTypeName,
 			Integer branchId, String branchName, Integer referenceAccountId, String referenceAccountNumber,
 			Integer referenceMemberId, String referenceMemberName, String referenceFatherName,
 			Integer transactionRowId) {
@@ -251,11 +251,11 @@ public class TransactionRowDetails {
 		this.createdAt = createdAt;
 	}
 
-	public Long getVoucherNo() {
+	public BigDecimal getVoucherNo() {
 		return voucherNo;
 	}
 
-	public void setVoucherNo(Long voucherNo) {
+	public void setVoucherNo(BigDecimal voucherNo) {
 		this.voucherNo = voucherNo;
 	}
 

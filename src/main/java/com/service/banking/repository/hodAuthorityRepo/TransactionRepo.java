@@ -44,12 +44,12 @@ public interface TransactionRepo extends JpaRepository<Transactions, Integer> {
 
 
 	@Query("select new com.service.banking.model.hodAuthorityModel.TransactionRowDetails(t.id, tr.accountId, a.accountNumber, m.id, m.name, m.fatherName, "
-			+ "sc.id, sc.name, bl.id, bl.name, tr.amountDr, tr.amountCr, tr.side, tr.accountsInSide, tr.createdAt, tr.voucherNo, tr.narration, tt.id, "
+			+ "sc.id, sc.name, bl.id, bl.name, tr.amountDr, tr.amountCr, tr.side, tr.accountsInSide, tr.createdAt, t.voucherNo, t.narration, tt.id, "
 			+ "tt.name, b.id, b.name, a1.id, a1.accountNumber, m1.id, m1.name, m1.fatherName, tr.id) "
 			+ "from Transactions t left join TransactionRow tr on t.id = tr.transactionId left join TransactionTypes tt on t.transactionTypeId = tt.id"
 			+ " left join Accounts a on tr.accountId = a.id left join Members m "
 			+ "on m.id = a.memberId left join Schemes sc on tr.schemeId = sc.id left join BalanceSheet bl on bl.id = tr.balanceSheetId left join Branches b "
-			+ "on b.id = t.branchId left join Accounts a1 on tr.referenceAccountId = a1.id left join Members m1 on m1.id = a1.memberId "
+			+ "on b.id = t.branchId left join Accounts a1 on t.referenceId = a1.id left join Members m1 on m1.id = a1.memberId "
 			+ "where t.id = ?1")
 	public List<TransactionRowDetails> getTransactionRowForInvoice(Integer id);
 
