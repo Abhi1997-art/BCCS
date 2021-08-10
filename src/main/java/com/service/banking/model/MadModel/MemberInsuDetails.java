@@ -6,7 +6,7 @@ import java.util.Date;
 public class MemberInsuDetails {
 	
     public String accountNumber;
-    public String memberName;
+    public String name;
     public Integer memberId;
     public String landmark;
     public String tehsil;
@@ -20,7 +20,7 @@ public class MemberInsuDetails {
 	public String narration;
 	public Date nextInsuranceDueDate;
 	public Integer accountId;
-	public String name;
+	public String insuranceName;
 	public Integer memberNo;
 	public Boolean isDefaulter;
 	public Date createdAt;
@@ -38,12 +38,12 @@ public class MemberInsuDetails {
 	}
 
 
-	public MemberInsuDetails(String accountNumber, String memberName, int memberId, String landmark, String tehsil,
-			String city, String district, String state, String currentAddress, Integer id, Date insuranceStartDate,
+	public MemberInsuDetails(String accountNumber, String memberName, Integer memberId, String landmark, String tehsil,
+			String city, String district, String state, String currentAddress, String fatherName, Integer id, Date insuranceStartDate,
 			byte insuranceDuration, String narration, Date nextInsuranceDueDate, Integer accounId, String name, Integer memberNo, Boolean isDefaulter) {
 		super();
 		this.accountNumber = accountNumber;
-		this.memberName = memberName;
+		this.name = memberName;
 		this.memberId = memberId;
 		this.landmark = landmark;
 		this.tehsil = tehsil;
@@ -51,13 +51,14 @@ public class MemberInsuDetails {
 		this.district = district;
 		this.state = state;
 		this.currentAddress = currentAddress;
+		this.fatherName=fatherName;
 		this.id = id;
 		this.insuranceStartDate = insuranceStartDate;
 		this.insuranceDuration = insuranceDuration;
 		this.narration = narration;
 		this.nextInsuranceDueDate = nextInsuranceDueDate;
 		this.accountId=accounId;
-		this.name=name;
+		this.insuranceName=name;
 		this.memberNo=memberNo;
 		this.isDefaulter=isDefaulter;
 	}
@@ -71,7 +72,7 @@ public class MemberInsuDetails {
 			Date dob, String nominee, String relationWithNominee, BigDecimal currentBalance) {
 		super();
 		this.accountNumber = accountNumber;
-		this.memberName = memberName;
+		this.name = memberName;
 		this.memberId = memberId;
 		this.landmark = landmark;
 		this.tehsil = tehsil;
@@ -85,7 +86,7 @@ public class MemberInsuDetails {
 		this.narration = narration;
 		this.nextInsuranceDueDate = nextInsuranceDueDate;
 		this.accountId = accountId;
-		this.name = name;
+		this.insuranceName = name;
 		this.memberNo = memberNo;
 		this.isDefaulter = isDefaulter;
 		this.createdAt = createdAt;
@@ -110,18 +111,13 @@ public class MemberInsuDetails {
 	}
 
 
-
-	public String getMemberName() {
-		return memberName;
+	public String getName() {
+		return name;
 	}
 
-
-
-	public void setMemberName(String memberName) {
-		this.memberName = memberName;
+	public void setName(String name) {
+		this.name = name;
 	}
-
-
 
 	public Integer getMemberId() {
 		return memberId;
@@ -269,16 +265,21 @@ public class MemberInsuDetails {
 		this.accountId = accountId;
 	}
 
-
-	public String getName() {
-		return name;
+	public String getInsuranceName() {
+		return insuranceName;
 	}
 
-
-	public void setName(String name) {
-		this.name = name;
+	public void setInsuranceName(String insuranceName) {
+		this.insuranceName = insuranceName;
 	}
 
+	public Boolean getDefaulter() {
+		return isDefaulter;
+	}
+
+	public void setDefaulter(Boolean defaulter) {
+		isDefaulter = defaulter;
+	}
 
 	public Integer getMemberNo() {
 		return memberNo;

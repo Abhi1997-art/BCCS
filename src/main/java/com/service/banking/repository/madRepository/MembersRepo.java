@@ -35,7 +35,7 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 			+ "left join Share s on s.currentMemberId = m.id "
 			+ "left join BankBranches bb on bb.id = m.bankbranchAId "
 			+ "left join BankBranches bb2 on bb2.id = m.bankbranchBId "
-			+ "where m.name like ?1% or m.memberNo  like ?1% "
+			+ "where m.name like ?1% or m.memberNo like ?1% or m.panNo like ?1% or m.adharNumber like ?1% or m.phoneNos like ?1%"
 			+ "group by m.id order by m.id DESC")	
 	public Page<MemberDetails> getAllMembers(Pageable pageable, String search);	    
 

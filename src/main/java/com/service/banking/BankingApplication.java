@@ -22,17 +22,6 @@ public class BankingApplication {
 		SpringApplication.run(BankingApplication.class, args);
 
 	}
-	
-	
-
-// to create war file....
-	// extends SpringBootServletInitializer and override below method.........
-
-	/*
-	 * @Override protected SpringApplicationBuilder
-	 * configure(SpringApplicationBuilder application) { return
-	 * application.sources(BankingApplication.class); }
-	 */
 
 	@RequestMapping(value = "/")
 	public String hello() {

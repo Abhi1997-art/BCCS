@@ -301,6 +301,7 @@ public class TransactionService {
 		transactions.setTransactionTypeId(JVtype);
 		transactions.setStaffId(depositeDetails.getStaffId());
 		transactions.setNarration(depositeDetails.getNarration());
+		System.out.println(depositeDetails.getNarration());
 		Date date = new Date();
 		transactions.setCreatedAt(date);
 		transactions.setUpdatedAt(date);
@@ -324,6 +325,7 @@ public class TransactionService {
 		transactionRow.setSchemeId(getSchemeID(acFrom));
 		transactionRow.setBalanceSheetId(getBalanceSheetID(acFrom));
 		transactionRow.setVoucherNo(transactions.getVoucherNo().longValue());
+		System.out.println(transactions.getVoucherNo().longValue());
 		transactionRowRepo.save(transactionRow);
 		
 		TransactionRow transactionRow2 = new TransactionRow();

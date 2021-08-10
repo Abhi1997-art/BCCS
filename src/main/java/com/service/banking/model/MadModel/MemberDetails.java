@@ -62,6 +62,9 @@ public class MemberDetails {
 	public String bankBranchBName;
 	public String bankBranchAIFSC;
 	public String bankBranchBIFSC;
+	public Integer debitAccount;
+	public Integer loginBranch;
+	public Integer staffId;
 	
 	
 	
@@ -697,8 +700,52 @@ public class MemberDetails {
 	public void setBankBranchBIFSC(String bankBranchBIFSC) {
 		this.bankBranchBIFSC = bankBranchBIFSC;
 	}
-	
-	
-	
-  
+
+	public Boolean getActive() {
+		return isActive;
 	}
+
+	public void setActive(Boolean active) {
+		isActive = active;
+	}
+
+	public Boolean getDefaulter() {
+		return isDefaulter;
+	}
+
+	public void setDefaulter(Boolean defaulter) {
+		isDefaulter = defaulter;
+	}
+
+	public Boolean getAgent() {
+		return isAgent;
+	}
+
+	public void setAgent(Boolean agent) {
+		isAgent = agent;
+	}
+
+	public Integer getDebitAccount() {
+		return debitAccount;
+	}
+
+	public void setDebitAccount(Integer debitAccount) {
+		this.debitAccount = debitAccount;
+	}
+
+	public Integer getLoginBranch() {
+		return loginBranch;
+	}
+
+	public void setLoginBranch(Integer loginBranch) {
+		this.loginBranch = loginBranch;
+	}
+
+	public Integer getStaffId() {
+		return staffId;
+	}
+
+	public void setStaffId(Integer staffId) {
+		this.staffId = staffId;
+	}
+}

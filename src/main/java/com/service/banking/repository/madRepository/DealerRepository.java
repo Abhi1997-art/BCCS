@@ -16,8 +16,11 @@ public interface DealerRepository extends JpaRepository<Dealers,Integer> {
 	
 	@Query("select new com.service.banking.model.MadModel.DealerDeatails(d.id,d.name,d.address,d.loanPaneltyPerDay,d.timeOverCharge,d.dealerMonthlyDate,d.properitorName,d.properitorPhoneNo1,d.properitorPhoneNo2,d.emailId1,"
 			+ "d.emailId2,d.product,d.activeStatus,d.username,d.password,ds.name as dsName,ds.id as dsId) from Dealers d \r\n" + 
-			"left join Dsa ds on d.dsa.id=ds.id order by d.id DESC")
-	List<DealerDeatails> getAllDealers();
+			"left join Dsa ds on d.dsa.id=ds.id " +
+			" where d.name like ?1% or d.address like ?1% or d.properitorName like ?1% or d.properitorPhoneNo1 like ?1% or d.properitorPhoneNo2 like ?1% or d.emailId1 like ?1% or d.emailId2 like ?1% " +
+			" or d.product like ?1% or d.username like ?1% or ds.name like ?1%" +
+			" order by d.id DESC")
+	List<DealerDeatails> getAllDealers(String search);
 
 	@Query("Select new com.service.banking.model.accountsModel.LoanAccountDetails(d.id, "
 			+ " d.name) from Dealers d "

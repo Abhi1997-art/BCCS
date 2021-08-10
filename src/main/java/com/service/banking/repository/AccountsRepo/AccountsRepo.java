@@ -625,7 +625,25 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 			+ "where a.AccountNumber LIKE CONCAT(?2,'%',?1)" ,
 			nativeQuery= true)
 	List<Accounts> getSchemeDefaultAccounts(String name, String code);
-	
 
-	
+	@Query(value="select a.id from accounts a \n" +
+			"where a.AccountNumber = CONCAT(?1, ' ADMISSION FEE') " ,
+			nativeQuery= true)
+    Integer getAdmissionAccounts(String branchCode);
+
+	@Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.accountNumber, m.name ,m.fatherName) from Accounts a \r\n"
+			+ "left join Members m on m.id=a.memberId " +
+			" where a.memberId = IFNULL(?1, a.memberId) and a.accountType = 'saving' and a.activeStatus = 1 ")
+	List<AccountDetails> getSavingAccount(Integer id);
+
+	@Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.accountNumber, m.name ,m.fatherName) from Accounts a \r\n"
+			+ "left join Members m on m.id=a.memberId " +
+			" where (a.accountNumber Like '%CASH ACCOUNT' or a.accountNumber like '%MEMBERSHIP ADVANCE AMOUNT') and\n" +
+			" a.branchId = ?1")
+	List<AccountDetails> getDebitAccount(Integer branchId);
+
+	@Query(value="SELECT * from accounts a \n" +
+			"where a.member_id = ?1",
+	nativeQuery = true)
+	List<Accounts> findAccounts(Integer id);
 }

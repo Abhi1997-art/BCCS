@@ -24,8 +24,10 @@ public interface AgentsRepositoty extends JpaRepository<Agents, Integer> {
 			+ "left  Join Accounts ac on a.accountId =ac.id \r\n" + "left  Join Members mr on a.memberId =mr.id \r\n"
 			+ "left Join  Cadres cd on a.cadreId =cd.id \r\n" + "left  Join Mos mo on a.moId =mo.id \r\n"
 			+ "left join Agents a2 on a2.id =a.sponsorId \r\n" + "left join Members m3 on m3.id=a2.memberId \r\n"
-			+ "left join Cadres c2 on c2.id = a2.cadreId order by a.id DESC")
-	public Page<AgentDetails> getAllAgents(Pageable pageable);
+			+ "left join Cadres c2 on c2.id = a2.cadreId " +
+			" where mr.name like ?1% or mr.memberNo like ?1% or mo.name like ?1% or ac.accountNumber like ?1% or cd.name like ?1% or a.codeNo like ?1% or m3.name like ?1%" +
+			" order by a.id DESC")
+	public Page<AgentDetails> getAllAgents(Pageable pageable, String search);
 
 	@Query("select new com.service.banking.model.MadModel.AgentGuarantorDetails(ag.id, m.id, m.memberNo, m.name, m.currentAddress, m.landmark, m.isDefaulter, "
 			+ "a.codeNo, mbr.id, mbr.name, mbr.currentAddress, mbr.landmark, mbr.isDefaulter) from Agents a "
@@ -41,4 +43,9 @@ public interface AgentsRepositoty extends JpaRepository<Agents, Integer> {
 	public List<AgentDetailsList> getAgentList(String name);
 
 
+	@Query(value = "select a.code_no from  agents a \n" +
+			"order by a.id DESC\n" +
+			"limit 1",
+	nativeQuery = true)
+	public Integer getLastCodeNo();
 }
