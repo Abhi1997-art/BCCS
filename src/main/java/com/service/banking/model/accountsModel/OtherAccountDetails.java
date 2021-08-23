@@ -22,6 +22,8 @@ public class OtherAccountDetails {
 		public Integer memberId;
 		public Integer schemaId;
 		public String PAndLGroup;
+		public Integer branchId;
+		public Integer staffId;
 		
 		
 		public OtherAccountDetails() {
@@ -149,8 +151,19 @@ public class OtherAccountDetails {
 			PAndLGroup = pAndLGroup;
 		}
 
-		
-		
-	
-	
+	public Integer getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(Integer branchId) {
+		this.branchId = branchId;
+	}
+
+	public Integer getStaffId() {
+		return staffId;
+	}
+
+	public void setStaffId(Integer staffId) {
+		this.staffId = staffId;
+	}
 }

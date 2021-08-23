@@ -14,12 +14,12 @@ public class MemberInsuDetails {
     public String district;
     public String state;
     public String currentAddress;
-    public Integer id;
+    public Integer insuranceId;
     public Date insuranceStartDate;
 	public Byte insuranceDuration;
 	public String narration;
 	public Date nextInsuranceDueDate;
-	public Integer accountId;
+	public Integer id;
 	public String insuranceName;
 	public Integer memberNo;
 	public Boolean isDefaulter;
@@ -52,12 +52,12 @@ public class MemberInsuDetails {
 		this.state = state;
 		this.currentAddress = currentAddress;
 		this.fatherName=fatherName;
-		this.id = id;
+		this.insuranceId = id;
 		this.insuranceStartDate = insuranceStartDate;
 		this.insuranceDuration = insuranceDuration;
 		this.narration = narration;
 		this.nextInsuranceDueDate = nextInsuranceDueDate;
-		this.accountId=accounId;
+		this.id=accounId;
 		this.insuranceName=name;
 		this.memberNo=memberNo;
 		this.isDefaulter=isDefaulter;
@@ -80,12 +80,12 @@ public class MemberInsuDetails {
 		this.district = district;
 		this.state = state;
 		this.currentAddress = currentAddress;
-		this.id = id;
+		this.insuranceId = id;
 		this.insuranceStartDate = insuranceStartDate;
 		this.insuranceDuration = insuranceDuration;
 		this.narration = narration;
 		this.nextInsuranceDueDate = nextInsuranceDueDate;
-		this.accountId = accountId;
+		this.id = accountId;
 		this.insuranceName = name;
 		this.memberNo = memberNo;
 		this.isDefaulter = isDefaulter;
@@ -202,18 +202,13 @@ public class MemberInsuDetails {
 	}
 
 
-
-	public Integer getId() {
-		return id;
+	public Integer getInsuranceId() {
+		return insuranceId;
 	}
 
-
-
-	public void setId(Integer id) {
-		this.id = id;
+	public void setInsuranceId(Integer insuranceId) {
+		this.insuranceId = insuranceId;
 	}
-
-
 
 	public Date getInsuranceStartDate() {
 		return insuranceStartDate;
@@ -256,13 +251,12 @@ public class MemberInsuDetails {
 	}
 
 
-	public Integer getAccountId() {
-		return accountId;
+	public Integer getId() {
+		return id;
 	}
 
-
-	public void setAccountId(Integer accountId) {
-		this.accountId = accountId;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getInsuranceName() {

@@ -318,14 +318,17 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 	
 	//a.AccountNumber , a.createdAt, m.name, m.fatherName, m.currentAddress, m.phoneNos ,m.dob , m.nominee ,a.relationWithNominee , a.currentBalanceDr , mi.next_insurance_due_date ,mi.nextInsuranceDueDate ,mi.id
 
-	@Query(value = "Select a.id as accountId, a.AccountNumber , a.created_at as createdAt, m.name, m.FatherName, m.CurrentAddress , m.PhoneNos , case when (m.DOB is NULL) THEN \"0000-00-00\" ELSE m.DOB END as Dob, m.nominee ,a.relationWithNominee , a.currentBalanceDr , mi.next_insurance_due_date as NectInsuranceDueDate, mi.id from accounts a\r\n"
-			+ " left join member_insurance mi  on mi.accounts_id = a.id \r\n"
-			+ " left join members m on m.id = a.member_id\r\n"
-			+ " where a.created_at >= ?1 and a.created_at <= ?2 \r\n"
-			+ " and (mi.next_insurance_due_date <= ?4 or mi.next_insurance_due_date = null) and \r\n"
-			+ " (CASE WHEN (EXISTS(select a2.account_type from accounts a2 where a2.account_type = ?3)) \r\n"
-			+ " THEN a.account_type IN (select a3.account_type from accounts a3 where a3.account_type = ?3)\r\n"
-			+ " ELSE a.account_type NOT IN (select a3.account_type from accounts a3 where a3.account_type = ?3) END) ",  nativeQuery = true)
+	@Query(value = "Select a.id as accountId, m.title as gender, a.account_type ,a.AccountNumber , a.created_at as createdAt, m.name, m.FatherName, m.CurrentAddress , \n" +
+			"m.PhoneNos , a2.nominee ,a2.relationWithNominee , a.currentBalanceDr , mi.next_insurance_due_date as NextInsuranceDueDate, mi.id,\n" +
+			"m.DOB, mi.name as InsuranceNumber ,sum(tr.amountDr) - sum(tr.amountCr) as balance  from accounts a\n" +
+			"right join member_insurance mi  on mi.accounts_id = a.id \n" +
+			"left join members m on m.id = a.member_id \n" +
+			"left join transaction_row tr on a.id = tr.account_id \n" +
+			"left join accounts a2 on a2.member_id = m.id and a2.account_type = 'SM' " +
+			"where mi.next_insurance_due_date >= ?1 and mi.next_insurance_due_date <= ?2 \n" +
+			"and \n" +
+			"a.account_type = IFNULL(?3, a.account_type) and a.ActiveStatus = 1\n" +
+			"group by a.id",  nativeQuery = true)
 	public List<iMemberInsuDetails> getMultipleInsurance(String fromDate, String toDate, String acType, String currentDate);
 
 	@Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id,a.branchId) from Accounts a WHERE a.groupType = 'PF'")
@@ -646,4 +649,27 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 			"where a.member_id = ?1",
 	nativeQuery = true)
 	List<Accounts> findAccounts(Integer id);
+
+	@Query(value="select a.AccountNumber from  accounts a \n" +
+			"where a.account_type = \"SM\"\n" +
+			"order by a.id DESC\n" +
+			"limit 1",
+			nativeQuery = true)
+	String getLastSMAccount();
+
+	@Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.accountNumber, m.name, m.fatherName, a.accountType) from Accounts a left join Members m on m.id= a.memberId where (a.accountNumber LIKE %?1% or m.name LIKE %?1%) and (a.groupType = 'Loan') and (a.activeStatus = 1) order by a.accountNumber")
+	List<AccountDetails> getAllLoanAccounts(String accountNumber);
+
+	@Query(value = "select a.id from accounts a \n" +
+			"where a.member_id = ?1 and a.account_type = \"SM\"",
+	nativeQuery = true)
+    Integer checkSMMember(int memberId);
+
+	@Query(value = "select a.AccountNumber from accounts a \n" +
+			"where a.group_type = \"SavingAndCurrent\"\n" +
+			"and a.PAndLGroup = \"SavingAndCurrent\"\n" +
+			"and a.branch_id = ?1 \n" +
+			"order by a.id DESC limit 1 ",
+			nativeQuery = true)
+	String getLastSavingAccount(Integer branchId);
 }

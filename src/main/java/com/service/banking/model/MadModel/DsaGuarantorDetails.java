@@ -3,10 +3,10 @@ package com.service.banking.model.MadModel;
 public class DsaGuarantorDetails {
 
 	Integer dsId;
-	String name;
+	String guarantorName;
 	Integer dsgId;
 	Integer guarantorId;
-	String guarantorName;
+	String name;
 	Integer memberNo;
 	String currentAddress;
 	String landmark;
@@ -17,10 +17,10 @@ public class DsaGuarantorDetails {
 	public DsaGuarantorDetails(Integer dsId, String name, Integer dsgId, Integer guarantorId, String guarantorName, Integer memberNo, String currentAddress, String landmark, Boolean isDefaulter) {
 		super();
 		this.dsId = dsId;
-		this.name = name;
+		this.guarantorName = name;
 		this.dsgId = dsgId;
 		this.guarantorId = guarantorId;
-		this.guarantorName = guarantorName;
+		this.name = guarantorName;
 		this.memberNo = memberNo;
 		this.currentAddress = currentAddress;
 		this.landmark = landmark;

@@ -1,7 +1,9 @@
 package com.service.banking.repository.madRepository;
 
+import java.util.Collection;
 import java.util.List;
 
+import com.service.banking.hibernateEntity.Accounts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,4 +50,14 @@ public interface AgentsRepositoty extends JpaRepository<Agents, Integer> {
 			"limit 1",
 	nativeQuery = true)
 	public Integer getLastCodeNo();
+
+	@Query(value = "select a.code_no from agents a \n" +
+			"where member_id = ?1",
+			nativeQuery = true)
+	Integer checkMember(Integer memberId);
+
+	@Query(value="SELECT * from agents a \n" +
+			"where a.member_id = ?1",
+			nativeQuery = true)
+	List<Agents> findAgents(Integer id);
 }

@@ -22,5 +22,9 @@ public interface ShareRepository extends JpaRepository<Share, Integer> {
 				+ " left join Members m on m.id=s.currentMemberId" + " left join Accounts a on a.memberId=s.currentMemberId left join ShareCertificate sc on s.shareCertificateId = sc.id where a.accountType = 'SM' and sc.id= ?1")
 	List<ShareDetails> getSharebyID(Integer id);
 
-
+		@Query(value = "select s.`no` from share s \n" +
+				"order by s.id DESC \n" +
+				"limit 1",
+		nativeQuery = true)
+    Integer getLastNo();
 }

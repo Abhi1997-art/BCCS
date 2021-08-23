@@ -295,10 +295,8 @@ public class SuperAdminService {
 	public Map<String, Object> getShareCertificate(Integer pageNumber, Integer pageSize) {
 		Pageable paging = PageRequest.of(pageNumber, pageSize);
 		Page<ShareCertificateDetails> shareCertificate = shareCertificateRepo.getShareCertificate(paging);
-
-		Map<String, Object> shareMap = new HashMap<String, Object>(); // it not good to add different type object into
+		Map<String, Object> shareMap = new HashMap<String, Object>(); // It not good to add different type object into
 																		// single hashmap instead create POJO Class.
-
 		if (shareCertificate.hasContent()) {
 			shareMap.put("pageSize", shareCertificate.getSize());
 			shareMap.put("totalElement", shareCertificate.getTotalElements());

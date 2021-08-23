@@ -128,8 +128,8 @@ public class MadController {
 
     //Add MAD agents..................................................................................
     @PostMapping("/add_agents")
-    public void addAgents(@RequestBody AgentDetails agentDetails) {
-        madservice.addAgents(agentDetails);
+    public String addAgents(@RequestBody AgentDetails agentDetails) {
+        return madservice.addAgents(agentDetails);
     }
 
     //Update MAD agents..................................................................................
@@ -197,21 +197,22 @@ public class MadController {
     // get all member insurance....................
     @GetMapping("/members_insurance/{setFirstResult}/{setMaxResults}")
     public Map<String, Object> getAllMemInsurance(@PathVariable("setFirstResult") Integer setFirstResult,
-                                                    @PathVariable("setMaxResults") Integer setMaxResults) {
+                                                    @PathVariable("setMaxResults") Integer setMaxResults,
+                                                  @RequestParam String search) {
         Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
-        Map<String, Object> memeberList = madservice.getAllMemberInsuurence(setPageNumber, setMaxResults);
+        Map<String, Object> memeberList = madservice.getAllMemberInsuurence(setPageNumber, setMaxResults, search);
         return memeberList;
     }
 
     // Add Member Insurance........................................................................................
     @PostMapping("/add_member_insurance")
-    public void addMemberInsurance(@RequestBody MemberInsurance memberInsurance) {
+    public void addMemberInsurance(@RequestBody MemberInsuDetails memberInsurance) {
         madservice.addMemberInsurance(memberInsurance);
     }
 
     // Update Member Insurance........................................................................................
     @PutMapping("/update_member_insurance")
-    public void updateMemberInsurance(@RequestBody MemberInsurance memberInsurance) {
+    public void updateMemberInsurance(@RequestBody MemberInsuDetails memberInsurance) {
         madservice.updateMemberInsurance(memberInsurance);
     }
 
@@ -428,4 +429,13 @@ public class MadController {
     public List<AccountDetails> getDebitAccount(@RequestParam Integer branchId) {
         return madservice.getDebitAccount(branchId);
     }
+
+    @GetMapping("/loan_accounts")
+    List<AccountDetails> getLoanAccounts(@RequestParam("accountNumber") String accountNumber) {
+        List<AccountDetails> allaccounts = madservice.getLoanAccounts(accountNumber); // null check already in service....
+        System.out.println("**********" + allaccounts.size());
+        return allaccounts;
+    }
+
+
 }

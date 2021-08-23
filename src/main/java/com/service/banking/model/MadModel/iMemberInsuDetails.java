@@ -16,14 +16,20 @@ public interface iMemberInsuDetails {
 	public String getFatherName();
 	public String getCurrentAddress();
 	public String getPhoneNos();
-	public String getDob();
 	public String getNominee();
-	public String getReltionWithNominee();
-	public String getCurrentBalanceDr();
+	public String getRelationWithNominee();
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Kolkata")
 	public Date getNextInsurancedueDate();
 	public String getId();
 	public String getAccountId();
+	public String getBalance();
+	public String getDOB();
+	public String getInsuranceNumber();
+	public String getGender();
+
+
+
+
 	
 
 }

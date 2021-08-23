@@ -13,9 +13,9 @@ public class SMAccountsDetails {
    	public Integer memberNo;
    	public String currentAddress;
    	public String fatherName;
+   	public Integer branchId;
 	public String branchName;
 	public String schemaName;
-	
 	private Boolean activeStatus;
 	private int memberId;
 	private Integer schemeId;
@@ -24,6 +24,8 @@ public class SMAccountsDetails {
 	private String relationWithNominee;
 	private Double amount;
 	private String accountType;
+	private Integer debitAccount;
+	private Integer staffId;
 	
 	
 	public SMAccountsDetails() {
@@ -174,8 +176,32 @@ public class SMAccountsDetails {
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
 	}
-	   
-   	
-   	
-   	
+
+	public Integer getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(Integer branchId) {
+		this.branchId = branchId;
+	}
+
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
+
+	public Integer getDebitAccount() {
+		return debitAccount;
+	}
+
+	public void setDebitAccount(Integer debitAccount) {
+		this.debitAccount = debitAccount;
+	}
+
+	public Integer getStaffId() {
+		return staffId;
+	}
+
+	public void setStaffId(Integer staffId) {
+		this.staffId = staffId;
+	}
 }

@@ -140,4 +140,5 @@ public class MemberInsurance implements java.io.Serializable {
 		this.isRenew = isRenew;
 	}
 
+
 }

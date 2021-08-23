@@ -28,5 +28,10 @@ public interface ShareCertificateRepo extends JpaRepository<ShareCertificate, In
 				"where s.name LIKE CONCAT('%', :name, '%')  ")
 		List<ShareCertificateDetail> getShareCertificate(@Param("name") Integer name);
 
+		@Query(value = "select sc.name from share_certificate sc \n" +
+				"order by sc.id DESC \n" +
+				"limit 1 ",
+		nativeQuery = true)
+    Integer getLastShareCertificateName();
 }
 

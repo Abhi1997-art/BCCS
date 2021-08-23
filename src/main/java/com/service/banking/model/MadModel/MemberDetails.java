@@ -65,6 +65,8 @@ public class MemberDetails {
 	public Integer debitAccount;
 	public Integer loginBranch;
 	public Integer staffId;
+	public String bankAName;
+	public String bankBName;
 	
 	
 	
@@ -76,8 +78,8 @@ public class MemberDetails {
 	public MemberDetails(Integer id, Integer memberNo, Integer branchId, String branchName, String title, String name, String cast, String phoneNos,
 			String fatherName, String landmark, String tehsil, String district, String city, String state,
 			String pinCode, String currentAddress, String username, String password, String relationWithParent,
-			String occupation, Date dob, String witness1name, String witness1fatherName, String witness1address,
-			String witness2name, String witness2fatherName, String witness2address, Date createdAt, Boolean isActive,
+			String occupation, String dob, String witness1name, String witness1fatherName, String witness1address,
+			String witness2name, String witness2fatherName, String witness2address, String createdAt, Boolean isActive,
 			Boolean isDefaulter, Date defaulterOn, String panNo, String adharNumber, String gstin, Integer bankbranchAId,
 			String bankAccountNumber1, Integer bankbranchBId, String bankAccountNumber2, String memebrType,
 			Boolean isAgent, String nominee, Short nomineeAge, String relationWithNominee, String relationWithFather, String minorDob,
@@ -103,14 +105,14 @@ public class MemberDetails {
 		this.password = password;
 		this.relationWithParent = relationWithParent;
 		this.occupation = occupation;
-		this.dob = DateFormater.getformatDate(dob);
+		this.dob = dob;
 		this.witness1name = witness1name;
 		this.witness1fatherName = witness1fatherName;
 		this.witness1address = witness1address;
 		this.witness2name = witness2name;
 		this.witness2fatherName = witness2fatherName;
 		this.witness2address = witness2address;
-		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.createdAt = createdAt;
 		this.isActive = isActive;
 		this.isDefaulter = isDefaulter;
 		this.defaulterOn=DateFormater.getformatDate(defaulterOn);
@@ -137,13 +139,13 @@ public class MemberDetails {
 	public MemberDetails(Integer id, Integer memberNo, Integer branchId, String branchName, String title, String name, String cast, String phoneNos,
 			String fatherName, String landmark, String tehsil, String district, String city, String state,
 			String pinCode, String currentAddress, String username, String password, String relationWithParent,
-			String occupation, Date dob, String witness1name, String witness1fatherName, String witness1address,
-			String witness2name, String witness2fatherName, String witness2address, Date createdAt, Boolean isActive,
+			String occupation, String dob, String witness1name, String witness1fatherName, String witness1address,
+			String witness2name, String witness2fatherName, String witness2address, String createdAt, Boolean isActive,
 			Boolean isDefaulter, Date defaulterOn, String panNo, String adharNumber, String gstin, Integer bankbranchAId,
 			String bankAccountNumber1, Integer bankbranchBId, String bankAccountNumber2, String memebrType,
 			Boolean isAgent, String nominee, Short nomineeAge, String relationWithNominee, String relationWithFather, String minorDob,
 			String parentName, String accountNumber, Byte filledForm60, Integer sigImageId, Long shareCount, String bankBranchAName, String bankBranchBName,
-			String bankBranchAIFSC, String bankBranchBIFSC) {
+			String bankBranchAIFSC, String bankBranchBIFSC, String bankAName, String bankBName) {
 		super();
 		this.id = id;
 		this.memberNo=memberNo;
@@ -165,14 +167,14 @@ public class MemberDetails {
 		this.password = password;
 		this.relationWithParent = relationWithParent;
 		this.occupation = occupation;
-		this.dob = DateFormater.getformatDate(dob);
+		this.dob = dob;
 		this.witness1name = witness1name;
 		this.witness1fatherName = witness1fatherName;
 		this.witness1address = witness1address;
 		this.witness2name = witness2name;
 		this.witness2fatherName = witness2fatherName;
 		this.witness2address = witness2address;
-		this.createdAt = DateFormater.getformatDate(createdAt);
+		this.createdAt = createdAt;
 		this.isActive = isActive;
 		this.isDefaulter = isDefaulter;
 		this.defaulterOn=DateFormater.getformatDate(defaulterOn);
@@ -199,6 +201,8 @@ public class MemberDetails {
 		this.bankBranchBName= bankBranchBName;
 		this.bankBranchAIFSC= bankBranchAIFSC;
 		this.bankBranchBIFSC=bankBranchBIFSC;
+		this.bankAName= bankAName;
+		this.bankBName= bankBName;
 	}
 
 
@@ -747,5 +751,21 @@ public class MemberDetails {
 
 	public void setStaffId(Integer staffId) {
 		this.staffId = staffId;
+	}
+
+	public String getBankAName() {
+		return bankAName;
+	}
+
+	public void setBankAName(String bankAName) {
+		this.bankAName = bankAName;
+	}
+
+	public String getBankBName() {
+		return bankBName;
+	}
+
+	public void setBankBName(String bankBName) {
+		this.bankBName = bankBName;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.service.banking.service.HodAuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -242,11 +243,11 @@ public class SuperAdminController {
 	}
 
 	// Get all share certificate.............................................................................................
-	@GetMapping("/share_certificate/{setPageNumber}/{setPageSize}")
-	public Map<String, Object> getShareCertificate(@PathVariable("setPageNumber") Integer setPageNumber,
-			@PathVariable("setPageSize") Integer setPageSize) {
-		Integer pageNumber = DateFormater.pageNumber(setPageNumber);
-		Map<String, Object> shareCertifiacte = superAdminService.getShareCertificate(pageNumber, setPageSize);
+	@GetMapping("/share_certificate/{setFirstResult}/{setMaxResults}")
+	public Map<String, Object> getShareCertificate(@PathVariable("setFirstResult") Integer setFirstResult,
+			@PathVariable("setMaxResults") Integer setMaxResults) {
+		Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
+		Map<String, Object> shareCertifiacte = superAdminService.getShareCertificate(setPageNumber, setMaxResults);
 		return shareCertifiacte;
 	}
 

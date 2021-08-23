@@ -18,7 +18,8 @@ public interface MemberInsurrenceRepo  extends JpaRepository<MemberInsurance,Int
 	@Query(" SELECT new com.service.banking.model.MadModel.MemberInsuDetails(a.accountNumber ,m.name  as memberName ,m.id as memberId ,m.landmark,m.tehsil ,m.city ,m.district ,m.state,\r\n" + 
 			" m.currentAddress , m.fatherName, mi.id,mi.insuranceStartDate ,mi.insuranceDuration,mi.narration ,mi.nextInsuranceDueDate,a.id, mi.name, m.memberNo, m.isDefaulter) from MemberInsurance mi \r\n" +
 			"left join Members m on mi.memberId =m.id \r\n" + 
-			"left join Accounts a on mi.accountsId =a.id order by mi.id desc")
-	public Page<MemberInsuDetails> getAllMemInsurrence(Pageable pageable);
+			"left join Accounts a on mi.accountsId =a.id " +
+			" where a.accountNumber LIKE ?1% or m.name LIKE ?1% or m.memberNo LIKE ?1% order by mi.id desc")
+	public Page<MemberInsuDetails> getAllMemInsurrence(Pageable pageable, String search);
 
 }

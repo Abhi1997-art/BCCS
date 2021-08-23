@@ -282,14 +282,25 @@ public class MadService {
     //Delete MAD Member................................................................................
     public String deleteMember(Integer id) {
 
+        try{
             Integer accounts = accountsRepo.findAccounts(id).size();
+            Integer agents = agentsRepo.findAgents(id).size();
             if(accounts > 0){
-                return "Can not delete this Member, It contains Accounts !";
+                return "Cannot delete this Member, It contains Accounts !";
             }else {
                 membersRepo.deleteById(id);
             }
+            if(agents > 0){
+                return "Cannot delete this Member, It contains Agents !";
+            }else {
+                membersRepo.deleteById(id);
+            }
+        }
+        catch (Exception e){
+            return ("Cannot Delete !");
+        }
 
-        return "Item Deleted Successfully";
+        return "Member Deleted Successfully";
     }
 
     //Comment ADD MAD Member...............................................................................
@@ -335,10 +346,17 @@ public class MadService {
     }
 
     //Add MAD agents..................................................................................
-    public void addAgents(AgentDetails agentDetails) {
+    public String addAgents(AgentDetails agentDetails) {
         Agents agents = new Agents();
         Date date = new Date();
         agents.setMoId(agentDetails.getMoId());
+
+        Integer checkMember = agentsRepo.checkMember(agentDetails.getMemberId());
+
+        if(checkMember != null){
+            return "Agent already exist !! Code: BCCSAG" + checkMember;
+        }
+
         agents.setMemberId(agentDetails.getMemberId());
         agents.setSponsorId(agentDetails.getSponsorId());
         agents.setAccountId(agentDetails.getAccountId());
@@ -352,6 +370,12 @@ public class MadService {
         agents.setCreatedAt(date);
         agents.setUpdatedAt(date);
         agentsRepo.save(agents);
+
+        Members members = membersRepo.findById(agentDetails.getMemberId()).get();
+        members.setIsAgent(true);
+        membersRepo.save(members);
+
+        return "Agent added successfully";
     }
 
     //Update MAD agents..................................................................................
@@ -405,9 +429,9 @@ public class MadService {
     }
 
     // Get all member insurance of mad.....................................................
-    public Map<String, Object> getAllMemberInsuurence(int setPageNumber, int maxSize) {
+    public Map<String, Object> getAllMemberInsuurence(int setPageNumber, int maxSize, String search) {
         Pageable paging = PageRequest.of(setPageNumber, maxSize);
-        Page<MemberInsuDetails> memberList = meminsuRepo.getAllMemInsurrence(paging);
+        Page<MemberInsuDetails> memberList = meminsuRepo.getAllMemInsurrence(paging, search);
         Map<String, Object> members = new HashMap<String, Object>();
         if (memberList.hasContent()) {
             members.put("pageSize", memberList.getSize());
@@ -592,14 +616,14 @@ public class MadService {
     }
 
     // Add Member Insurance........................................................................................
-    public void addMemberInsurance(MemberInsurance memberIns) {
+    public void addMemberInsurance(MemberInsuDetails memberIns) {
         MemberInsurance memberInsurance = new MemberInsurance();
-        memberInsurance.setAccountsId(memberIns.getAccountsId());
+        memberInsurance.setAccountsId(memberIns.getId());
         memberInsurance.setInsuranceDuration(memberIns.getInsuranceDuration());
         memberInsurance.setInsuranceStartDate(memberIns.getInsuranceStartDate());
         memberInsurance.setNarration(memberIns.getNarration());
-        memberInsurance.setName(memberIns.getName());
-        memberInsurance.setMemberId(accRepo.getMemberId(memberIns.getAccountsId()));
+        memberInsurance.setName(memberIns.getInsuranceName());
+        memberInsurance.setMemberId(accRepo.getMemberId(memberIns.getId()));
 
         Calendar calender = Calendar.getInstance();
         calender.setTime(memberIns.getInsuranceStartDate());
@@ -611,14 +635,14 @@ public class MadService {
     }
 
     // Update Member Insurance........................................................................................
-    public void updateMemberInsurance(MemberInsurance memberIns) {
-        MemberInsurance memberInsurance = meminsuRepo.getOne(memberIns.getId());
-        memberInsurance.setAccountsId(memberIns.getAccountsId());
+    public void updateMemberInsurance(MemberInsuDetails memberIns) {
+        MemberInsurance memberInsurance = meminsuRepo.getOne(memberIns.getInsuranceId());
+        memberInsurance.setAccountsId(memberIns.getId());
         memberInsurance.setInsuranceDuration(memberIns.getInsuranceDuration());
         memberInsurance.setInsuranceStartDate(memberIns.getInsuranceStartDate());
         memberInsurance.setNarration(memberIns.getNarration());
-        memberInsurance.setName(memberIns.getName());
-        memberInsurance.setMemberId(accRepo.getMemberId(memberIns.getAccountsId()));
+        memberInsurance.setName(memberIns.getInsuranceName());
+        memberInsurance.setMemberId(accRepo.getMemberId(memberIns.getId()));
 
         Calendar calender = Calendar.getInstance();
         calender.setTime(memberIns.getInsuranceStartDate());
@@ -842,6 +866,9 @@ public class MadService {
     public List<iMemberInsuDetails> getMultipleInsurance(String fromDate, String toDate, String acType) {
         Date date = new Date();
         String currentDate = DateFormater.getformatDate(date);
+        if(acType.equals("All")){
+            acType=null;
+        }
         List<iMemberInsuDetails> memberInsuDetails = accRepo.getMultipleInsurance(fromDate, toDate, acType,
                 currentDate);
         if (memberInsuDetails.size() != 0) {
@@ -870,5 +897,14 @@ public class MadService {
     public List<AccountDetails> getDebitAccount(Integer branchId) {
         List<AccountDetails> accounts = accountsRepo.getDebitAccount(branchId);
         return accounts;
+    }
+
+    public List<AccountDetails> getLoanAccounts(String accountNumber) {
+        List<AccountDetails> list = accountsRepo.getAllLoanAccounts(accountNumber);
+        if (list.size() != 0) {
+            return list;
+        } else {
+            return new ArrayList<AccountDetails>();
+        }
     }
 }
