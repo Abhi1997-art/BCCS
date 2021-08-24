@@ -10,9 +10,14 @@ import java.util.Optional;
 import com.service.banking.hibernateEntity.*;
 import com.service.banking.model.accountsModel.*;
 import com.service.banking.model.transaction.DepositeDetails;
+import com.service.banking.repository.AccountsRepo.*;
+import com.service.banking.repository.hodAuthorityRepo.PremuimRepo;
+import com.service.banking.repository.madRepository.AgentsRepositoty;
 import com.service.banking.repository.superAdminRepo.BranchesRepository;
 import com.service.banking.repository.superAdminRepo.ShareCertificateRepo;
 import com.service.banking.repository.superAdminRepo.ShareRepository;
+import com.service.banking.repository.transaction.TransactionRowRepo;
+import com.service.banking.repository.transaction.TransactionsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,16 +32,6 @@ import com.service.banking.model.hodAuthorityModel.AssociationDetails;
 import com.service.banking.model.hodAuthorityModel.MoRoDetails;
 import com.service.banking.model.hodAuthorityModel.Teamdetails;
 import com.service.banking.model.stockModel.LedgerItemDetails;
-import com.service.banking.repository.AccountsRepo.AccountGuarantorRepo;
-import com.service.banking.repository.AccountsRepo.AccountLegalCaseHearingRepo;
-import com.service.banking.repository.AccountsRepo.AccountLegalCaseRepo;
-import com.service.banking.repository.AccountsRepo.AccountNocMangRepo;
-import com.service.banking.repository.AccountsRepo.AccountsRepo;
-import com.service.banking.repository.AccountsRepo.CommentsRepo;
-import com.service.banking.repository.AccountsRepo.DocumentsRepo;
-import com.service.banking.repository.AccountsRepo.DocumentsSubmittedRepo;
-import com.service.banking.repository.AccountsRepo.JointMemberRepo;
-import com.service.banking.repository.AccountsRepo.LoanPendingRepo;
 import com.service.banking.repository.dashBoardRepo.DashBoardSchemeRepo;
 import com.service.banking.repository.hodAuthorityRepo.MoAssociationRepo;
 import com.service.banking.repository.hodAuthorityRepo.TeamRepository;
@@ -106,6 +101,21 @@ public class AccountsService {
 
     @Autowired
     ShareCertificateRepo shareCertificateRepo;
+
+    @Autowired
+    TransactionRowRepo transactionRowRepo;
+
+    @Autowired
+    TransactionsRepo transactionsRepo;
+
+    @Autowired
+    PremuimRepo premuimRepo;
+
+    @Autowired
+    BikeSurrenderHistoryRepo bikeSurrenderHistoryRepo;
+
+    @Autowired
+    AgentsRepositoty agentsRepositoty;
 
 
     DateFormater dateformater = new DateFormater();
@@ -782,12 +792,25 @@ public class AccountsService {
 
 
     public String deleteAccount(Integer id) {
-        try {
-            smAccountsRepo.deleteById(id);
 
-        } catch (Exception e) {
-            return "Try again after sometime" + e;
+        Integer TransactionRowCount = transactionRowRepo.getTransactionCountForAccount(id);
+        if(TransactionRowCount > 0){
+            return "Account Contains Transactions, Cannot Delete";
         }
+
+        Integer TransactionCount = transactionsRepo.getTransactionCountForAccount(id);
+        if(TransactionCount > 0){
+            return "Related Transaction Found, Cannot Delete";
+        }
+
+        premuimRepo.deletePremiums(id);
+        jointmemberrepo.deleteJointMembers(id);
+        docSubmittedRepo.deleteDocumentSubmitted(id);
+        accountGuarantorRepo.deleteAccountGuarantorRepo();
+        commentRepo.deleteComment(id);
+        bikeSurrenderHistoryRepo.deleteBikeSurrenderHistory(id);
+
+        smAccountsRepo.deleteById(id);
         return "Item Deleted Successfully";
     }
 
@@ -1073,8 +1096,11 @@ public class AccountsService {
     }
 
 
-    public List<AgentDetailsList> getAgentList(String names) {
-        String name = names.replaceAll("\\s", "");
+    public List<AgentDetailsList> getAgentList(String name) {
+        List<AgentDetailsList> list = agentsRepositoty.getAgentList2(name);
+        return list;
+
+/*        String name = names.replaceAll("\\s", "");
         List<AgentDetailsList> moAgentAssociationList = moAssociationRepo.getAgentAssociationList(name);
         if (moAgentAssociationList.size() == 0) {
             String[] s1 = names.split("\\s");
@@ -1088,7 +1114,7 @@ public class AccountsService {
             }
         }
 //						List<AssociationDetails> moAgentAssociationList = moAssociationRepo.getMoAgentAssociationList(name);
-        return moAgentAssociationList;
+        return moAgentAssociationList;*/
     }
 
 

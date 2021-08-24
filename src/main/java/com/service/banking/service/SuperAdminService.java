@@ -784,14 +784,12 @@ public class SuperAdminService {
 		System.out.println(accountCount);
 		
 		if(accountCount > 0) {
-			System.out.println("Scheme Contains Accounts created under this, cannot delete");
 			return "Scheme Contains Accounts created under this, cannot delete";
 		}
 		
 		Integer transactionCount = accountsRepo.getTransactionCount(id);
 		
 		if(transactionCount > 0) {
-			System.out.println( "Account Contains Transactions, Cannot Delete");
 			return  "Account Contains Transactions, Cannot Delete";
 		}
 		

@@ -15,12 +15,13 @@ public class AgentDetailsList {
 	String accountNumber;
 	Integer accountId;
 	String username;
-	String agentCode;
+	Integer agentCodeNo;
 	String gaurantor1address;
 	Date fromDate;
 	Date toDate;
 	
 	String permanentAddress;
+	String agentCurrentAddress;
 	String landmark;
 	Boolean isDefaulter;
 	Integer codeNo;
@@ -48,7 +49,14 @@ public class AgentDetailsList {
 		this.landmark = landmark;
 		this.isDefaulter=isDefaulter;
 	}
-	
+
+	public AgentDetailsList(Integer agentCodeNo, String agentName, Integer agentId, String agentCurrentAddress, String landmark) {
+		this.agentCodeNo = agentCodeNo;
+		this.agentName = agentName;
+		this.agentId = agentId;
+		this.permanentAddress = permanentAddress;
+		this.landmark = landmark;
+	}
 
 
 	/**
@@ -159,18 +167,20 @@ public class AgentDetailsList {
 		this.username = username;
 	}
 
-	/**
-	 * @return the agentCode
-	 */
-	public String getAgentCode() {
-		return agentCode;
+	public Integer getAgentCodeNo() {
+		return agentCodeNo;
 	}
 
-	/**
-	 * @param agentCode the agentCode to set
-	 */
-	public void setAgentCode(String agentCode) {
-		this.agentCode = agentCode;
+	public void setAgentCodeNo(Integer agentCodeNo) {
+		this.agentCodeNo = agentCodeNo;
+	}
+
+	public Boolean getDefaulter() {
+		return isDefaulter;
+	}
+
+	public void setDefaulter(Boolean defaulter) {
+		isDefaulter = defaulter;
 	}
 
 	/**
@@ -254,7 +264,12 @@ public class AgentDetailsList {
 	public void setMoName(String moName) {
 		this.moName = moName;
 	}
-	
-	
-	
+
+	public String getAgentCurrentAddress() {
+		return agentCurrentAddress;
+	}
+
+	public void setAgentCurrentAddress(String agentCurrentAddress) {
+		this.agentCurrentAddress = agentCurrentAddress;
+	}
 }

@@ -1,6 +1,10 @@
 package com.service.banking.hibernateEntity;
 // Generated Feb 20, 2020 6:19:12 PM by Hibernate Tools 5.2.12.Final
 
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;

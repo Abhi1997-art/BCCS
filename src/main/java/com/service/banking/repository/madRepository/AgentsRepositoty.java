@@ -44,6 +44,12 @@ public interface AgentsRepositoty extends JpaRepository<Agents, Integer> {
 			+ " where m.name LIKE %?1% or a.codeNo LIKE %?1%" )
 	public List<AgentDetailsList> getAgentList(String name);
 
+	@Query("select new com.service.banking.model.accountsModel.AgentDetailsList(a.codeNo, m.name, m.id, m.permanentAddress, \r\n"
+			+ "m.landmark) from Agents a \r\n"
+			+ "left join Members m on a.memberId = m.id \r\n"
+			+ " where m.name LIKE %?1% or a.codeNo LIKE %?1%" )
+	public List<AgentDetailsList> getAgentList2(String name);
+
 
 	@Query(value = "select a.code_no from  agents a \n" +
 			"order by a.id DESC\n" +

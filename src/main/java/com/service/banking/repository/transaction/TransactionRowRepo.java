@@ -211,9 +211,10 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 			+ "left join branches b on b.id = t.branch_id \r\n"
 			+ "where t.id = ?3 and t.voucher_no = ?2 and t.branch_id = ?1 ", nativeQuery = true)
 	public List<iDeleteVoucherDetails> getDirtyVoucher(Integer branchId, Integer voucherNo, Integer vouchUuid);
-	
 
 
-
-
+	@Query(value = "select count(*) from transaction_row tr \n" +
+			"where tr.account_id = ?1",
+	nativeQuery = true)
+	Integer getTransactionCountForAccount(Integer id);
 }

@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.service.banking.hibernateEntity.Premiums;
 import com.service.banking.model.dashboardModel.DailyDueResultModel;
 import com.service.banking.model.hodAuthorityModel.PremiumDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface PremuimRepo extends JpaRepository<Premiums, Integer> {
 	// get all premium................
@@ -28,5 +30,11 @@ public interface PremuimRepo extends JpaRepository<Premiums, Integer> {
 		@Query("select new com.service.banking.model.hodAuthorityModel.PremiumDetails(p.amount,p.paid,p.paidOn) from Premiums p  left join Accounts a on p.accountId =a.id  left join Members m on a.memberId =m.id where a.id = ?1 order by p.id")
 		List<PremiumDetails> getByPremiumAmounts(Integer accountId);
 
-	
+
+		@Transactional
+		@Modifying
+		@Query(value = "Delete FROM premiums \n" +
+				"where account_id = ?1",
+		nativeQuery = true)
+    void deletePremiums(Integer id);
 }

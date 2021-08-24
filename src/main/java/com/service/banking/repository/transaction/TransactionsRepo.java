@@ -23,4 +23,8 @@ public interface TransactionsRepo extends JpaRepository<Transactions, Integer> {
 			+ "where s.id = ?1 ")
 	StaffModel getTransactions(Integer id);
 
+	@Query(value = "select count(*) from transactions t \n" +
+			"where t.reference_id = ?1",
+	nativeQuery = true)
+    Integer getTransactionCountForAccount(Integer id);
 }
