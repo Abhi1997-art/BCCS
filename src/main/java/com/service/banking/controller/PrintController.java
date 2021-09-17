@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.service.banking.model.printingModel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,6 @@ import com.service.banking.hibernateEntity.ContentFiles;
 import com.service.banking.model.accountsModel.AccountStatementDetails;
 import com.service.banking.model.accountsModel.AccountStatementReq;
 import com.service.banking.model.dashboardModel.AccountsDetails;
-import com.service.banking.model.printingModel.AcountDetails;
-import com.service.banking.model.printingModel.ContentAccount;
-import com.service.banking.model.printingModel.FDAccountDetails;
-import com.service.banking.model.printingModel.InsertPrintCertificate;
-import com.service.banking.model.printingModel.MeberAccountDetail;
-import com.service.banking.model.printingModel.MemberDetail;
-import com.service.banking.model.printingModel.PrintFileContentReq;
-import com.service.banking.model.printingModel.ShareAccountDetail;
-import com.service.banking.model.printingModel.ShareCertificateAccount;
 import com.service.banking.service.PrintingService;
 
 @RestController
@@ -44,7 +36,7 @@ public class PrintController {
 	@Autowired
 	PrintingService printingService;
 
-	// get F.D accounts....................................
+	// Get F.D accounts....................................
 	@GetMapping("/fd_bondAccounts")
 	List<FDAccountDetails> getFdAccounts(@RequestParam("accountName") String accountName) {
 		List<FDAccountDetails> fdAccounts = printingService.getFDAccounts(accountName); // null check already in service....
@@ -52,11 +44,10 @@ public class PrintController {
 	    return fdAccounts;	
 	}
 	
-	// get accountsDetails by id for fd accounts...........
-	@GetMapping("/accounts_details/{id}")
-	AcountDetails getAccounts(@PathVariable("id") int id) {
+	// FD bond accounts....
+	@GetMapping("/fd_bond_accounts/{id}")
+	AcountDetails getAccounts(@PathVariable("id") Integer id) {
 		AcountDetails account = printingService.getAccountsDetails(id); // null check already in service....
-		System.out.println("**********"+account.getName());
 	    return account;		
 	}
 	
@@ -68,15 +59,15 @@ public class PrintController {
 	    return shareAcnt;		
 	}
 	
-	// get accountsDetails by id for share certificate accounts...........
-	@GetMapping("/shareCertificate_account/{id}")
-	ShareAccountDetail shareCertificateAccounts(@PathVariable("id") int id) {
+	//Share certificate Print....
+	@GetMapping("/share_certificate_account/{id}")
+	ShareAccountDetail shareCertificateAccounts(@PathVariable("id") Integer id) {
 		ShareAccountDetail shareAccountDetail = printingService.getShareDetails(id); // null check already in service....
 		System.out.println("**********"+shareAccountDetail.getName());
 	    return shareAccountDetail;		
 	}
 	
-	// get all member accounts...................................................
+	// get all member accounts................................................... HAVE TO DELETE IG NO USED..
 	@GetMapping("/member_accounts")
 	List<MemberDetail> getMember(@RequestParam("accountName") String accountName) {
 		List<MemberDetail> memberAccnt = printingService.getMember(accountName); // null check already in service....
@@ -84,15 +75,23 @@ public class PrintController {
 	    return memberAccnt;	
 	}
 	
-	//  get memberDetais statement for print interest..............................
-	@PostMapping("/member_details") 
-	InsertPrintCertificate getMemberDetails(@RequestBody AccountStatementReq accreq) {
-		InsertPrintCertificate memacnt = printingService.getMemberAccount(accreq);  // null check already in service.... return ledgerItem;
-		System.out.println("size of list*****************"+memacnt);
-		return memacnt;
+	//Interest Certificate....
+	@PostMapping("/interest_certificate")
+	PrintMemberDetail getMemberDetails(@RequestParam Integer memberId) {
+		PrintMemberDetail memberDetail = printingService.getMemberAccount(memberId);
+		return memberDetail;
 	  }
+	@GetMapping("/interest_certificate_detail")
+	List<iInterestCertificate> getIntCertificate(@RequestParam Integer memberId,
+												 @RequestParam String dateFrom,
+												 @RequestParam String dateTo) {
+		List<iInterestCertificate> intCertificate = printingService.getIntCertificate(memberId, dateFrom, dateTo); // null check already in service....
+		return intCertificate;
+	}
+
+
 	
-	// print file content..............................................................
+	// print file content.............................................................. HAVE TO DELETE IF NO USED
 	@GetMapping("/content_file") 
 	  List<ContentFiles> getContentFile() {
 	     List<ContentFiles> contentFiles = printingService.ContentFile();  // null check already in service.... return ledgerItem;
@@ -101,10 +100,9 @@ public class PrintController {
 	  }
 	
 	// print  content accnt details....................................
-		@GetMapping("/print_file_content") 
-		  List<ContentAccount> getPrintContentAccnt(@RequestBody PrintFileContentReq printFileContentReq) {
-		   List<ContentAccount> acntList = printingService.printContentAcntDetails(printFileContentReq);  // null check already in service.... return ledgerItem;
-			System.out.println("size of list*****************"+acntList.size());
+		@PostMapping("/print_file_content")
+		  List<iPrintContent> getPrintContentAccnt(@RequestBody PrintFileContentReq printFileContentReq) {
+		   List<iPrintContent> acntList = printingService.printContentAcntDetails(printFileContentReq);
 			return acntList;
 		  }
 	

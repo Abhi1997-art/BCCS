@@ -56,7 +56,7 @@ public class AccountsPending implements java.io.Serializable {
 	private String collectorAccountNumber;
 	private String accountDisplayName;
 	private String pandLgroup;
-	private String group;
+	private String groupType;
 	private String accountType;
 	private Integer relatedAccountId;
 	private String extraInfo;
@@ -193,7 +193,7 @@ public class AccountsPending implements java.io.Serializable {
 		this.collectorAccountNumber = collectorAccountNumber;
 		this.accountDisplayName = accountDisplayName;
 		this.pandLgroup = pandLgroup;
-		this.group = group;
+		this.groupType = group;
 		this.accountType = accountType;
 		this.relatedAccountId = relatedAccountId;
 		this.extraInfo = extraInfo;
@@ -598,13 +598,13 @@ public class AccountsPending implements java.io.Serializable {
 		this.pandLgroup = pandLgroup;
 	}
 
-	@Column(name = "Group")
-	public String getGroup() {
-		return this.group;
+	@Column(name = "group_type")
+	public String getGroupType() {
+		return this.groupType;
 	}
 
-	public void setGroup(String group) {
-		this.group = group;
+	public void setGroupType(String group) {
+		this.groupType = group;
 	}
 
 	@Column(name = "account_type")

@@ -14,7 +14,7 @@ public class MngLegalCaseHearing {
 	private Integer dealerId;
 	
 	private String accountNumber;
-	private String memberName;
+	private String name;
 	private String fatherName;
 	private String legalCaseNo;
 	private String bccsFileNo;
@@ -59,7 +59,7 @@ public class MngLegalCaseHearing {
 		this.accountId = accountId;
 		this.memberId = memberId;
 		this.accountNumber = accountNumber;
-		this.memberName = memberName;
+		this.name = memberName;
 		this.fatherName = fatherName;
 		this.legalCaseNo = legalCaseNo;
 		this.bccsFileNo = bccsFileNo;
@@ -109,12 +109,23 @@ public class MngLegalCaseHearing {
 	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
 	}
-	public String getMemberName() {
-		return memberName;
+
+	public String getName() {
+		return name;
 	}
-	public void setMemberName(String memberName) {
-		this.memberName = memberName;
+
+	public void setName(String name) {
+		this.name = name;
 	}
+
+	public Boolean getAccountGuarantorDefualter() {
+		return isAccountGuarantorDefualter;
+	}
+
+	public void setAccountGuarantorDefualter(Boolean accountGuarantorDefualter) {
+		isAccountGuarantorDefualter = accountGuarantorDefualter;
+	}
+
 	public String getFatherName() {
 		return fatherName;
 	}

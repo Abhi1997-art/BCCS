@@ -9,11 +9,14 @@ public class CommentDetails {
 	private String narration;
 	private Date createdAt;
 	private Date updatedAt;
+	private String accountNumber;
+	private String name;
+	private String fatherName;
 	
 	public CommentDetails() {
 		super();
 	}
-	public CommentDetails(Integer commentId, Integer accountId, Integer memberId, String narration, Date createdAt, Date updatedAt) {
+	public CommentDetails(Integer commentId, Integer accountId, Integer memberId, String narration, Date createdAt, Date updatedAt, String accountNumber, String name, String fatherName) {
 		super();
 		this.commentId = commentId;
 		this.accountId = accountId;
@@ -21,6 +24,9 @@ public class CommentDetails {
 		this.narration = narration;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.accountNumber=accountNumber;
+		this.name= name;
+		this.fatherName=fatherName;
 	}
 	public Integer getCommentId() {
 		return commentId;
@@ -58,6 +64,28 @@ public class CommentDetails {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
-	
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getFatherName() {
+		return fatherName;
+	}
+
+	public void setFatherName(String fatherName) {
+		this.fatherName = fatherName;
+	}
 }

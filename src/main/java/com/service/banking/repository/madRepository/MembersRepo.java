@@ -47,7 +47,7 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 
 		 
 		       // get  member by id for printing ...................
-				@Query("select new com.service.banking.model.printingModel.PrintMemberDetail(m.id,m.name ,m.permanentAddress,m.memberNo ,m.phoneNos,m.email) from  Members m where m.id=?1 ")
+				@Query("select new com.service.banking.model.printingModel.PrintMemberDetail(m.id,m.name ,m.permanentAddress, m.memberNo ,m.phoneNos, m.email) from  Members m where m.id=?1 ")
 				public PrintMemberDetail printMember(Integer memberId);
 
 				// get all memeber for share add and update dropdown...................................
@@ -61,15 +61,28 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 				public List<MeberDetail> getSponsor(String name);
 
 
-				@Query(value = "select  m.member_no , b.name as branchName, m.title , m.name, m.FatherName , m.RelationWithFatherField ,m.CurrentAddress , m.landmark , m.tehsil , m.city , m.PhoneNos, m.created_at ,m.is_active ,m.is_defaulter,\r\n"
-						+ "m.PanNo , m.AdharNumber, m.memebr_type from members m\r\n"
-						+ "left join branches b on m.branch_id = b.id\r\n"
-						+ "left join accounts a on a.member_id =m.id \r\n"
-						+ "where concat(m.AdharNumber, m.PhoneNos, m.PanNo, m.name) like %?1% "
-						+ "order by m.member_no desc",
-						countQuery = "SELECT count(*) from members m where concat(m.AdharNumber, m.PhoneNos, m.PanNo, m.name) like ?1%",
+				@Query(value = "select  m.id, m.member_no , b.name as branchName, m.title , m.name, m.FatherName , m.RelationWithFatherField ,m.CurrentAddress , m.landmark , m.tehsil , m.city , m.PhoneNos, m.created_at ,m.is_active ,m.is_defaulter,\n" +
+						"m.PanNo , m.AdharNumber, m.memebr_type from members m\n" +
+						"left join branches b on m.branch_id = b.id\n" +
+						"left join accounts a on a.member_id =m.id\n" +
+						"where m.AdharNumber = IFNULL(?4, m.AdharNumber) and m.PanNo = IFNULL(?3, m.PanNo) \n" +
+						"and m.name = ifnull(?5, m.name) and m.PhoneNos = IFNULL(?6, m.PhoneNos) \n" +
+						"and m.landmark = ifnull(?7,m.landmark) and m.PermanentAddress = IFNULL(?8,m.PermanentAddress) \n" +
+						"and m.is_active =IFNULL(?2,m.is_active) and m.memebr_type = IFNULL(?1,m.memebr_type) \n" +
+						"group by member_no \n" +
+						"order by m.member_no desc",
+						countQuery = "select  count(*) from members m\n" +
+								"left join branches b on m.branch_id = b.id\n" +
+								"left join accounts a on a.member_id =m.id\n" +
+								"where m.AdharNumber = IFNULL(?4, m.AdharNumber) and m.PanNo = IFNULL(?3, m.PanNo) \n" +
+								"and m.name = ifnull(?5, m.name) and m.PhoneNos = IFNULL(?6, m.PhoneNos) \n" +
+								"and m.landmark = ifnull(?7,m.landmark) and m.PermanentAddress = IFNULL(?8,m.PermanentAddress) \n" +
+								"and m.is_active =IFNULL(?2,m.is_active) and m.memebr_type = IFNULL(?1,m.memebr_type) \n" +
+								"group by member_no \n" +
+								"order by m.member_no desc",
 						nativeQuery = true)
-				public Page<iMemberReport> getMemberReport(String search, Pageable pageable);
+				public Page<iMemberReport> getMemberReport(String type, Boolean status, String panNo, String adharNo, String name,
+														   String mobile, String landmark, String address, Pageable pageable);
 
 
 				@Query(value = "select a.AccountNumber , s.name as SchemeName, a.created_at, m.title , m.name , m.FatherName ,m.CurrentAddress ,m.PhoneNos ,m.DOB , m.Nominee ,m.RelationWithNominee , a.Amount from accounts a\r\n"
@@ -77,7 +90,7 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 						+ "left join schemes s on s.id = a.scheme_id \r\n"
 						+ "where (a.account_type = ?1)\r\n"
 						+ "and a.created_at >= ?2 and a.created_at <= ?3 \r\n"
-						+ "order by a.branch_id",
+						+ "order by a.created_at",
 						countQuery = "SELECT count(*) from accounts a where a.account_type = ?1 and a.created_at >= ?2 and a.created_at <= ?3",
 						nativeQuery = true)
 				public Page<iMemberReport> getDepositeMemberInsurance1(String type, String fromDate, String toDate, Pageable pageable);

@@ -27,4 +27,11 @@ public interface TransactionsRepo extends JpaRepository<Transactions, Integer> {
 			"where t.reference_id = ?1",
 	nativeQuery = true)
     Integer getTransactionCountForAccount(Integer id);
+
+	@Query(value = "select t.id, t.invoice_no from transactions t \n" +
+			"where t.invoice_no IS NOT NULL \n" +
+			"ORDER by t.id DESC\n" +
+			"limit 1 ",
+			nativeQuery = true)
+    Integer getLastInvoiceNo();
 }

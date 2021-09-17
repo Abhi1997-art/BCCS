@@ -9,12 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.service.banking.hibernateEntity.Comment;
 import com.service.banking.model.accountsModel.CommentDetails;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public interface CommentsRepo extends JpaRepository<Comment, Integer>{
 	//get Comments API inside "Accounts" tab inside "Loan" tab inside "Accounts" tab...........
 	@Query("select new com.service.banking.model.accountsModel.CommentDetails(c.id, c.accounts.id, c.members.id, "
-			+ "c.narration, c.createdAt, c.updatedAt) from Comment c where c.accounts.id = ?1")
+			+ "c.narration, c.createdAt, c.updatedAt, c.accounts.accountNumber, c.members.name, c.members.fatherName) from Comment c " +
+			" where c.accounts.id = ?1 ")
 	public List<CommentDetails> getCommentsOnAccounts(Integer id);
 
 	@Transactional

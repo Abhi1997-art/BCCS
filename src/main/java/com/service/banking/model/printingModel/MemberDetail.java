@@ -1,31 +1,40 @@
 package com.service.banking.model.printingModel;
 
 public class MemberDetail {
-	//m.id,m.name ,m.permanentAddress,m.memberNo ,m.landmark,m.isDefaulte
+
+
 	Integer id;
 	String nameString;
 	String permanentAddress;
 	Integer memberNo;
-	String landmark;
+	String phoneNos;
 	Boolean isDefaulter;
-	 String email;
+	String email;
 	
 	public MemberDetail() {
 		super();
 	}
-	public MemberDetail(Integer id, String nameString, String permanentAddress, Integer memberNo, String landmark,
+	public MemberDetail(Integer id, String nameString, String permanentAddress, Integer memberNo, String phoneNos,
 			Boolean isDefaulter) {
 		super();
 		this.id = id;
 		this.nameString = nameString;
 		this.permanentAddress = permanentAddress;
 		this.memberNo = memberNo;
-		this.landmark = landmark;
+		this.phoneNos = phoneNos;
 		this.isDefaulter = isDefaulter;
 	}
-	
-	
-	
+
+	public MemberDetail(Integer id, String nameString, String permanentAddress, Integer memberNo, String phoneNos, String email) {
+		this.id = id;
+		this.nameString = nameString;
+		this.permanentAddress = permanentAddress;
+		this.phoneNos = phoneNos;
+		this.memberNo = memberNo;
+		this.phoneNos = phoneNos;
+		this.email = email;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -56,20 +65,27 @@ public class MemberDetail {
 	public void setMemberNo(Integer memberNo) {
 		this.memberNo = memberNo;
 	}
-	public String getLandmark() {
-		return landmark;
-	}
-	public void setLandmark(String landmark) {
-		this.landmark = landmark;
-	}
+
 	public Boolean getIsDefaulter() {
 		return isDefaulter;
 	}
 	public void setIsDefaulter(Boolean isDefaulter) {
 		this.isDefaulter = isDefaulter;
 	}
-	
-	
-	
-	
+
+	public String getPhoneNos() {
+		return phoneNos;
+	}
+
+	public void setPhoneNos(String phoneNos) {
+		this.phoneNos = phoneNos;
+	}
+
+	public Boolean getDefaulter() {
+		return isDefaulter;
+	}
+
+	public void setDefaulter(Boolean defaulter) {
+		isDefaulter = defaulter;
+	}
 }

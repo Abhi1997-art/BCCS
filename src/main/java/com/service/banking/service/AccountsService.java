@@ -1,5 +1,6 @@
 package com.service.banking.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,10 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.gson.Gson;
 import com.service.banking.hibernateEntity.*;
+import com.service.banking.model.GstModel.AccountStatementDetail;
 import com.service.banking.model.accountsModel.*;
+import com.service.banking.model.hodAuthorityModel.iDeleteVoucherDetails;
 import com.service.banking.model.transaction.DepositeDetails;
 import com.service.banking.repository.AccountsRepo.*;
+import com.service.banking.repository.gstRepository.MemorandomAccountStatement;
 import com.service.banking.repository.hodAuthorityRepo.PremuimRepo;
 import com.service.banking.repository.madRepository.AgentsRepositoty;
 import com.service.banking.repository.superAdminRepo.BranchesRepository;
@@ -18,6 +23,7 @@ import com.service.banking.repository.superAdminRepo.ShareCertificateRepo;
 import com.service.banking.repository.superAdminRepo.ShareRepository;
 import com.service.banking.repository.transaction.TransactionRowRepo;
 import com.service.banking.repository.transaction.TransactionsRepo;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -116,6 +122,9 @@ public class AccountsService {
 
     @Autowired
     AgentsRepositoty agentsRepositoty;
+
+    @Autowired
+    MemorandomAccountStatement memorandomTransRow;
 
 
     DateFormater dateformater = new DateFormater();
@@ -231,11 +240,11 @@ public class AccountsService {
     }
 
     // get manage surrender bike legal accounts  .......................................................
-    public Map<String, Object> manageSuurenderBike(Integer setPageNumber, Integer setMaxResults) {
+    public Map<String, Object> manageSuurenderBike(Integer setPageNumber, Integer setMaxResults, String search) {
         //Pageable paging = PageRequest.of(setFirstResults, setMaxResults);
 
         Pageable pageable = PageRequest.of(setPageNumber, setMaxResults);
-        Page<MngSuurenderBikeDetails> manageSuurenderBike = smAccountsRepo.manageSuurenderBike(pageable);
+        Page<MngSuurenderBikeDetails> manageSuurenderBike = smAccountsRepo.manageSuurenderBike(search, pageable);
         Map<String, Object> monthMap = new HashMap<String, Object>();
         if (manageSuurenderBike.hasContent()) {
             monthMap.put("pageSize", manageSuurenderBike.getSize());
@@ -287,23 +296,43 @@ public class AccountsService {
         } else {
             to_Date1 = dateformater.getFromatDate(toDate);
         }
-        List<AccountStatementDetails> staffList = smAccountsRepo.getAccountStatement(from_Date1, to_Date1, accountId);
 
+        Date firstTransactionDate = new Date();
+        if(!from_Date1.equals("2001-01-01")){
+            firstTransactionDate = transactionRowRepo.firstTransactionDate(accountId);
+        }
+
+        Double openingBalance= 0.0;
+        if(from_Date1.after(firstTransactionDate)){
+            openingBalance = transactionRowRepo.getOpeningbalance(accountId, firstTransactionDate, from_Date1);
+        }
+        System.out.println("Opening " + openingBalance);
+
+
+        List<AccountStatementDetails> staffList = transactionRowRepo.getAccountStatement(from_Date1, to_Date1, accountId);
+        System.out.println(staffList.size());
+        AccountStatementDetails accountStatementDetails = new AccountStatementDetails();
+        if(openingBalance < 0)
+            accountStatementDetails.setAmountDr(BigDecimal.valueOf(openingBalance));
+        else
+            accountStatementDetails.setAmountCr(BigDecimal.valueOf(openingBalance));
+
+        accountStatementDetails.setNarration("Opening Balance ");
+
+        staffList.add(0, accountStatementDetails);
 
         if (staffList.size() != 0) {
             return staffList;
         } else {
             return new ArrayList<AccountStatementDetails>();
         }
-
-
     }
 
     //*****************************  noc management ****************************
 
     // Send noc ......................................................
-    public List<SendNocDetails> nocSendMnagement() {
-        List<SendNocDetails> sendnoc = nocRepo.getSendNoc();
+    public List<SendNocDetails> nocSendMnagement(String search) {
+        List<SendNocDetails> sendnoc = nocRepo.getSendNoc(search);
 
         if (sendnoc.size() != 0) {
             return sendnoc;
@@ -350,7 +379,6 @@ public class AccountsService {
             return "SM Account for this member already exist !";
         }
 
-
         accounts.setMemberId(sm.getMemberId());
         accounts.setSchemeId(sm.getSchemeId());
         accounts.setBranchId(sm.getBranchId());
@@ -377,7 +405,7 @@ public class AccountsService {
         if (sm.getDebitAccount() == null) {
             accountDetailsFrom = accountsRepo.getCashAccounts(sm.getBranchId());
         } else {
-            accountDetailsFrom = accountsRepo.getAccountInfoById(sm.getBranchId());
+            accountDetailsFrom = accountsRepo.getAccountInfoById(sm.getDebitAccount());
         }
 
         System.out.println(accountDetailsFrom.getId());
@@ -439,6 +467,7 @@ public class AccountsService {
         accounts.setStaffId(oa.getStaffId());
         accounts.setBranchId(oa.getBranchId());
         accounts.setPandLgroup(oa.getPAndLGroup());
+        accounts.setCreatedAt(new Date());
         accounts.setDealerId(0);
         accounts.setIsDirty((byte) 0);
         accounts.setBikeSurrendered((byte) 0);
@@ -764,9 +793,9 @@ public class AccountsService {
     }
 
     // Get API of "Accounts" tab inside "Loan" tab inside "Accounts" tab.............
-    public Map<String, Object> getAllAccount(Integer setPageNumber, Integer setMaxResults) {
+    public Map<String, Object> getAllAccount(Integer setPageNumber, Integer setMaxResults, String search) {
         Pageable pageable = PageRequest.of(setPageNumber, setMaxResults);
-        Page<LoanAccountDetails> list = smAccountsRepo.getAllAccount(pageable);
+        Page<LoanAccountDetails> list = smAccountsRepo.getAllAccount(search, pageable);
         Map<String, Object> monthMap = new HashMap<String, Object>();
         if (list.hasContent()) {
             monthMap.put("pageSize", list.getSize());
@@ -829,15 +858,20 @@ public class AccountsService {
 
 
     // Add Documents API inside "Accounts" tab inside "Loan" tab inside "Accounts" tab.............
-    public void addDocumentsOfAccount(DocumentsSubmittedDetails details) {
+    public String addDocumentsOfAccount(DocumentsSubmittedDetails details) {
         DocumentsSubmitted ds = new DocumentsSubmitted();
-        Date currentDate = DateFormater.getCurrentDate();
-        System.out.println("***" + currentDate);
         ds.setAccountsId(details.getAccountId());
+
+        Integer documentExists = documnetsRepo.checkDocumentExists(details.getAccountId(), details.getDocumentId());
+        if(documentExists > 0){
+            return "Entry Already Exists, Try to edit it";
+        }
+
         ds.setDocumentsId(details.getDocumentId());
         ds.setDescription(details.getDescription());
-        ds.setSubmittedOn(currentDate);
+        ds.setSubmittedOn(new Date());
         docSubmittedRepo.save(ds);
+        return "Successfully Added !";
     }
 
     // Update Documents API inside "Accounts" tab inside "Loan" tab inside "Accounts" tab.............
@@ -865,8 +899,6 @@ public class AccountsService {
     // get Comments API inside "Accounts" tab inside "Loan" tab inside "Accounts" tab..........
     public List<CommentDetails> getCommentsOnAccounts(Integer id) {
         List<CommentDetails> list = commentRepo.getCommentsOnAccounts(id);
-        System.out.println("***********" + list.size());
-
         if (list.size() != 0) {
             return list;
         } else {
@@ -1000,36 +1032,19 @@ public class AccountsService {
 
     // delete "Manage Legal Case & Hearing" tab form "Loan" tab............
     public String deleteLoanManageCaseAndHearing(Integer id) {
-        try {
-            alcRepo.deleteById(id);
-
-        } catch (Exception e) {
-            return "Try again after sometime" + e;
+        Integer legalcaseExists = alchRepo.checkLegalcaseExists(id);
+        if(legalcaseExists > 0){
+            return "Please remove the hearing records first !";
         }
+        alchRepo.deleteById(id);
         return "Item Deleted Successfully";
     }
 
 
     // Get "LegalCaseHearing" tab inside "Manage Legal Case & Hearing" tab form "Loan" tab............
-    public List<MngLegalCaseHearing> getLegalCaseHearing(Integer id) {
-        List<MngLegalCaseHearing> conList = new ArrayList<MngLegalCaseHearing>();
-        List<Object[]> legalCaseHearing = smAccountsRepo.getLegalCaseHearing(id);
-        for (Object[] ob : legalCaseHearing) {
-            MngLegalCaseHearing legal = new MngLegalCaseHearing();
-            System.out.println("****** " + ob.length);
-            legal.setLegalCaseNo(Optional.ofNullable(ob[0]).isPresent() ? ob[0].toString() : "");
-            legal.setDealerId(Optional.ofNullable(ob[1]).isPresent() ? (Integer) ob[1] : 0);
-            legal.setDealerName(Optional.ofNullable(ob[2]).isPresent() ? ob[2].toString() : "");
-            legal.setAccountLegalCaseHearingId(Optional.ofNullable(ob[3]).isPresent() ? (Integer) ob[3] : null);
-            legal.setAccountLegalCaseId(Optional.ofNullable(ob[4]).isPresent() ? (Integer) ob[4] : null);
-            legal.setLasttHearingDate(Optional.ofNullable(ob[5]).isPresent() ? (Date) ob[5] : null);
-            legal.setStage(Optional.ofNullable(ob[6]).isPresent() ? ob[6].toString() : "");
-            legal.setRemarks(Optional.ofNullable(ob[7]).isPresent() ? ob[7].toString() : "");
-            legal.setOwner(Optional.ofNullable(ob[8]).isPresent() ? ob[8].toString() : "");
-            conList.add(legal);
-        }
-        System.out.print("***" + conList.size());
-        return conList;
+    public List<iMngLegalCaseHearing> getLegalCaseHearing(Integer id) {
+        List<iMngLegalCaseHearing> list = smAccountsRepo.getLegalCaseHearing(id);
+        return list;
     }
 
     // add "LegalCaseHearing" tab inside "Manage Legal Case & Hearing" tab form "Loan" tab............
@@ -1046,8 +1061,7 @@ public class AccountsService {
     // update "LegalCaseHearing" tab inside "Manage Legal Case & Hearing" tab form "Loan" tab............
     public void updateLegalCaseHearing(MngLegalCaseHearing details) {
         AccountLegalCaseHearing alc = alchRepo.getOne(details.getAccountLegalCaseHearingId());
-        Date currentDate = DateFormater.getCurrentDate();
-        alc.setHearingDate(currentDate);
+        alc.setHearingDate(details.getLasttHearingDate());
         alc.setLegalcaseId(details.getAccountLegalCaseId());
         alc.setRemarks(details.getRemarks());
         alc.setStage(details.getStage());
@@ -1056,12 +1070,7 @@ public class AccountsService {
 
     // delete  "LegalCaseHearing" tab inside "Manage Legal Case & Hearing" tab form "Loan" tab............
     public String deleteLegalCaseHearing(Integer id) {
-        try {
-            alchRepo.deleteById(id);
-
-        } catch (Exception e) {
-            return "Try again after sometime" + e;
-        }
+        alchRepo.deleteById(id);
         return "Item Deleted Successfully";
     }
 
@@ -1080,17 +1089,20 @@ public class AccountsService {
         n.setNocHoldDueTo(nc.getNocHoldDueTo());
         n.setNocNotMadeDueTo(nc.getNocNotMadeDueTo());
         n.setReturnById(0);
-        n.setReturnNarration(" ");
+        n.setReturnNarration("");
         n.setDispatchById(0);
-        n.setReturnAt(dateformater.getFromatDate("00-00-000"));
-        n.setDispatchAt(dateformater.getFromatDate("00-00-000"));
+        n.setReturnAt(dateformater.getFromatDate("00-00-0000"));
+        if(nc.getIsDispatchToCustomer() == 1)
+            n.setDispatchAt(new Date());
+        else
+            n.setDispatchAt(dateformater.getFromatDate("00-00-0000"));
         n.setIsReturn(0);
-        n.setReceivedAt(dateformater.getFromatDate("00-00-000"));
+        n.setReceivedAt(dateformater.getFromatDate("00-00-0000"));
         n.setReceivedNarration("");
         Date date = new Date();
         n.setSendAt(date);
-        n.setCreatedById(0);
-        n.setFromBranchId(0);
+        n.setCreatedById(nc.getLoginId());
+        n.setFromBranchId(nc.getFromBranchId());
         n.setReturnReceivedById(0);
         nocRepo.save(n);
     }
@@ -1121,7 +1133,7 @@ public class AccountsService {
     //Update send NOC......................
     public void editSendNoc(SendNocDetails nc) {
         Noclog n = nocRepo.getOne(nc.getId());
-        n.setAccountsId(nc.getAccountsId());
+        n.setAccountsId(nc.getAccountId());
         n.setNocLetterReceivedOn(nc.getNocLetterReceivedOn());
         n.setToBranchId(nc.getToBranchId());
         n.setSendNarration(nc.getSendNarration());
@@ -1144,6 +1156,7 @@ public class AccountsService {
     //Action button in Return NOC...................................
     public void editReturnNoc(ReturnNocDetails nc) {
         Noclog noclog = nocRepo.getOne(nc.getId());
+        noclog.setReturnReceivedById(nc.getReturnReceivedId());
         noclog.setReturnReceivedNarration(nc.getReturnReceivedNarration());
         nocRepo.save(noclog);
 
@@ -1236,7 +1249,6 @@ public class AccountsService {
 
     }
 
-
     public void editReceive2Noc(ReceiveNocDetails nc) {
         Noclog noclog = nocRepo.getOne(nc.getId());
         Date date = new Date();
@@ -1293,5 +1305,78 @@ public class AccountsService {
 
     public void deleteJointMember(Integer id) {
         jointmemberrepo.deleteById(id);
+    }
+
+
+
+    public void addPendingAccount(AccountsPendingDetails accountsPending) {
+
+        AccountsPending ac = new AccountsPending();
+        ac.setAccountType(accountsPending.getAccountType());
+        ac.setAccountNumber(accountsPending.getAccountNumber());
+        ac.setMemberId(accountsPending.getMemberId());
+        ac.setSchemeId(accountsPending.getSchemeId());
+        ac.setAmount(accountsPending.getAmount());
+        ac.setRepaymentMode(accountsPending.getRepaymentMode());
+        ac.setInsuranceTenure(accountsPending.getInsuranceTenure());
+        ac.setActiveStatus(accountsPending.getActiveStatus());
+        ac.setLoanInsurranceDate(accountsPending.getLoanInsurranceDate());
+        ac.setDealerId(accountsPending.getDealerId());
+        ac.setSigImageId(accountsPending.getSigImageId());
+
+        ac.setCreatedAt(new Date());
+        ac.setStaffId(accountsPending.getStaffId());
+        ac.setPandLgroup(" ");
+        ac.setIsDirty((byte) 0);
+        ac.setBikeSurrendered((byte) 0);
+        ac.setIsInLegal((byte) 0);
+        ac.setBankAccountLimit(0);
+        ac.setLegalFilingDate(new Date(0));
+        ac.setNewOrRenew("");
+        ac.setBranchId(accountsPending.getBranchId());
+        ac.setIsApproved(false);
+
+        OtherValues otherValues= new OtherValues();
+        otherValues.setJointMember(accountsPending.getJointMember());
+        otherValues.setDocumentFeeded(accountsPending.getDocumentFeeded());
+        otherValues.setSmAmount(accountsPending.getSMAmount());
+        otherValues.setAccountCrAmount(accountsPending.getAccountCrAmount());
+        otherValues.setLoanFromAccount(accountsPending.getLoanFromAccount());
+
+        Gson gson = new Gson();
+        gson.toJson(otherValues);
+        ac.setExtraInfo(gson.toJson(otherValues));
+        System.out.println(gson.toJson(otherValues));
+        loanRepo.save(ac);
+
+    }
+
+    public List<AccountStatementDetail> getAccountStatementGST(Integer accountId, String fromDate, String toDate) {
+        Date from_Date1 = null;
+        Date to_Date1 = null;
+        if (fromDate == null) {
+            from_Date1 = DateFormater.getOldDate();
+        } else {
+            from_Date1 = dateformater.getFromatDate(fromDate);
+        }
+        if (toDate == null) {
+            to_Date1 = DateFormater.getCurrentDate();
+        } else {
+            to_Date1 = dateformater.getFromatDate(toDate);
+        }
+
+        List<AccountStatementDetail> staffList = memorandomTransRow.accountStatement(accountId, from_Date1, to_Date1);
+
+
+        if (staffList.size() != 0) {
+            return staffList;
+        } else {
+            return new ArrayList<AccountStatementDetail>();
+        }
+    }
+
+    public List<iDeleteVoucherDetails> getTransactionDetails(Integer transactionId) {
+        List<iDeleteVoucherDetails> list = transactionRowRepo.getTransactionDetails(transactionId);
+        return list;
     }
 }

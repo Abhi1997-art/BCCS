@@ -20,6 +20,7 @@ public class AccountDetails {
 	String groupType;
 	Integer accountId;
 	Integer referenceAccountId;
+	Boolean maturityStatus;
 
 	public AccountDetails() {
 		super();
@@ -84,6 +85,17 @@ public class AccountDetails {
 		this.name = name;
 		this.fatherName = fatherName;
 		this.accountType = accountType;
+	}
+
+	public AccountDetails(Integer id, String accountNumber, String name, String fatherName, String accountType, String groupType, Boolean maturityStatus) {
+		super();
+		this.id = id;
+		this.accountNumber = accountNumber;
+		this.name = name;
+		this.fatherName = fatherName;
+		this.accountType = accountType;
+		this.groupType = groupType;
+		this.maturityStatus=maturityStatus;
 	}
 	
 	public AccountDetails(Integer id, String accountNumber, String name, String fatherName, String accountType, Integer accountId, Integer referenceAccountId) {
@@ -194,8 +206,11 @@ public class AccountDetails {
 		this.referenceAccountId = referenceAccountId;
 	}
 
-	
-	
-	
-	
+	public Boolean getMaturityStatus() {
+		return maturityStatus;
+	}
+
+	public void setMaturityStatus(Boolean maturityStatus) {
+		this.maturityStatus = maturityStatus;
+	}
 }

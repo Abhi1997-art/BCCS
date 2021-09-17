@@ -5,7 +5,6 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@JsonInclude(Include.NON_NULL)
 public interface iReceiveNocDetails { 
 	
 	public Integer getId();
@@ -13,7 +12,7 @@ public interface iReceiveNocDetails {
 	public String getName();
 	public String getNocLetterReceivedOn();
 	public String getSendAt();
-	public String getCreatedByIdName();
+	public String getCreatedBy();
 	public String getFromBranchName();
 	public String getSendNarration();
 	public String getReceivedAt();

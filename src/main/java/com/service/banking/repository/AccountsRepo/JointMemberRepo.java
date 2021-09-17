@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface JointMemberRepo extends JpaRepository<Jointmembers, Integer>{
 
-    @Query(value = "select j.id, a.AccountNumber , m2.name , m2.FatherName , m.name as memberName from jointmembers j \n" +
+    @Query(value = "select j.id, a.AccountNumber , m2.name as memberName, m2.FatherName , m.name from jointmembers j \n" +
             "left join accounts a on a.id = j.account_id \n" +
             "left join members m2 on m2.id = a.member_id \n" +
             "left join members m on m.id = j.member_id \n" +

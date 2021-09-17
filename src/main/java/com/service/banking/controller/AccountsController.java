@@ -4,7 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.service.banking.hibernateEntity.*;
+import com.service.banking.model.GstModel.AccountStatementDetail;
 import com.service.banking.model.accountsModel.*;
+import com.service.banking.model.hodAuthorityModel.iDeleteVoucherDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,12 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.service.banking.hibernateEntity.Accounts;
-import com.service.banking.hibernateEntity.Bank;
-import com.service.banking.hibernateEntity.Documents;
-import com.service.banking.hibernateEntity.Noclog;
-import com.service.banking.hibernateEntity.Schemes;
-import com.service.banking.hibernateEntity.Teams;
 import com.service.banking.model.MadModel.DealerDeatails;
 import com.service.banking.model.dashboardModel.DueDeatailsModel;
 import com.service.banking.model.dashboardModel.SchemaDetail;
@@ -211,17 +208,24 @@ public class AccountsController {
     // Accounts..............................................................................
     @GetMapping("/loan/pending")
     List<PendingLoanDetails> pending() {
-        List<PendingLoanDetails> pendList = accountService.loanPending(); // null check already in service....
-        System.out.println("size of list*****************" + pendList.size());
+        List<PendingLoanDetails> pendList = accountService.loanPending();
         return pendList;
     }
+
+    @PostMapping("/loan/pending")
+    public void addPendingAccount(@RequestBody AccountsPendingDetails accountsPending) {
+            accountService.addPendingAccount(accountsPending);
+    }
+
 
     //loan pending  Accounts..............................................................................
     // Manage Surrender Bike and Legal tab inside Loan tab...............
     @GetMapping("/loan/mng_surrender_bike_legal/{setFirstResult}/{setMaxResults}")
-    public Map<String, Object> mngSurrenderBike(@PathVariable("setFirstResult") Integer setFirstResult, @PathVariable("setMaxResults") Integer setMaxResults) {
+    public Map<String, Object> mngSurrenderBike(@PathVariable("setFirstResult") Integer setFirstResult,
+                                                @PathVariable("setMaxResults") Integer setMaxResults,
+                                                @RequestParam("search") String search) {
         Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
-        Map<String, Object> pendList = accountService.manageSuurenderBike(setPageNumber, setMaxResults); // null check already in service....
+        Map<String, Object> pendList = accountService.manageSuurenderBike(setPageNumber, setMaxResults, search); // null check already in service....
         System.out.println("size of list*****************" + pendList.size());
         return pendList;
     }
@@ -259,7 +263,7 @@ public class AccountsController {
 
     // Get "LegalCaseHearing" tab inside "Manage Legal Case & Hearing" tab form "Loan" tab............
     @GetMapping("/loan/legal_case_hearing")
-    public List<MngLegalCaseHearing> getLegalCaseHearing(@RequestParam Integer id) {
+    public List<iMngLegalCaseHearing> getLegalCaseHearing(@RequestParam Integer id) {
         return accountService.getLegalCaseHearing(id);
     }
 
@@ -284,9 +288,11 @@ public class AccountsController {
 
     // Get API of "Accounts" tab inside "Loan" tab inside "Accounts" tab.............
     @GetMapping("/loan/accounts/{setFirstResult}/{setMaxResults}")
-    public Map<String, Object> getAllAccount(@PathVariable("setFirstResult") Integer setFirstResult, @PathVariable("setMaxResults") Integer setMaxResults) {
+    public Map<String, Object> getAllAccount(@PathVariable("setFirstResult") Integer setFirstResult,
+                                             @PathVariable("setMaxResults") Integer setMaxResults,
+                                             @RequestParam("search") String search) {
         Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
-        Map<String, Object> list = accountService.getAllAccount(setPageNumber, setMaxResults);
+        Map<String, Object> list = accountService.getAllAccount(setPageNumber, setMaxResults, search);
         return list;
     }
 
@@ -305,8 +311,8 @@ public class AccountsController {
 
     // Add Documents API inside "Accounts" tab inside "Loan" tab inside "Accounts" tab.............
     @PostMapping("/loan/accounts/add_documents")
-    public void addDocumentsOfAccount(@RequestBody DocumentsSubmittedDetails details) {
-        accountService.addDocumentsOfAccount(details);
+    public String addDocumentsOfAccount(@RequestBody DocumentsSubmittedDetails details) {
+        return accountService.addDocumentsOfAccount(details);
     }
 
     // Update Documents API inside "Accounts" tab inside "Loan" tab inside "Accounts" tab.............
@@ -376,8 +382,7 @@ public class AccountsController {
 
     @GetMapping("/account_statement/accounts")
     List<AccountDetails> getAccounts() {
-        List<AccountDetails> accList = accountService.getAccounts();  // null check already in service.... return ledgerItem;
-        System.out.println("size of list*****************" + accList.size());
+        List<AccountDetails> accList = accountService.getAccounts();
         return accList;
     }
 
@@ -388,13 +393,23 @@ public class AccountsController {
         return accountstament;
     }
 
+    @PostMapping("/account_statement_gst")
+    List<AccountStatementDetail> getAccountStatementGST(@RequestBody AccountStatementReq accreq) {
+        List<AccountStatementDetail> accountstament = accountService.getAccountStatementGST(accreq.getId(), accreq.getFromDate(), accreq.getToDate());
+        return accountstament;
+    }
+
+    @GetMapping("/transaction_details")
+    public List<iDeleteVoucherDetails> getTransactionDetails(@RequestParam Integer transactionId) {
+        return accountService.getTransactionDetails(transactionId);
+    }
 
 //*****************************************noc management**************************************************
 
     //Send noc  Accounts ..............................................................................
     @GetMapping("/noc_management/send_noc")
-    List<SendNocDetails> getSendNoc() {
-        List<SendNocDetails> nocList = accountService.nocSendMnagement();
+    List<SendNocDetails> getSendNoc(@RequestParam String search) {
+        List<SendNocDetails> nocList = accountService.nocSendMnagement(search);
         return nocList;
     }
 
@@ -428,7 +443,6 @@ public class AccountsController {
     @GetMapping("/noc_management/receive_noc")
     List<iReceiveNocDetails> getReceiveNoc() {
         List<iReceiveNocDetails> nocList = accountService.receiveNoc();
-        System.out.println("size of list*****************" + nocList.size());
         return nocList;
     }
 

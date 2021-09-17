@@ -70,9 +70,11 @@ public class ReportController {
 	//Member Report.............................................................................................................................
 	@GetMapping("/member_report/{setFirstResult}/{setMaxResults}")
 	public Map<String, Object> getMemberReport(@PathVariable("setFirstResult") Integer setFirstResult, @PathVariable("setMaxResults") Integer setMaxResults,
-			@RequestParam String search){
+			@RequestParam String type, @RequestParam Boolean status, @RequestParam String panNo, @RequestParam String adharNo,
+			@RequestParam String name, @RequestParam String mobile, @RequestParam String landmark,
+			@RequestParam String address){
 		Integer setPageNumber = HodAuthorityService.pageNumberr(setFirstResult);
-		Map<String, Object> list = reportservice.getMemberReport(setPageNumber, setMaxResults, search);
+		Map<String, Object> list = reportservice.getMemberReport(setPageNumber, setMaxResults, type, status, panNo, adharNo, name, mobile, landmark, address );
 		return list;
 	}
 	

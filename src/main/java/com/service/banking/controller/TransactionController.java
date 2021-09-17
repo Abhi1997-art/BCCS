@@ -3,6 +3,7 @@ package com.service.banking.controller;
 import java.util.Date;
 import java.util.List;
 
+import com.service.banking.model.transaction.*;
 import org.hibernate.engine.query.spi.ReturnMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -26,13 +27,6 @@ import com.service.banking.model.accountsModel.AccountDetails;
 import com.service.banking.model.accountsModel.ReturnNocDetails;
 import com.service.banking.model.dashboardModel.DueDeatailsModel;
 import com.service.banking.model.errorHandleModel.DataNotFoundException;
-import com.service.banking.model.transaction.DepositeDetails;
-import com.service.banking.model.transaction.JournalDetails;
-import com.service.banking.model.transaction.NewPageReq;
-import com.service.banking.model.transaction.PageElementDetails;
-import com.service.banking.model.transaction.PageUpdateReq;
-import com.service.banking.model.transaction.TransElementDetails;
-import com.service.banking.model.transaction.TransPageDetails;
 import com.service.banking.service.TransactionService;
 
 import net.bytebuddy.asm.Advice.Return;
@@ -103,13 +97,7 @@ public class TransactionController {
 		List<TransactionTypes> transtype = transService.getTransType(); // null check already in service....
 		return transtype;
 	}
-	
-	@GetMapping("/getBankAccount")
-	List<AccountDetails> getBankAccount() {
-		List<AccountDetails> bankAccounts = transService.getBankAccount(); // null check already in service....
-		return bankAccounts;
-	}
-	
+
 	@GetMapping("/maturity_amount")
 	Double getMaturityAmount(@RequestParam Integer accountId) {
 		Double maturityAmount = transService.getMaturityAmount(accountId);
@@ -120,7 +108,24 @@ public class TransactionController {
 	void preMaturePayments(@RequestBody DepositeDetails depositeDetails) {
 		transService.performPreMaturePayment(depositeDetails);
 	}
-	
+
+	//GST.........
+
+	@PostMapping("/memorandum_apply")
+	public void memorandumApply(@RequestBody MemorandumDetails memorandumDetails) {
+		transService.memorandumApply(memorandumDetails);
+	}
+
+	@PostMapping("/gst_deposite")
+	public void gstDeposite(@RequestBody MemorandumDetails memorandumDetails) {
+		transService.gstDeposite(memorandumDetails);
+	}
+
+	@PostMapping("/general_gst_deposite")
+	public void generalGstDeposite(@RequestBody MemorandumDetails memorandumDetails) {
+		transService.generalGstDeposite(memorandumDetails);
+	}
+
 
 
 
@@ -185,6 +190,26 @@ public class TransactionController {
 	public Integer getBalance(@PathVariable("acId") Integer id) {
 		return transService.getBalance(id);
 		
-	} 
+	}
+
+	@GetMapping("/withdraw_accounts")
+	List<AccountDetails> getWithdrawAccounts(@RequestParam("accountNumber") String accountNumber) {
+		List<AccountDetails> allaccounts = transService.getWithdrawAccounts(accountNumber); // null check already in service....
+		return allaccounts;
+	}
+
+	//All LOAN active accounts....
+	@GetMapping("/for_closed_accounts")
+	List<AccountDetails> getForClosedAccounts(@RequestParam("accountNumber") String accountNumber) {
+		List<AccountDetails> allaccounts = transService.getForClosedAccounts(accountNumber); // null check already in service....
+		return allaccounts;
+	}
+
+	//Get All bank accounts...... Active/Deactive...
+	@GetMapping("/getBankAccount")
+	List<AccountDetails> getBankAccount() {
+		List<AccountDetails> bankAccounts = transService.getBankAccount(); // null check already in service....
+		return bankAccounts;
+	}
 	
 }

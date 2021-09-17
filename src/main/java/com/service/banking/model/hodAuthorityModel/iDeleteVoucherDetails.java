@@ -21,5 +21,9 @@ public interface iDeleteVoucherDetails {
 	public String getBranchName();
 	public Integer getVoucher_No();
 	public Integer getTransaction_Id();
+	public String getRelatedAccountNumber();
+	public String getRelatedMemberName();
+	public String getRelatedFatherName();
+	public String getUsername();
 	
 }

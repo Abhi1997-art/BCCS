@@ -51,7 +51,7 @@ public interface EmployeeRepo extends JpaRepository<XbankEmployees,Integer> {
 	 
 		// get employee for share add and update dropdown...................................
 		@Query("select new com.service.banking.model.MadModel.EmployeName(m.id,m.name) from XbankEmployees m " +  
-				"where m.name LIKE %?1% ")
+				"where m.name LIKE %?1% and m.isActive = 1")
 		List<EmployeName> getEmployee(String empName);
 
 }

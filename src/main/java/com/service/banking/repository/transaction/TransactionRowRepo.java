@@ -3,6 +3,8 @@ package com.service.banking.repository.transaction;
 import java.util.Date;
 import java.util.List;
 
+import com.service.banking.model.accountsModel.AccountStatementDetails;
+import com.service.banking.model.printingModel.iInterestCertificate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -55,8 +57,8 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 
 	@Query(value = "select a.AccountNumber , a.created_at, m.title , m.name , m.FatherName ,m.CurrentAddress ,m.PhoneNos ,m.DOB , m.Nominee ,m.RelationWithNominee , a.Amount, m.memebr_type , m.PanNo , m.AdharNumber , a.ActiveStatus from accounts a\r\n"
 			+ "left join members m on m.id = a.member_id \r\n"
-			+ "where a.account_type = \"Loan Against Deposit\" and a.created_at >= \"2019-05-08\" and a.created_at <=\"2019-05-23\"\r\n"
-			+ "order by a.branch_id" , nativeQuery = true)
+			+ "where a.account_type = \"Loan\" and a.created_at >= ?1 and a.created_at <=?2 \r\n"
+			+ "order by a.created_at" , nativeQuery = true)
 	List<iNewLoanMemberInsuranceReport> getNewLoanMemberInsuranceReport(String fromDate, String toDate);
 	
 	
@@ -217,4 +219,53 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 			"where tr.account_id = ?1",
 	nativeQuery = true)
 	Integer getTransactionCountForAccount(Integer id);
+
+	@Query(value = "select t.id, a.AccountNumber , tr.amountCr, tr.amountDr from transaction_row tr \n" +
+			"left join transactions t on t.id = tr.transaction_id \n" +
+			"left join accounts a on a.id = tr.account_id \n" +
+			"left join members m on m.id= a.member_id \n" +
+			"where (t.transaction_type_id = 14 or t.transaction_type_id = 16 or t.transaction_type_id = 17)\n" +
+			"and m.id = ?1 and t.created_at >= ?2 and t.created_at <= ?3 \n" +
+			"order by t.id ",
+			nativeQuery = true)
+    List<iInterestCertificate> getIntCertificate(Integer memberId, String dateFrom, String dateTo);
+
+	@Query(value = "select tr.created_at from transaction_row tr \n" +
+			"where tr.account_id = ?1 \n" +
+			"limit 1 \n ",
+			nativeQuery = true)
+    Date firstTransactionDate(Integer accountId);
+
+	@Query(value = "select sum(tr.amountCr) - sum(tr.amountDr) as balance from transaction_row tr \n" +
+			"where tr.created_at >= ?2 and tr.created_at <= ?3 \n" +
+			"and tr.account_id = ?1 ",
+			nativeQuery = true)
+	Double getOpeningbalance(Integer accountId, Date firstTransactionDate, Date from_date1);
+
+	// accounts statement.......................................
+	@Query("select new com.service.banking.model.accountsModel.AccountStatementDetails(t.id,a.accountNumber,m.name ,m.fatherName, a.amount ,\r\n"
+			+ "t.voucherNo ,tr.createdAt ,t.invoiceNo ,t.narration ,tr.amountDr ,tr.amountCr ,tr.side, sum(tr2.amountCr) - sum(tr2.amountDr) as balance, a.isInLegal, a.legalFilingDate) from  TransactionRow tr \r\n"
+			+ "left join Accounts a on a.id = ?3 \r\n" + "left join Members m on m.id =a.memberId \r\n"
+			+ "left join Transactions t on t.id =tr.transactionId \r\n " +
+			" left join TransactionRow tr2 on tr2.accountId = a.id and tr2.createdAt <= tr.createdAt "
+			+ "WHERE  tr.accountId =?3 and tr.createdAt >= ?1 and tr.createdAt <= ?2 " +
+			" group by tr.id order by tr.createdAt ")
+	List<AccountStatementDetails> getAccountStatement(Date from_Date, Date to_Date, Integer accountId);
+
+	@Query(value = "Select tr.id, a.AccountNumber , m.name, m.FatherName , tr.amountDr , tr.amountCr, \r\n"
+			+ "tr.created_at as createdAt, t.Narration, tt.name as transactionTypeName, a2.id as related_account_id , \r\n"
+			+ "a2.AccountNumber as relatedAccountNumber, m2.name as relatedMemberName, m2.FatherName as relatedFatherName, s.id as schemeId, s.name as schemeName, b.id as branchId, b.name as branchName,\r\n"
+			+ "t.voucher_no , tr.transaction_id, ss.username \r\n"
+			+ "from transaction_row tr\r\n"
+			+ "left join transactions t on t.id = tr.transaction_id "
+			+ "left join accounts a on tr.account_id =a.id\r\n"
+			+ "left join transaction_types tt on tt.id = t.transaction_type_id \r\n"
+			+ "left join members m on m.id = a.member_id \r\n"
+			+ "left join accounts a2 on a2.id = t.reference_id \r\n"
+			+ "left join schemes s on s.id = tr.scheme_id \r\n"
+			+ "left join branches b on b.id = t.branch_id \r\n" +
+			" left join staffs ss on ss.id = t.staff_id " +
+			" left join members m2 on m2.id = a2.member_id "
+			+ "where t.id = ?1 ", nativeQuery = true)
+	List<iDeleteVoucherDetails> getTransactionDetails(Integer transactionId);
 }

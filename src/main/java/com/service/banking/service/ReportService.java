@@ -84,9 +84,22 @@ public class ReportService {
 		return books;
 	}
 
-	public Map<String, Object> getMemberReport(Integer setPageNumber, Integer setMaxResults, String search) {
+	public Map<String, Object> getMemberReport(Integer setPageNumber, Integer setMaxResults, String type,
+											   Boolean status, String panNo, String adharNo, String name,
+											   String mobile, String landmark, String address) {
 		Pageable pageable= PageRequest.of(setPageNumber, setMaxResults);
-		Page<iMemberReport> memberReports = membersRepo.getMemberReport(search, pageable);
+
+		if(type == ""){ type = null;}
+		if(status.equals("")){ status = null;}
+		if(panNo == ""){ panNo = null;}
+		if(adharNo == ""){ adharNo = null;}
+		if(name == ""){ name = null;}
+		if(mobile == ""){ mobile = null;}
+		if(landmark == ""){ landmark = null;}
+		if(address == ""){ address = null;}
+
+		Page<iMemberReport> memberReports = membersRepo.getMemberReport(type, status, panNo, adharNo, name, mobile, landmark, address, pageable);
+		System.out.println("SIZE: " + memberReports.getSize());
 		Map<String, Object> tempList = new HashMap<String, Object>();
 		if(memberReports.hasContent()) {
 			tempList.put("pageSize", memberReports.getSize());

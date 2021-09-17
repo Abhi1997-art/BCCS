@@ -29,15 +29,17 @@ public class ReturnNocDetails {
 	Date dispatchAt;
 	Integer dispatchById;
 	String dispatchName;
+	Integer returnReceivedId;
+	Integer returnReceivedIdName;
 
 	public ReturnNocDetails() {
 		super();
 	}
 
 	public ReturnNocDetails(Integer id, String accountNumber, String name, Date nocLetterReceivedOn, Date sendAt,
-			String createdName, String branchName, String sendNarration, Date receivedAt, String recieveName,
-			String rcvbranchName, String rcvsendNarration, Integer isReturn, Date returnAt, String returnName,
-			String returnNarration, String rtrn_rcvName, String returnReceivedNarration) {
+							String createdName, String branchName, String sendNarration, Date receivedAt, String recieveName,
+							String rcvbranchName, String rcvsendNarration, Integer isReturn, Date returnAt, String returnName,
+							String returnNarration, String rtrn_rcvName, String returnReceivedNarration) {
 		super();
 		this.id = id;
 		this.accountNumber = accountNumber;
@@ -64,6 +66,43 @@ public class ReturnNocDetails {
 		this.dispatchAt = dispatchAt;
 		this.dispatchById = dispatchById;
 		this.dispatchName = dispatchName;
+		this.returnReceivedId=returnReceivedId;
+		this.returnReceivedIdName=returnReceivedIdName;
+	}
+
+
+	public ReturnNocDetails(Integer id, String accountNumber, String name, Date nocLetterReceivedOn, Date sendAt,
+			String createdName, String branchName, String sendNarration, Date receivedAt, String recieveName,
+			String rcvbranchName, String rcvsendNarration, Integer isReturn, Date returnAt, String returnName,
+			String returnNarration, String rtrn_rcvName, String returnReceivedNarration, Integer returnReceivedId, Integer returnReceivedIdName) {
+		super();
+		this.id = id;
+		this.accountNumber = accountNumber;
+		this.name = name;
+		this.nocLetterReceivedOn = nocLetterReceivedOn;
+		this.sendAt = sendAt;
+		this.createdName = createdName;
+		this.branchName = branchName;
+		this.sendNarration = sendNarration;
+		this.receivedAt = receivedAt;
+		this.recieveName = recieveName;
+		this.rcvbranchName = rcvbranchName;
+		this.rcvsendNarration = rcvsendNarration;
+		this.isReturn = isReturn;
+		this.returnAt = returnAt;
+		this.returnName = returnName;
+		this.returnNarration = returnNarration;
+		this.rtrn_rcvName = rtrn_rcvName;
+		this.returnReceivedNarration = returnReceivedNarration;
+		this.nocNotMadeDueTo = nocNotMadeDueTo;
+		this.nocHoldDueTo = nocHoldDueTo;
+		this.isDispatchToCustomer = isDispatchToCustomer;
+		this.dispatchNarration = dispatchNarration;
+		this.dispatchAt = dispatchAt;
+		this.dispatchById = dispatchById;
+		this.dispatchName = dispatchName;
+		this.returnReceivedId=returnReceivedId;
+		this.returnReceivedIdName=returnReceivedIdName;
 	}
 
 	/*
@@ -283,4 +322,19 @@ public class ReturnNocDetails {
 		this.dispatchName = dispatchName;
 	}
 
+	public Integer getReturnReceivedId() {
+		return returnReceivedId;
+	}
+
+	public void setReturnReceivedId(Integer returnReceivedId) {
+		this.returnReceivedId = returnReceivedId;
+	}
+
+	public Integer getReturnReceivedIdName() {
+		return returnReceivedIdName;
+	}
+
+	public void setReturnReceivedIdName(Integer returnReceivedIdName) {
+		this.returnReceivedIdName = returnReceivedIdName;
+	}
 }

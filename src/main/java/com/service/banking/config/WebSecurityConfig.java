@@ -30,7 +30,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
   public void configure(WebSecurity web) throws Exception {
       web.ignoring().antMatchers("/service/dashboard/**");
       web.ignoring().antMatchers("/service/hod_authority/**");
-      web.ignoring().antMatchers("/service/stock/**");
+      //web.ignoring().antMatchers("/service/stock/**");
     //  web.ignoring().antMatchers("/testkkkkkk/**");
       web.ignoring().antMatchers("/service/printing/**");
       web.ignoring().antMatchers("/service/gst/**");
