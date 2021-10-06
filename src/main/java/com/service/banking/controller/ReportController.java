@@ -108,6 +108,11 @@ public class ReportController {
 	List<iMemberReport> getMemberWithMultipleSM(){
 		List<iMemberReport> report = reportservice.getMemberWithMultipleSM();
 		return report;	}
+
+    @GetMapping("/member_with_zero_balance")
+    List<iMemberReport> getMemberWithZeroBalance(){
+        List<iMemberReport> report = reportservice.getMemberWithZeroBalance();
+        return report;	}
 	
 	@GetMapping("/sm_accounts")
 	List<iMemberReport> getSMAccounts(@RequestParam Integer memberId){

@@ -37,4 +37,30 @@ public interface PremuimRepo extends JpaRepository<Premiums, Integer> {
 				"where account_id = ?1",
 		nativeQuery = true)
     void deletePremiums(Integer id);
+
+	@Query(value = "select * from premiums p \n" +
+			"where p.account_id = ?1\n" +
+			"and p.PaidOn is NULL \n" +
+			"limit 1 ",
+			nativeQuery = true)
+    Premiums getFirstUnpaidPremium(Integer accountId);
+
+	@Query(value = "select count(*) from premiums p \n" +
+			"where p.account_id = ?1 \n" +
+			"and not p.Paid = 0 and not p.PaidOn is NULL ",
+			nativeQuery = true)
+	Integer getRowNoOfLastPaidPremium(Integer accountId);
+
+	@Query(value = "select * from premiums p \n" +
+			"where account_id = ?1 \n" +
+			"limit 1 ",
+			nativeQuery = true)
+	Premiums getFirstPremium(Integer accountId);
+
+	@Query(value = "select * from premiums p \n" +
+			"where p.account_id = ?1 \n" +
+			"and not p.Paid = 0 and not p.PaidOn is NULL\n" +
+			"order by p.id DESC limit 1",
+			nativeQuery = true)
+	Premiums getlastPremiumPaid(Integer id);
 }

@@ -19,4 +19,10 @@ public interface AgentCadreRepo extends JpaRepository<Cadres, Integer> {
 	@Query("select new com.service.banking.model.superAdminModel.CadreDetails(c.id,c.name ,c.percentageShare ,c.reqUnder ,c.totalCrpb ,cd.name,cd.id)from  Cadres c "
 			+ "left join  Cadres cd on cd.id = c.nextcadreId order by c.id desc")
 	List<CadreDetails> getCadresDetails();
+
+	@Query(value = "select sum(c.percentage_share) from agents a \n" +
+			"left join cadres c on c.id >= a.cadre_id \n" +
+			"where a.id = ?1 ",
+	nativeQuery = true)
+	Integer getPercentageShare(Integer id);
 }

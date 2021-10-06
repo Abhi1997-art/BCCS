@@ -3,6 +3,7 @@ package com.service.banking.controller;
 import java.util.Date;
 import java.util.List;
 
+import com.service.banking.model.GstModel.AccountDetail;
 import com.service.banking.model.transaction.*;
 import org.hibernate.engine.query.spi.ReturnMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,7 @@ public class TransactionController {
 
 	@PostMapping("/for_close")
 	public void forClose(@RequestBody DepositeDetails depositeDetails) {
+
 		transService.forClose(depositeDetails);
 	}
 
@@ -126,7 +128,24 @@ public class TransactionController {
 		transService.generalGstDeposite(memorandumDetails);
 	}
 
+	@GetMapping("/deposit_preview")
+	IPreviewDetails getPreview(@RequestParam Integer accountId) {
+		IPreviewDetails preview = transService.getPreview(accountId);
+		return preview;
+	}
 
+    @GetMapping("/suppliers")
+    List<AccountDetail> getSuppliers(@RequestParam Integer branchId) {
+		List<AccountDetail> accounts = transService.getSuppliers(branchId);
+        return accounts;
+    }
+
+
+
+	@PostMapping("/purchase_transaction")
+	public void purchaseTransaction(@RequestBody PurchaseDetails purchaseDetails) {
+		transService.purchaseTransaction(purchaseDetails);
+	}
 
 
 	// get all transaction page

@@ -1,16 +1,20 @@
 package com.service.banking.service;
 
-import java.util.Date;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import com.service.banking.hibernateEntity.*;
+import com.service.banking.model.GstModel.AccountDetail;
 import com.service.banking.model.transaction.*;
 import com.service.banking.repository.gstRepository.MemorandomAccountStatement;
 import com.service.banking.repository.gstRepository.MemorandumTransactionRepo;
-import org.apache.jasper.tagplugins.jstl.core.If;
+import com.service.banking.repository.madRepository.AgentsRepositoty;
+import com.service.banking.repository.madRepository.MembersRepo;
+import com.service.banking.repository.superAdminRepo.AgentCadreRepo;
+import com.service.banking.repository.superAdminRepo.ShareCertificateRepo;
+import com.service.banking.repository.superAdminRepo.ShareRepository;
+import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -80,6 +84,21 @@ public class TransactionService {
 
 	@Autowired
 	MemorandumTransactionRepo memorandumTransactionRepo;
+
+	@Autowired
+	AgentsRepositoty agentsRepositoty;
+
+	@Autowired
+	ShareRepository shareRepository;
+
+	@Autowired
+	ShareCertificateRepo shareCertificateRepo;
+
+	@Autowired
+	AgentCadreRepo agentCadreRepo;
+
+	@Autowired
+	MembersRepo membersRepo;
 	
 	
 	
@@ -178,9 +197,27 @@ public class TransactionService {
 		Integer branchIdFrom = accountDetailsFrom.getBranchId();
 		Integer branchIdTo = accountDetailsTo.getBranchId();
 		String accountType = accountDetailsTo.getAccountType();
+		System.out.println("ACTYPE" + accountType );
 		
 		
 		Integer transactionType = 0;
+
+		if(accountType.equals("Saving"))
+			transactionType= 4;
+		else if(accountType.equals("Recurring"))
+			transactionType = 10;
+		else if(accountType.equals("CC"))
+			transactionType = 21;
+		else if(accountType.equals("DDS"))
+			transactionType = 20;
+		else if(accountType.equals("FD"))
+			transactionType = 9;
+		else if(accountType.equals("Default"))
+			transactionType = 38;
+		else if(accountType.equals("SM"))
+			transactionType = 38;
+		else
+			transactionType = 1;
 		
 		if(accountDetailsFrom.getBranchId() != accountDetailsTo.getBranchId()) {
 			Branches branches = branchesRepository.getOne(accountDetailsTo.getBranchId());
@@ -197,32 +234,303 @@ public class TransactionService {
 			System.out.println(accountDetailsBranchDivison.getId());
 			System.out.println(accountDetailsBranchDivison1.getId());
 			
-			if(accountType.equals("Saving"))
-				transactionType= 4;
-			else if(accountType.equals("Recurring"))
-				transactionType = 10;
-			else if(accountType.equals("CC"))
-				transactionType = 21;
-			else if(accountType.equals("DDS"))
-				transactionType = 20;
-			else if(accountType.equals("FD")) 
-				transactionType = 9;
-			else if(accountType.equals("Default"))
-				transactionType = 38;
-			else if(accountType.equals("SM"))
-				transactionType = 38;
-			else
-				transactionType = 1;
-			
 			createTransactions(depositeDetails, accountDetailsBranchDivison1.getId(), depositeDetails.getAcTo(), transactionType, depositeDetails.getAcTo(), branchIdTo);
 			createTransactions(depositeDetails, accountDetailsFrom.getId(), accountDetailsBranchDivison.getId(), transactionType, accountDetailsFrom.getId(), branchIdFrom);
 		}
 		else {
+			System.out.println("transactionType" + transactionType);
 			createTransactions(depositeDetails, accountDetailsFrom.getId(), depositeDetails.getAcTo(), transactionType, depositeDetails.getAcTo(), branchIdTo);
+		}
 
+		Premiums premiums = new Premiums();
 			if(accountType.equals("DDS") || accountType.equals("Recurring")){
-				Integer bal = getBalance(depositeDetails.getAcTo());
-				//Pending..
+				Integer bal = getBalanceForRD_DDS(depositeDetails.getAcTo());
+				System.out.println(accountDetailsTo.getId());
+				System.out.println(bal);
+				Premiums premium1 = premiumRepo.getFirstPremium(accountDetailsTo.getId());
+				premiums = premiumRepo.getFirstUnpaidPremium(accountDetailsTo.getId());
+				Integer rowNo = premiumRepo.getRowNoOfLastPaidPremium(accountDetailsTo.getId());
+
+				Integer rowNoOfUnpaidPremium = rowNo + 1;
+
+				Integer Amount = Integer.parseInt(premiums.getAmount());
+
+				Integer chargeMultiply = 0;
+				Boolean eligible = false;
+
+				Date currentDate= new Date();
+
+				for(int i = 0; i < 10; i++) {
+					if (bal >= (Amount * rowNoOfUnpaidPremium)) {
+						Premiums premium = premiumRepo.getFirstUnpaidPremium(accountDetailsTo.getId());
+						//Mark premium
+						Premiums markPremium = premiumRepo.findById(premium.getId()).get();
+						markPremium.setAccountId(accountDetailsTo.getId());
+						markPremium.setPaidOn(new Date());
+						markPremium.setAgentCommissionSend(true);
+						markPremium.setAgentCollectionChargesSend(true);
+
+						Integer setPaid=0;
+						if(premium1.getPaid() == 0) {
+							setPaid=0;
+						}else{
+							Premiums lastPremiumPaid = premiumRepo.getlastPremiumPaid(accountDetailsTo.getId());
+							setPaid = lastPremiumPaid.getPaid();
+						}
+
+						if(premium.getDueDate().equals(currentDate) || premium.getDueDate().after(currentDate)){
+							setPaid = setPaid+ 1;
+
+						}else{
+							DateFormater dateFormater = new DateFormater();
+							setPaid = dateFormater.getMonthsBetween(premium1.getDueDate(), currentDate);
+							setPaid++;
+						}
+						markPremium.setPaid(setPaid);
+
+						premiumRepo.save(markPremium);
+
+						rowNoOfUnpaidPremium++;
+						chargeMultiply++;
+						eligible = true;
+
+					} else if (eligible.equals(true)){
+						Accounts accounts = accountsRepo.findById(accountDetailsTo.getId()).get();
+						if(accounts.getAgentId() != null){
+
+							Branches branches = branchesRepository.getOne(accountDetailsTo.getBranchId());
+							String branchCode = branches.getCode();
+							Schemes schemes = dashBoardSchemeRepo.findById(accountDetailsTo.getSchemeId()).get();
+							System.out.println("Scheme " + schemes.getId());
+							System.out.println("Branch " + branchCode);
+							System.out.println("Sneme " + schemes.getName());
+
+							Integer collectionSchemeAccountId = accountsRepo.getCollectionSchemeAccountId(branchCode, schemes.getName());
+							System.out.println("collectionSchemeAccountId" + collectionSchemeAccountId);
+							Integer commissionSchemeAccountId = accountsRepo.getCommissionSchemeAccountId(branchCode, schemes.getName());
+							System.out.println("commissionSchemeAccountId" + commissionSchemeAccountId);
+							Agents agent = agentsRepositoty.getOne(accountDetailsTo.getAgentId());
+							System.out.println("Agent Id" + agent.getId());
+							Accounts agentSavingAccount = accountsRepo.findById(agent.getAccountId()).get();
+							Integer agentSavingAccountId = agentSavingAccount.getId();
+							System.out.println("agentSavingAccountId" + agentSavingAccountId);
+							Integer tdsAccountId = accountsRepo.getTDSaccountID(branchCode);
+							System.out.println(tdsAccountId + tdsAccountId);
+
+							Double doubleValue = 0.0;
+
+							if(premiums.getAgentCommissionPercentage().doubleValue() != 0 ){
+
+								Transactions transactions = createSingleTransaction(depositeDetails, transactionType, depositeDetails.getAcTo(), branchIdTo);
+
+								Double perecentageShare = (double)agentCadreRepo.getPercentageShare(agent.getId());
+								System.out.println("perecentageShare" + perecentageShare);
+								Double agentCommissionPrecentage = premiums.getAgentCommissionPercentage() * (perecentageShare/100);
+
+								System.out.println("agentCommissionPrecentage" + agentCommissionPrecentage);
+
+								Double amountAgent = Double.parseDouble(premiums.getAmount())*(agentCommissionPrecentage/100);
+								System.out.println(chargeMultiply);
+								amountAgent = amountAgent * chargeMultiply;
+								depositeDetails.setAmount(amountAgent);
+								createSingleTransactionRowDr(depositeDetails, commissionSchemeAccountId, branchIdTo, transactions);
+
+								Integer memberId = membersRepo.findMember(agent.getMemberId());
+								double tdsPercent = 0.05;
+								String panNo = membersRepo.getPanNo(memberId);
+								if(panNo == null || panNo.equals("0") || panNo.equals("")){
+									tdsPercent = 0.2;
+								}
+
+								depositeDetails.setAmount(amountAgent - (amountAgent * (tdsPercent)));
+								createSingleTransactionRowCr(depositeDetails, agentSavingAccountId, transactions);
+
+								depositeDetails.setAmount(amountAgent * tdsPercent);
+
+								createSingleTransactionRowCr(depositeDetails, tdsAccountId, transactions);
+
+								if(agent.getSponsorId() != null){
+
+									Agents a1 = agentsRepositoty.findById(accountDetailsTo.getAgentId()).get();
+									Agents a2 = agentsRepositoty.findById(a1.getSponsorId()).get();
+
+									if(a1.getCadreId() != a2.getCadreId()){
+
+										transactions = createSingleTransaction(depositeDetails, transactionType, depositeDetails.getAcTo(), branchIdTo);
+
+										perecentageShare = (double)agentCadreRepo.getPercentageShare(agent.getSponsorId());
+										agentCommissionPrecentage = premiums.getAgentCommissionPercentage() * (perecentageShare/100);
+										System.out.println("agentCommissionPrecentage" + agentCommissionPrecentage);
+
+										Double amountSponsor = Double.parseDouble(premiums.getAmount())*(agentCommissionPrecentage/100);
+										System.out.println(chargeMultiply);
+										amountSponsor = amountSponsor * chargeMultiply;
+										depositeDetails.setAmount(amountSponsor-amountAgent);
+										createSingleTransactionRowDr(depositeDetails, commissionSchemeAccountId, branchIdTo, transactions);
+
+										Agents sponsor = agentsRepositoty.findById(agent.getSponsorId()).get();
+										Accounts sponsorSavingAccount = accountsRepo.findById(sponsor.getAccountId()).get();
+
+										memberId = membersRepo.findMember(agent.getMemberId());
+										tdsPercent = 0.05;
+										panNo = membersRepo.getPanNo(memberId);
+										if(panNo == null || panNo.equals("0") || panNo.equals("")){
+											tdsPercent = 0.2;
+										}
+
+										depositeDetails.setAmount((amountSponsor - amountAgent) - ((amountSponsor - amountAgent) * tdsPercent));
+										createSingleTransactionRowCr(depositeDetails, sponsorSavingAccount.getId(), transactions);
+
+										depositeDetails.setAmount((amountSponsor - amountAgent) * (tdsPercent));
+										createSingleTransactionRowCr(depositeDetails, tdsAccountId, transactions);
+
+									}
+
+								}
+
+							}
+
+							if(premiums.getAgentCollectionChargesPercentage().doubleValue() != 0 ){
+
+								Transactions transactions = createSingleTransaction(depositeDetails, transactionType, depositeDetails.getAcTo(), branchIdTo);
+
+								Double amount = Double.parseDouble(premiums.getAmount())*(premiums.getAgentCollectionChargesPercentage().doubleValue()/100);
+								System.out.println(chargeMultiply);
+								amount = amount * chargeMultiply;
+								depositeDetails.setAmount(amount);
+								createSingleTransactionRowDr(depositeDetails, collectionSchemeAccountId, branchIdTo, transactions);
+
+								Integer memberId = membersRepo.findMember(agent.getMemberId());
+								double tdsPercent = 0.05;
+								String panNo = membersRepo.getPanNo(memberId);
+								if(panNo == null || panNo.equals("0") || panNo.equals("")){
+									tdsPercent = 0.2;
+								}
+
+								depositeDetails.setAmount(amount - (amount * tdsPercent));
+								createSingleTransactionRowCr(depositeDetails, agentSavingAccountId, transactions);
+
+								depositeDetails.setAmount(amount * tdsPercent);
+								createSingleTransactionRowCr(depositeDetails, tdsAccountId, transactions);
+
+							}
+						}
+						break;
+					}
+				}
+			}
+
+		if(depositeDetails.getShares().equals(true)){
+			//Create Shares..............................................
+			ShareCertificate shareCertificate = new ShareCertificate();
+
+			Integer lastShareCertificateName = shareCertificateRepo.getLastShareCertificateName();
+			Integer currentSCName = lastShareCertificateName + 1;
+
+			shareCertificate.setName(currentSCName);
+			shareCertificate.setStatus("Issued");
+			shareCertificate.setCreatedAt(new Date());
+			shareCertificate.setSubmittedAt(new Date());
+			shareCertificateRepo.save(shareCertificate);
+
+			Integer SharesAmount = (depositeDetails.getAmount().intValue());
+			Integer ShareCount = SharesAmount / 100;
+
+			Integer lastNo = shareRepository.getLastNo();
+			for (int i = 0; i < ShareCount; i++) {
+				Share share = new Share();
+				Accounts sm = accountsRepo.getOne(accountDetailsTo.getId());
+				share.setCurrentMemberId(sm.getMemberId());
+				share.setBuybackLockingMonths("36");
+				share.setTransferLockingMonths("36");
+				share.setShareCertificateId(shareCertificate.getId());
+				share.setStatus("Issued");
+				lastNo++;
+				share.setNo(lastNo);
+				shareRepository.save(share);
+			}
+		}
+
+		if(accountType.equals("FD") || accountType.equals("MIS")){
+
+			Accounts accounts = accountsRepo.findById(accountDetailsTo.getId()).get();
+			if(accounts.getAgentId() != null) {
+
+				Double originalAmount = depositeDetails.getAmount();
+
+				Branches branches = branchesRepository.getOne(accountDetailsTo.getBranchId());
+				String branchCode = branches.getCode();
+				Schemes schemes = dashBoardSchemeRepo.findById(accountDetailsTo.getSchemeId()).get();
+				System.out.println("Scheme " + schemes.getId());
+				System.out.println("Branch " + branchCode);
+				System.out.println("Sneme " + schemes.getName());
+
+				Integer commissionSchemeAccountId = accountsRepo.getCommissionSchemeAccountId(branchCode, schemes.getName());
+				System.out.println("commissionSchemeAccountId" + commissionSchemeAccountId);
+				Agents agent = agentsRepositoty.getOne(accountDetailsTo.getAgentId());
+				System.out.println("Agent Id" + agent.getId());
+				Accounts agentSavingAccount = accountsRepo.findById(agent.getAccountId()).get();
+				Integer agentSavingAccountId = agentSavingAccount.getId();
+				System.out.println("agentSavingAccountId" + agentSavingAccountId);
+				Integer tdsAccountId = accountsRepo.getTDSaccountID(branchCode);
+				System.out.println(tdsAccountId + tdsAccountId);
+
+				Transactions transactions = createSingleTransaction(depositeDetails, transactionType, depositeDetails.getAcTo(), branchIdTo);
+				Double perecentageShare = (double) agentCadreRepo.getPercentageShare(agent.getId());
+				System.out.println("perecentageShare" + perecentageShare);
+
+				Double agentCommissionPrecentage = Double.valueOf(schemes.getAccountOpenningCommission()) * (perecentageShare / 100);
+
+				Double amountAgent = depositeDetails.getAmount() * (agentCommissionPrecentage / 100);
+				depositeDetails.setAmount(amountAgent);
+				createSingleTransactionRowDr(depositeDetails, commissionSchemeAccountId, branchIdTo, transactions);
+
+				Members members = membersRepo.findById(agent.getMemberId()).get();
+				double tdsPercent = 0.05;
+				if (members.getPanNo() == null || members.getPanNo().equals("0") || members.getPanNo().equals("")) {
+					tdsPercent = 0.2;
+				}
+
+				depositeDetails.setAmount(amountAgent - (amountAgent * (tdsPercent)));
+				createSingleTransactionRowCr(depositeDetails, agentSavingAccountId, transactions);
+
+				depositeDetails.setAmount(amountAgent * tdsPercent);
+				createSingleTransactionRowCr(depositeDetails, tdsAccountId, transactions);
+
+				if (agent.getSponsorId() != null) {
+
+					Agents a1 = agentsRepositoty.findById(accountDetailsTo.getAgentId()).get();
+					Agents a2 = agentsRepositoty.findById(a1.getSponsorId()).get();
+
+					if(a1.getCadreId() != a2.getCadreId()){
+						transactions = createSingleTransaction(depositeDetails, transactionType, depositeDetails.getAcTo(), branchIdTo);
+
+						perecentageShare = (double) agentCadreRepo.getPercentageShare(agent.getSponsorId());
+						Double sponsorCommissionPrecentage = Double.valueOf(schemes.getAccountOpenningCommission()) * (perecentageShare / 100);
+
+						depositeDetails.setAmount(originalAmount);
+						Double amountSponsor = depositeDetails.getAmount() * (sponsorCommissionPrecentage / 100);
+						depositeDetails.setAmount(amountSponsor-amountAgent);
+						createSingleTransactionRowDr(depositeDetails, commissionSchemeAccountId, branchIdTo, transactions);
+
+						Agents sponsor = agentsRepositoty.findById(agent.getSponsorId()).get();
+						Accounts sponsorSavingAccount = accountsRepo.findById(sponsor.getAccountId()).get();
+
+						members = membersRepo.findById(agent.getMemberId()).get();
+
+						tdsPercent = 0.05;
+						if (members.getPanNo() == null || members.getPanNo().equals("0")  || members.getPanNo().equals("")) {
+							tdsPercent = 0.2;
+						}
+
+						depositeDetails.setAmount((amountSponsor - amountAgent) - ((amountSponsor - amountAgent) * tdsPercent));
+						createSingleTransactionRowCr(depositeDetails, sponsorSavingAccount.getId(), transactions);
+
+						depositeDetails.setAmount((amountSponsor - amountAgent) * tdsPercent);
+						createSingleTransactionRowCr(depositeDetails, tdsAccountId, transactions);
+
+					}
+				}
 			}
 
 		}
@@ -270,8 +578,10 @@ public class TransactionService {
 			
 			if(accountType.equals("Saving"))
 				transactionType= 4;
-			else if(accountType.equals("Recurring"))
+			else if(accountType.equals("Recurring")){
+				System.out.println("break");
 				transactionType = 10;
+				System.out.println(transactionType);}
 			else if(accountType.equals("CC"))
 				transactionType = 21;
 			else if(accountType.equals("DDS"))
@@ -815,9 +1125,15 @@ public class TransactionService {
 	    	  //Determining interest.....
 	    	  for(int i=1;i<=preMatureInt.length-1;i=i+2) {
 	    		  System.out.println("--"+(int)Math.round(preMatureInt[i]));
-	    		  if(countPaid >= (int)Math.round(preMatureInt[i]) && countPaid < (int)Math.round(preMatureInt[i+2])) {
-	    			  nowIntrest = preMatureInt[i+1];
-	    		  }
+	    		  if(countPaid < (int)Math.round(preMatureInt[i])){
+					  nowIntrest = preMatureInt[i-1];
+				  }
+	    		  if(countPaid > (int)Math.round(preMatureInt[preMatureInt.length-2])){
+					  	nowIntrest = preMatureInt[i+1];
+				  }
+//	    		  if(countPaid >= (int)Math.round(preMatureInt[i]) && countPaid < (int)Math.round(preMatureInt[i+2])) {
+////	    			  nowIntrest = preMatureInt[i+1];
+////	    		  }
 	    	  }
 	    	  
 	      }
@@ -860,7 +1176,7 @@ public class TransactionService {
 		 
 		 //Calculating premium table....
 		 for(PremiumDetails p:premiumDetails) {
-			  
+
 			 Amount=Integer.parseInt(p.getAmount()); 
 			 product = Amount * p.getPaid() + intrestAdded;
 			 InterestTemp2 = (product * ((nowIntrest/100)) / 12);
@@ -869,10 +1185,10 @@ public class TransactionService {
 			 if(p.getPaidOn() != null) {
 				 amountPaid += Amount;
 			 }
-			 
+
 			 totalAmount += Amount + intrestAdded;
 			 countMonth++;
-			 
+
 			 //After 12 month add interest in the amount....
 			 if(countMonth == 12) {
 				 countMonth =0;
@@ -884,7 +1200,7 @@ public class TransactionService {
 		 
 		 //Final amount....
 		 double finalAmount = Math.round((amountPaid + intrestAdded));
-		 System.out.println("Final:" + Math.round((amountPaid + intrestAdded)));	 
+		 System.out.println("Final:" + Math.round((amountPaid + intrestAdded)));
 		 return finalAmount;
 		
 	}
@@ -1148,6 +1464,7 @@ public class TransactionService {
 			transactionType=24;
 		}
 		transactions.setTransactionTypeId(transactionType);
+		transactions.setVoucherNo(BigDecimal.valueOf(getVoucherNo(depositeDetails.getAcFrom())));
 		transactionsRepo.save(transactions);
 		
 		TransactionRow transactionRow = new TransactionRow();
@@ -1165,6 +1482,7 @@ public class TransactionService {
 		transactionRow.setTransactionId(transactions.getId());
 		transactionRow.setSchemeId(getSchemeID(depositeDetails.getAcFrom()));
 		transactionRow.setBalanceSheetId(getBalanceSheetID(depositeDetails.getAcFrom()));
+		transactionRow.setVoucherNo(transactions.getVoucherNo().longValue());
 		transactionRowRepo.save(transactionRow);
 		
 		if(depositeDetails.getChargeAccount() != null) {
@@ -1183,6 +1501,7 @@ public class TransactionService {
 			transactionRow2.setTransactionId(transactions.getId());
 			transactionRow2.setSchemeId(getSchemeID(depositeDetails.getChargeAccount()));
 			transactionRow2.setBalanceSheetId(getBalanceSheetID(depositeDetails.getChargeAccount()));
+			transactionRow.setVoucherNo(transactions.getVoucherNo().longValue());
 			transactionRowRepo.save(transactionRow2);
 		}
 		
@@ -1201,6 +1520,7 @@ public class TransactionService {
 		transactionRow3.setTransactionId(transactions.getId());
 		transactionRow3.setSchemeId(getSchemeID(depositeDetails.getAcTo()));
 		transactionRow3.setBalanceSheetId(getBalanceSheetID(depositeDetails.getAcTo()));
+		transactionRow.setVoucherNo(transactions.getVoucherNo().longValue());
 		transactionRowRepo.save(transactionRow3);
 	}
 	
@@ -1362,6 +1682,12 @@ public void performBankWithdrawl(DepositeDetails depositeDetails) {
 
 	public Integer getBalance(Integer id) {
 		iBalance ibalance = transactionRowRepo.getBalance(id);
+		Integer balance = ibalance.getBalance();
+		return balance;
+	}
+
+	public Integer getBalanceForRD_DDS(Integer id) {
+		iBalance ibalance = transactionRowRepo.getBalanceForRD_DDS(id);
 		Integer balance = ibalance.getBalance();
 		return balance;
 	}
@@ -1771,9 +2097,9 @@ public void performBankWithdrawl(DepositeDetails depositeDetails) {
 	}
 
 
-	public void createSingleTransaction(DepositeDetails depositeDetails, Integer acFrom, Integer acTo,  Integer JVtype, Integer idForVoucher, Integer branchId){
+	public Transactions createSingleTransaction(DepositeDetails depositeDetails, Integer JVtype, Integer idForVoucher, Integer branchId){
 		Transactions transactions = new Transactions();
-		transactions.setTransactionTypeId(JVtype);
+		transactions.setTransactionTypeId(JVtype); //Need to change for correct
 		transactions.setStaffId(depositeDetails.getStaffId());
 		transactions.setNarration(depositeDetails.getNarration());
 		System.out.println(depositeDetails.getNarration());
@@ -1783,15 +2109,14 @@ public void performBankWithdrawl(DepositeDetails depositeDetails) {
 		transactions.setBranchId(branchId);
 		transactions.setVoucherNo(BigDecimal.valueOf(getVoucherNo(idForVoucher)));
 		transactionsRepo.save(transactions);
+		return transactions;
 	}
 
-	public void createSingleTransactionRowDr(DepositeDetails depositeDetails, Integer acFrom, Integer acTo,  Integer JVtype, Integer idForVoucher, Integer branchId){
-		Transactions transactions = new Transactions();
+	public void createSingleTransactionRowDr(DepositeDetails depositeDetails, Integer acFrom, Integer branchId, Transactions transactions){
 		Date date = new Date();
-
 		TransactionRow transactionRow = new TransactionRow();
 		transactionRow.setAccountId(acFrom);
-		transactionRow.setTransactionTypeId(JVtype);
+		transactionRow.setTransactionTypeId(transactions.getTransactionTypeId()); //Need to change
 		transactionRow.setStaffId(depositeDetails.getStaffId());
 		transactionRow.setNarration(depositeDetails.getNarration());
 		transactionRow.setAmountDr(BigDecimal.valueOf(depositeDetails.getAmount()));
@@ -1809,12 +2134,10 @@ public void performBankWithdrawl(DepositeDetails depositeDetails) {
 		transactionRowRepo.save(transactionRow);
 	}
 
-	public void createSingleTransactionRowCr(DepositeDetails depositeDetails, Integer acFrom, Integer acTo,  Integer JVtype, Integer idForVoucher, Integer branchId){
-		Transactions transactions = new Transactions();
+	public void createSingleTransactionRowCr(DepositeDetails depositeDetails, Integer acTo,  Transactions transactions){
 		Date date = new Date();
-
 		TransactionRow transactionRow2 = new TransactionRow();
-		transactionRow2.setAccountId(depositeDetails.getAcTo());
+		transactionRow2.setAccountId(acTo);
 		transactionRow2.setTransactionTypeId(transactions.getTransactionTypeId());
 		transactionRow2.setStaffId(depositeDetails.getStaffId());
 		transactionRow2.setNarration(depositeDetails.getNarration());
@@ -1828,9 +2151,203 @@ public void performBankWithdrawl(DepositeDetails depositeDetails) {
 		transactionRow2.setTransactionId(transactions.getId());
 		transactionRow2.setSchemeId(getSchemeID(depositeDetails.getAcTo()));
 		transactionRow2.setBalanceSheetId(getBalanceSheetID(depositeDetails.getAcTo()));
+		transactionRow2.setVoucherNo(transactions.getVoucherNo().longValue());
 		transactionRowRepo.save(transactionRow2);
 	}
 
+	public IPreviewDetails getPreview(Integer accountId) {
+		return accountsRepo.getPreview(accountId);
+	}
+
+	public void purchaseTransaction(PurchaseDetails purchaseDetails) {
+
+		Double gst18 = 0.0;
+		Double igst18 = 0.0;
+		Double gst28 = 0.0;
+		Double igst28 = 0.0;
+		Double gst12 = 0.0;
+		Double igst12 = 0.0;
+		Double gst5 = 0.0;
+		Double igst5 = 0.0;
+		Double gst6 = 0.0;
+		Double igst6 = 0.0;
+		Double totalAmount = 0.0;
+
+		Integer accountSGST14Id = 0;
+		Integer accountCGST14Id = 0;
+		Integer accountSGST9Id = 0;
+		Integer accountCGST9Id = 0;
+		Integer accountSGST6Id = 0;
+		Integer accountCGST6Id = 0;
+		Integer accountSGST2_5Id = 0;
+		Integer accountCGST2_5Id = 0;
+		Integer accountIGST18Id = 0;
+
+
+		for(PurchaseItemDetail pid:purchaseDetails.getItems()){
+			if(pid.getTaxType().equals("GST 18%")){
+				gst18 += pid.getTaxAmount();
+				accountCGST9Id = accountsRepo.getAccountIdForCGST9(purchaseDetails.getBranchId());
+				accountSGST9Id = accountsRepo.getAccountIdForSGST9(purchaseDetails.getBranchId());
+			}
+			if(pid.getTaxType().equals("IGST 18%")){
+				igst18 += pid.getTaxAmount();
+				accountIGST18Id = accountsRepo.getAccountIdForIGST18(purchaseDetails.getBranchId());
+			}
+			if(pid.getTaxType().equals("GST 28%")){
+				gst28 += pid.getTaxAmount();
+				accountCGST14Id = accountsRepo.getAccountIdForCGST14(purchaseDetails.getBranchId());
+				accountSGST14Id = accountsRepo.getAccountIdForSGST14(purchaseDetails.getBranchId());
+			}
+			if(pid.getTaxType().equals("IGST 28%")){
+				igst28 += pid.getTaxAmount();
+			}
+			if(pid.getTaxType().equals("GST 12%")){
+				gst12 += pid.getTaxAmount();
+				accountCGST6Id = accountsRepo.getAccountIdForCGST6(purchaseDetails.getBranchId());
+				accountSGST6Id = accountsRepo.getAccountIdForSGST6(purchaseDetails.getBranchId());
+			}
+			if(pid.getTaxType().equals("IGST 12%")){
+				igst12 += pid.getTaxAmount();
+			}
+			if(pid.getTaxType().equals("GST 5%")){
+				gst5 += pid.getTaxAmount();
+				accountCGST2_5Id = accountsRepo.getAccountIdForCGST2_5(purchaseDetails.getBranchId());
+				accountSGST2_5Id = accountsRepo.getAccountIdForSGST2_5(purchaseDetails.getBranchId());
+			}
+			if(pid.getTaxType().equals("IGST 5%")){
+				igst5 += pid.getTaxAmount();
+			}
+			if(pid.getTaxType().equals("GST 6%")){
+				gst6 += pid.getTaxAmount();
+			}
+			if(pid.getTaxType().equals("IGST 6%")){
+				igst6 += pid.getTaxAmount();
+			}
+
+			totalAmount += pid.getTaxIncludedAmount();
+		}
+
+		Transactions transactions = new Transactions();
+		transactions.setTransactionTypeId(purchaseDetails.getTransactionTypeId());
+		transactions.setStaffId(purchaseDetails.getStaffId());
+		transactions.setNarration(purchaseDetails.getNarration());
+		Date date = new Date();
+		transactions.setCreatedAt(date);
+		transactions.setUpdatedAt(date);
+		transactions.setBranchId(purchaseDetails.getBranchId());
+		transactions.setVoucherNo(BigDecimal.valueOf(getVoucherNo(purchaseDetails.getSupplierId())));
+		transactions.setReferenceId(purchaseDetails.getSupplierId());
+		Integer lastInvoiceNo = transactionsRepo.getLastInvoiceNo();
+		transactions.setInvoiceNo(1+lastInvoiceNo);
+		transactions.setIsSaleInvoice((byte)1);
+		transactionsRepo.save(transactions);
+
+		for(PurchaseItemDetail pid:purchaseDetails.getItems()){
+			TransactionRow transactionRow1 = new TransactionRow();
+			transactionRow1.setAccountId(pid.getPurchaseAccountId());
+			transactionRow1.setTransactionTypeId(purchaseDetails.getTransactionTypeId());
+			transactionRow1.setStaffId(purchaseDetails.getStaffId());
+			transactionRow1.setNarration(purchaseDetails.getNarration());
+			transactionRow1.setAmountDr(BigDecimal.valueOf(pid.getTaxExcludedAmount()));
+			transactionRow1.setAmountCr(BigDecimal.valueOf(0));
+			transactionRow1.setCreatedAt(date);
+			transactionRow1.setUpdatedAt(date);
+			transactionRow1.setBranchId(purchaseDetails.getBranchId());
+			transactionRow1.setSide("DR");
+			transactionRow1.setAccountsInSide(1);
+			transactionRow1.setTransactionId(transactions.getId());
+			transactionRow1.setSchemeId(getSchemeID(pid.getPurchaseAccountId()));
+			transactionRow1.setBalanceSheetId(getBalanceSheetID(pid.getPurchaseAccountId()));
+			transactionRow1.setVoucherNo(transactions.getVoucherNo().longValue());
+			transactionRowRepo.save(transactionRow1);
+		}
+
+		if(accountSGST14Id != 0){
+			DepositeDetails depositeDetails = new DepositeDetails();
+			depositeDetails.setAmount(gst28/2.0);
+			depositeDetails.setStaffId(purchaseDetails.getStaffId());
+			depositeDetails.setNarration(purchaseDetails.getNarration());
+			depositeDetails.setLoginBranch(purchaseDetails.getBranchId());
+			depositeDetails.setBranchId(purchaseDetails.getBranchId());
+			depositeDetails.setAcFrom(accountSGST14Id);
+			createSingleTransactionRowDr(depositeDetails, accountSGST14Id,  purchaseDetails.getBranchId(), transactions);
+			createSingleTransactionRowDr(depositeDetails, accountCGST14Id,  purchaseDetails.getBranchId(), transactions);
+		}
+		if(accountSGST9Id != 0){
+			DepositeDetails depositeDetails = new DepositeDetails();
+			depositeDetails.setAmount(gst18/2.0);
+			depositeDetails.setStaffId(purchaseDetails.getStaffId());
+			depositeDetails.setNarration(purchaseDetails.getNarration());
+			depositeDetails.setLoginBranch(purchaseDetails.getBranchId());
+			depositeDetails.setBranchId(purchaseDetails.getBranchId());
+			depositeDetails.setAcFrom(accountSGST9Id);
+			createSingleTransactionRowDr(depositeDetails, accountSGST9Id,  purchaseDetails.getBranchId(), transactions);
+			createSingleTransactionRowDr(depositeDetails, accountCGST9Id,  purchaseDetails.getBranchId(), transactions);
+		}
+		if(accountSGST6Id != 0){
+			DepositeDetails depositeDetails = new DepositeDetails();
+			depositeDetails.setAmount(gst12/2.0);
+			depositeDetails.setStaffId(purchaseDetails.getStaffId());
+			depositeDetails.setNarration(purchaseDetails.getNarration());
+			depositeDetails.setLoginBranch(purchaseDetails.getBranchId());
+			depositeDetails.setBranchId(purchaseDetails.getBranchId());
+			depositeDetails.setAcFrom(accountSGST6Id);
+			createSingleTransactionRowDr(depositeDetails, accountSGST6Id,  purchaseDetails.getBranchId(), transactions);
+			createSingleTransactionRowDr(depositeDetails, accountCGST6Id,  purchaseDetails.getBranchId(), transactions);
+		}
+		if(accountSGST2_5Id != 0){
+			DepositeDetails depositeDetails = new DepositeDetails();
+			depositeDetails.setAmount(gst5/2.0);
+			depositeDetails.setStaffId(purchaseDetails.getStaffId());
+			depositeDetails.setNarration(purchaseDetails.getNarration());
+			depositeDetails.setLoginBranch(purchaseDetails.getBranchId());
+			depositeDetails.setBranchId(purchaseDetails.getBranchId());
+			depositeDetails.setAcFrom(accountSGST2_5Id);
+			createSingleTransactionRowDr(depositeDetails, accountSGST2_5Id,  purchaseDetails.getBranchId(), transactions);
+			createSingleTransactionRowDr(depositeDetails, accountCGST2_5Id,  purchaseDetails.getBranchId(), transactions);
+		}
+		if(accountIGST18Id != 0){
+			DepositeDetails depositeDetails = new DepositeDetails();
+			depositeDetails.setAmount(igst18);
+			depositeDetails.setStaffId(purchaseDetails.getStaffId());
+			depositeDetails.setNarration(purchaseDetails.getNarration());
+			depositeDetails.setLoginBranch(purchaseDetails.getBranchId());
+			depositeDetails.setBranchId(purchaseDetails.getBranchId());
+			depositeDetails.setAcFrom(accountIGST18Id);
+			createSingleTransactionRowDr(depositeDetails, accountIGST18Id,  purchaseDetails.getBranchId(), transactions);
+		}
+
+		DepositeDetails depositeDetails = new DepositeDetails();
+		depositeDetails.setAmount(totalAmount);
+		depositeDetails.setStaffId(purchaseDetails.getStaffId());
+		depositeDetails.setNarration(purchaseDetails.getNarration());
+		depositeDetails.setLoginBranch(purchaseDetails.getBranchId());
+		depositeDetails.setBranchId(purchaseDetails.getBranchId());
+		depositeDetails.setAcTo(purchaseDetails.getSupplierId());
+		createSingleTransactionRowCr(depositeDetails, purchaseDetails.getSupplierId(), transactions);
+
+		//Final TDS Transaction..
+		DepositeDetails deposit = new DepositeDetails();
+		deposit.setAmount(purchaseDetails.getTdsAmount());
+		deposit.setStaffId(purchaseDetails.getStaffId());
+		deposit.setNarration(purchaseDetails.getNarration());
+		deposit.setLoginBranch(purchaseDetails.getBranchId());
+		deposit.setBranchId(purchaseDetails.getBranchId());
+		Branches branches = branchesRepository.getOne(purchaseDetails.getBranchId());
+		String branchCode = branches.getCode();
+		Integer tdsAccountId = accountsRepo.getTDSaccountID(branchCode);
+
+		deposit.setAcTo(tdsAccountId);
+		deposit.setAcFrom(purchaseDetails.getSupplierId());
+		deposit.setTransactionTypeId(purchaseDetails.getTransactionTypeId());
+		createTransactions(deposit, deposit.getAcFrom(), deposit.getAcTo(), deposit.getTransactionTypeId(), deposit.getAcTo(), deposit.getBranchId());
+
+	}
+
+	public List<AccountDetail> getSuppliers(Integer branchId) {
+		return accountsRepo.getSuppliers(branchId);
+	}
 }
 	
 	

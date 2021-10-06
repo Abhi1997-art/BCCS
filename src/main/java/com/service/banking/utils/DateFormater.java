@@ -279,7 +279,17 @@ public class DateFormater {
 			return date;
 			}
 
-
+	public int getMonthsBetween(Date d1, Date d2){
+		if(d2==null || d1==null){
+			return -1;//Error
+		}
+		Calendar m_calendar=Calendar.getInstance();
+		m_calendar.setTime(d1);
+		int nMonth1=12*m_calendar.get(Calendar.YEAR)+m_calendar.get(Calendar.MONTH);
+		m_calendar.setTime(d2);
+		int nMonth2=12*m_calendar.get(Calendar.YEAR)+m_calendar.get(Calendar.MONTH);
+		return java.lang.Math.abs(nMonth2-nMonth1);
+	}
 
 }
 	

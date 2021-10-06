@@ -29,6 +29,7 @@ public class AgentDetailsList {
 	String fatherName;
 	String agentName;
 	String moName;
+	String currentAddress;
 	
 	public AgentDetailsList() {
 		super();
@@ -54,7 +55,7 @@ public class AgentDetailsList {
 		this.agentCodeNo = agentCodeNo;
 		this.agentName = agentName;
 		this.agentId = agentId;
-		this.permanentAddress = permanentAddress;
+		this.currentAddress = agentCurrentAddress;
 		this.landmark = landmark;
 	}
 
@@ -271,5 +272,13 @@ public class AgentDetailsList {
 
 	public void setAgentCurrentAddress(String agentCurrentAddress) {
 		this.agentCurrentAddress = agentCurrentAddress;
+	}
+
+	public String getCurrentAddress() {
+		return currentAddress;
+	}
+
+	public void setCurrentAddress(String currentAddress) {
+		this.currentAddress = currentAddress;
 	}
 }

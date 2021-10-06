@@ -384,6 +384,11 @@ public class ReportService {
 		return list;
 	}
 
+	public List<iMemberReport> getMemberWithZeroBalance() {
+		List<iMemberReport> list = membersRepo.getMemberWithZeroBalance();
+		return list;
+	}
+
 	public List<iMemberReport> getSMAccounts(Integer memberId) {
 		List<iMemberReport> list = accountsRepo.getSMAccounts(memberId);
 		return list;
@@ -406,10 +411,4 @@ public class ReportService {
 
 
 
-
-
-
-
-	
-	
 }

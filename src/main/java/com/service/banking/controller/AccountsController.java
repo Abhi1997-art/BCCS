@@ -485,6 +485,12 @@ public class AccountsController {
         return moAgentAssociationList;
     }
 
+    @GetMapping("/collector_list")
+    public List<CollectorDetails> getCollectorList(@RequestParam String name) {
+        List<CollectorDetails> list = accountService.getCollectorList(name);
+        return list;
+    }
+
     // get Dealer API for three character search....................
     @GetMapping("/loan/dealerList")
     public List<LoanAccountDetails> getDealerList(@RequestParam String name) {
@@ -515,6 +521,8 @@ public class AccountsController {
         System.out.println("**********" + allaccounts.size());
         return allaccounts;
     }
+
+
 
 
 }

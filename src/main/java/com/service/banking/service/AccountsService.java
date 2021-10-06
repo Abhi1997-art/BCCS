@@ -1,12 +1,7 @@
 package com.service.banking.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.service.banking.hibernateEntity.*;
@@ -496,7 +491,7 @@ public class AccountsService {
         Accounts accounts = new Accounts();
         Jointmembers jointmembers = new Jointmembers();
 
-        String lastAccountNumber = smAccountsRepo.getLastSavingAccount(sm.getBranchId());
+        String lastAccountNumber = smAccountsRepo.getLastSavingAccount(sm.getBranchId(), "SavingAndCurrent" );
         Integer lastSavingAccount = Integer.parseInt(lastAccountNumber.replaceAll("[\\D]", ""));
         lastSavingAccount += 1;
 
@@ -504,7 +499,7 @@ public class AccountsService {
         String branchCode = branches.getCode();
         System.out.println(branchCode);
 
-        accounts.setAccountNumber(branchCode + lastSavingAccount);
+        accounts.setAccountNumber(branchCode + "SB" + lastSavingAccount);
         accounts.setAmount(sm.getAmount());
         accounts.setMemberId(sm.getMemberId());
         accounts.setSchemeId(sm.getSchemeId());
@@ -563,7 +558,7 @@ public class AccountsService {
         DepositeDetails depositeDetails = new DepositeDetails();
         depositeDetails.setStaffId(sm.getStaffId());
         Members members = membersRepo.findById(sm.getMemberId()).get();
-        depositeDetails.setNarration("Saving And Current Account Opened For Member " + members.getName() + " [" + members.getMemberNo() + "] ");
+        depositeDetails.setNarration("Saving Account Opened For Member " + members.getName() + " [" + members.getMemberNo() + "] ");
         depositeDetails.setAmount(sm.getAmount());
 
         //Create transaction........................................
@@ -590,7 +585,16 @@ public class AccountsService {
     public void addDdsAccount(DDSAccountDetails sm) {
         Accounts accounts = new Accounts();
         Jointmembers jointmembers = new Jointmembers();
-        accounts.setAccountNumber(sm.getAccountNumber());
+
+        String lastAccountNumber = smAccountsRepo.getLastSavingAccount(sm.getBranchId(), "DDS");
+        Integer lastSavingAccount = Integer.parseInt(lastAccountNumber.replaceAll("[\\D]", ""));
+        lastSavingAccount += 1;
+
+        Branches branches = branchesRepository.getOne(sm.getBranchId());
+        String branchCode = branches.getCode();
+        System.out.println(branchCode);
+
+        accounts.setAccountNumber(branchCode + "DDS" + lastSavingAccount);
         accounts.setAmount(sm.getAmount());
         accounts.setMemberId(sm.getMemberId());
         accounts.setSchemeId(sm.getSchemaId());
@@ -608,13 +612,15 @@ public class AccountsService {
         Date date = new Date();
         accounts.setCreatedAt(date);
         accounts.setStaffId(0);
-        accounts.setPandLgroup(" ");
+        accounts.setPandLgroup("DDS");
+        accounts.setGroupType("DDS");
         accounts.setDealerId(0);
         accounts.setIsDirty((byte) 0);
         accounts.setBikeSurrendered((byte) 0);
         accounts.setIsInLegal((byte) 0);
         accounts.setInsuranceTenure("1 year");
         accounts.setBankAccountLimit(0);
+        accounts.setBranchId(sm.getBranchId());
         smAccountsRepo.save(accounts);
 
         Accounts ac = smAccountsRepo.getOne(accounts.getId());
@@ -637,6 +643,69 @@ public class AccountsService {
             jointmembers.setMembers(m3);
             jointmemberrepo.save(jointmembers);
         }
+
+        Schemes schemes = schemeRepo.getOne(accounts.getSchemeId());
+        Integer maturityPeriod= schemes.getMaturityPeriod();
+
+        String input = schemes.getAccountOpenningCommission();
+        String[] strings = input.split(",");
+        Double[] commissions = new Double[strings.length];
+        for (int i = 0; i < commissions.length; i++)
+        {
+            commissions[i] = Double.parseDouble(strings[i]);
+            System.out.println(commissions[i]);
+        }
+        Integer commissionSize = commissions.length;
+
+        String input2 = schemes.getCollectorCommissionRate();
+        String[] strings2 = input2.split(",");
+        Double[] collections = new Double[strings2.length];
+        for (int i = 0; i < collections.length; i++)
+        {
+            collections[i] = Double.parseDouble(strings2[i]);
+            System.out.println(collections[i]);
+        }
+        Integer collectionSize = collections.length;
+
+        for(int i = 1; i <= maturityPeriod; i ++){
+
+            Premiums premiums = new Premiums();
+            premiums.setAccountId(accounts.getId());
+            premiums.setAmount(sm.getMonthlyAmount());
+            premiums.setPaid(0);
+            premiums.setSkipped(false);
+            premiums.setCreatedAt(new Date());
+            premiums.setUpdatedAt(new Date());
+            premiums.setAgentCommissionSend(false);
+            premiums.setAgentCollectionChargesSend(false);
+            premiums.setPaneltyCharged(BigDecimal.valueOf(0));
+            premiums.setPaneltyPosted(BigDecimal.valueOf(0));
+            premiums.setDueDate(date);
+            premiums.setAgentCommissionPercentage(commissionSize > i ? commissions[i] : commissions[commissionSize-1]);
+            premiums.setAgentCollectionChargesPercentage(collectionSize > i ? BigDecimal.valueOf(collections[i]) : BigDecimal.valueOf(commissions[commissionSize-1]));
+            premuimRepo.save(premiums);
+
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.MONTH, 1);
+            date = c.getTime();
+
+        }
+
+        DepositeDetails depositeDetails = new DepositeDetails();
+        if(sm.getDebitAccountId() != null){
+            depositeDetails.setAcFrom(sm.getDebitAccountId());
+        }
+        depositeDetails.setAcTo(accounts.getId());
+        depositeDetails.setBranchId(sm.getBranchId());
+        depositeDetails.setLoginBranch(sm.getBranchId());
+        depositeDetails.setAmount(sm.getAmount());
+        depositeDetails.setNarration(sm.getNarration());
+        depositeDetails.setShares(false);
+        depositeDetails.setStaffId(sm.getStaffId());
+        transactionService.transactionDeposite(depositeDetails);
+
+
     }
 
     //Update DDs accounts..................
@@ -659,7 +728,17 @@ public class AccountsService {
     //Add recurring accounts..........................................
     public void addRecuringAccount(RecurringAccountDetails sm) {
         Accounts accounts = new Accounts();
-        accounts.setAccountNumber(sm.getAccountNumber());
+        Jointmembers jointmembers = new Jointmembers();
+
+        String lastAccountNumber = smAccountsRepo.getLastSavingAccount(sm.getBranchId(), "Recurring");
+        Integer lastSavingAccount = Integer.parseInt(lastAccountNumber.replaceAll("[\\D]", ""));
+        lastSavingAccount += 1;
+
+        Branches branches = branchesRepository.getOne(sm.getBranchId());
+        String branchCode = branches.getCode();
+        System.out.println(branchCode);
+
+        accounts.setAccountNumber(branchCode + "RD" + lastSavingAccount);
         accounts.setAmount(sm.getAmount());
         accounts.setMemberId(sm.getMemberId());
         accounts.setSchemeId(sm.getSchemaId());
@@ -677,15 +756,98 @@ public class AccountsService {
         Date date = new Date();
         accounts.setCreatedAt(date);
         accounts.setStaffId(0);
-        accounts.setPandLgroup(" ");
+        accounts.setPandLgroup("Recurring");
+        accounts.setGroupType("Recurring");
         accounts.setDealerId(0);
         accounts.setIsDirty((byte) 0);
         accounts.setBikeSurrendered((byte) 0);
         accounts.setIsInLegal((byte) 0);
         accounts.setInsuranceTenure("1 year");
         accounts.setBankAccountLimit(0);
+        accounts.setBranchId(sm.getBranchId());
         smAccountsRepo.save(accounts);
 
+        Accounts ac = smAccountsRepo.getOne(accounts.getId());
+
+        if (sm.getMember2() != null) {
+            Members m1 = membersRepo.getOne(sm.getMember2());
+            jointmembers.setAccounts(ac);
+            jointmembers.setMembers(m1);
+            jointmemberrepo.save(jointmembers);
+        }
+        if (sm.getMember3() != null) {
+            Members m2 = membersRepo.getOne(sm.getMember3());
+            jointmembers.setAccounts(ac);
+            jointmembers.setMembers(m2);
+            jointmemberrepo.save(jointmembers);
+        }
+        if (sm.getMember4() != null) {
+            Members m3 = membersRepo.getOne(sm.getMember4());
+            jointmembers.setAccounts(ac);
+            jointmembers.setMembers(m3);
+            jointmemberrepo.save(jointmembers);
+        }
+
+        Schemes schemes = schemeRepo.getOne(accounts.getSchemeId());
+        Integer maturityPeriod= schemes.getMaturityPeriod();
+
+        String input = schemes.getAccountOpenningCommission();
+        String[] strings = input.split(",");
+        Double[] commissions = new Double[strings.length];
+        for (int i = 0; i < commissions.length; i++)
+        {
+            commissions[i] = Double.parseDouble(strings[i]);
+            System.out.println(commissions[i]);
+        }
+        Integer commissionSize = commissions.length;
+
+        String input2 = schemes.getCollectorCommissionRate();
+        String[] strings2 = input2.split(",");
+        Double[] collections = new Double[strings2.length];
+        for (int i = 0; i < collections.length; i++)
+        {
+            collections[i] = Double.parseDouble(strings2[i]);
+            System.out.println(collections[i]);
+        }
+        Integer collectionSize = collections.length;
+
+        for(int i = 1; i <= maturityPeriod; i ++){
+
+            Premiums premiums = new Premiums();
+            premiums.setAccountId(accounts.getId());
+            premiums.setAmount(sm.getMonthlyAmount());
+            premiums.setPaid(0);
+            premiums.setSkipped(false);
+            premiums.setCreatedAt(new Date());
+            premiums.setUpdatedAt(new Date());
+            premiums.setAgentCommissionSend(false);
+            premiums.setAgentCollectionChargesSend(false);
+            premiums.setPaneltyCharged(BigDecimal.valueOf(0));
+            premiums.setPaneltyPosted(BigDecimal.valueOf(0));
+            premiums.setDueDate(date);
+            premiums.setAgentCommissionPercentage(commissionSize > i ? commissions[i] : commissions[commissionSize-1]);
+            premiums.setAgentCollectionChargesPercentage(collectionSize > i ? BigDecimal.valueOf(collections[i]) : BigDecimal.valueOf(commissions[commissionSize-1]));
+            premuimRepo.save(premiums);
+
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.MONTH, 1);
+            date = c.getTime();
+
+        }
+
+        DepositeDetails depositeDetails = new DepositeDetails();
+        if(sm.getDebitAccountId() != null){
+            depositeDetails.setAcFrom(sm.getDebitAccountId());
+        }
+        depositeDetails.setAcTo(accounts.getId());
+        depositeDetails.setBranchId(sm.getBranchId());
+        depositeDetails.setLoginBranch(sm.getBranchId());
+        depositeDetails.setAmount(sm.getAmount());
+        depositeDetails.setNarration(sm.getNarration());
+        depositeDetails.setShares(false);
+        depositeDetails.setStaffId(sm.getStaffId());
+        transactionService.transactionDeposite(depositeDetails);
     }
 
 
@@ -709,7 +871,16 @@ public class AccountsService {
     //Add fixedAndMis accounts..........................................
     public void addfixedAccounts(FixedAccountDetails sm) {
         Accounts accounts = new Accounts();
-        accounts.setAccountNumber(sm.getAccountNumber());
+
+        String lastAccountNumber = smAccountsRepo.getLastFDMISaccount(sm.getBranchId(), sm.getAccountType());
+        Integer lastSavingAccount = Integer.parseInt(lastAccountNumber.replaceAll("[\\D]", ""));
+        lastSavingAccount += 1;
+
+        Branches branches = branchesRepository.getOne(sm.getBranchId());
+        String branchCode = branches.getCode();
+        System.out.println(branchCode);
+
+        accounts.setAccountNumber(branchCode + sm.getAccountType() + lastSavingAccount);
         accounts.setAmount(sm.getAmount());
         accounts.setMemberId(sm.getMemberId());
         accounts.setSchemeId(sm.getSchemaId());
@@ -717,26 +888,43 @@ public class AccountsService {
         accounts.setNomineeAge(sm.getNomineeAge());
         accounts.setRelationWithNominee(sm.getRelationWithNominee());
         accounts.setActiveStatus(sm.getActiveStatus());
-        accounts.setAccountType(sm.getAccountType());
+        accounts.setAccountType(sm.getAccountType()); //FD or MIS
         accounts.setModeOfOperation(sm.getModeOfOperation());
         accounts.setTeamId(sm.getTeamId());
         accounts.setAgentId(sm.getAgentId());
         accounts.setCollectorId(sm.getCollectorId());
-        accounts.setMinorNomineeDob(sm.getMinorNomineeDob());
+        accounts.setMinorNomineeParentName(sm.getMinorNomineeParentName());
         accounts.setNewOrRenew(sm.getNewOrRenew());
         accounts.setMaturityToAccountId(sm.getMaturityToAccountId());
         accounts.setIntrestToAccountId(sm.getIntrestToAccountId());
+        accounts.setMoId(sm.getMoId());
         Date date = new Date();
         accounts.setCreatedAt(date);
         accounts.setStaffId(0);
-        accounts.setPandLgroup(" ");
+        accounts.setPandLgroup("FixedAndMis");
+        accounts.setGroupType("FixedAndMis");
         accounts.setDealerId(0);
         accounts.setIsDirty((byte) 0);
         accounts.setBikeSurrendered((byte) 0);
         accounts.setIsInLegal((byte) 0);
         accounts.setInsuranceTenure("1 year");
         accounts.setBankAccountLimit(0);
+        accounts.setBranchId(sm.getBranchId());
         smAccountsRepo.save(accounts);
+
+        DepositeDetails depositeDetails = new DepositeDetails();
+        if(sm.getDebitAccountId() != null){
+            depositeDetails.setAcFrom(sm.getDebitAccountId());
+        }
+        depositeDetails.setAcTo(accounts.getId());
+        depositeDetails.setBranchId(sm.getBranchId());
+        depositeDetails.setLoginBranch(sm.getBranchId());
+        depositeDetails.setAmount(sm.getAmount());
+        depositeDetails.setNarration(sm.getNarration());
+        depositeDetails.setShares(false);
+        depositeDetails.setStaffId(sm.getStaffId());
+        transactionService.transactionDeposite(depositeDetails);
+
 
     }
 
@@ -1377,6 +1565,11 @@ public class AccountsService {
 
     public List<iDeleteVoucherDetails> getTransactionDetails(Integer transactionId) {
         List<iDeleteVoucherDetails> list = transactionRowRepo.getTransactionDetails(transactionId);
+        return list;
+    }
+
+    public List<CollectorDetails> getCollectorList(String name) {
+        List<CollectorDetails> list = agentsRepositoty.getCollectorList(name);
         return list;
     }
 }

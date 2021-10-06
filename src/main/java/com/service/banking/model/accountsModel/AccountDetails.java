@@ -21,6 +21,7 @@ public class AccountDetails {
 	Integer accountId;
 	Integer referenceAccountId;
 	Boolean maturityStatus;
+	Integer agentId;
 
 	public AccountDetails() {
 		super();
@@ -47,6 +48,16 @@ public class AccountDetails {
 		this.schemeId=schemeId;
 	}
 
+	public AccountDetails(Integer id, Integer branchId, String accountType, Date createdAt, Double amount, Integer schemeId, Integer agentId) {
+		super();
+		this.id = id;
+		this.branchId = branchId;
+		this.accountType = accountType;
+		this.createdAt = createdAt;
+		this.amount=amount;
+		this.schemeId=schemeId;
+		this.agentId = agentId;
+	}
 	
 	
 	public AccountDetails(Integer id, String accountNumber, String name, String fatherName, String accountType,
@@ -212,5 +223,13 @@ public class AccountDetails {
 
 	public void setMaturityStatus(Boolean maturityStatus) {
 		this.maturityStatus = maturityStatus;
+	}
+
+	public Integer getAgentId() {
+		return agentId;
+	}
+
+	public void setAgentId(Integer agentId) {
+		this.agentId = agentId;
 	}
 }

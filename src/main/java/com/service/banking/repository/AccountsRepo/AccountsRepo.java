@@ -1,11 +1,10 @@
 package com.service.banking.repository.AccountsRepo;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import com.service.banking.model.accountsModel.*;
 import com.service.banking.model.printingModel.*;
+import com.service.banking.model.transaction.IPreviewDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,10 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.service.banking.hibernateEntity.Accounts;
 import com.service.banking.model.GstModel.AccountDetail;
 import com.service.banking.model.GstModel.PurchaseAccountDetails;
-import com.service.banking.model.MadModel.MemberInsuDetails;
 import com.service.banking.model.MadModel.iMemberInsuDetails;
-import com.service.banking.model.dashboardModel.AccountsDetails;
-import com.service.banking.model.dashboardModel.AccountsOpenTodayDetails;
 import com.service.banking.model.dashboardModel.iAccountDetails;
 import com.service.banking.model.hodAuthorityModel.AssociationDetails;
 import com.service.banking.model.report.iAgentsAccount;
@@ -26,10 +22,6 @@ import com.service.banking.model.report.iDepositeReport;
 import com.service.banking.model.report.iGeneralReport;
 import com.service.banking.model.report.iMemberReport;
 import com.service.banking.model.superAdminModel.StaffModel;
-import com.service.banking.model.MadModel.MemberInsuDetails;
-
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
 public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
 
@@ -71,7 +63,7 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
             + "left join Members  agnt_m on agnt_m.id=ag.memberId \r\n" + "left join Teams tm on tm.id=a.teamId \r\n"
             + "left join Premiums p on p.accountId =a.id \r\n"
             + "left join Agents coll_agnt on coll_agnt.id=a.collectorId \r\n"
-            + "left join Members coll_m on coll_m.id=coll_agnt.memberId \r\n" + "where a.accountType ='DDS'")
+            + "left join Members coll_m on coll_m.id=coll_agnt.memberId \r\n" + "where a.accountType ='DDS' order by a.id DESC")
     List<DDSAccountDetails> DDSAccounts();
 
     // for recurring accounts..............................
@@ -84,9 +76,9 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
             + "left join Branches b on b.id=a.branchId \r\n" + "left join Members m on m.id =a.memberId \r\n"
             + "left join Schemes schm on schm.id=a.schemeId \r\n" + "left join Agents ag on ag.id=a.agentId \r\n"
             + "left join Members  agnt_m on agnt_m.id=ag.memberId \r\n" + "left join Teams tm on tm.id=a.teamId \r\n"
-            + "left join Premiums p on p.accountId =a.id \r\n"
             + "left join Agents coll_agnt on coll_agnt.id=a.collectorId \r\n"
-            + "left join Members coll_m on coll_m.id=coll_agnt.memberId \r\n" + "where a.accountType ='Recurring' order by a.id DESC")
+            + "left join Members coll_m on coll_m.id=coll_agnt.memberId \r\n" +
+            "where a.accountType ='Recurring' order by a.id DESC")
     Page<RecurringAccountDetails> RecurringAccounts(Pageable pageable);
 
     // for fixed accounts..............................
@@ -96,14 +88,15 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
             + "coll_m.landmark  ,coll_m.isDefaulter, a.intrestToAccountId ,a.maturityToAccountId , \r\n"
             + "a.nominee ,a.nomineeAge ,a.relationWithNominee ,a.newOrRenew ,tm.name, a.memberId,\r\n"
             + "			a.schemeId, a.agentId, a.collectorId, a.teamId, a.activeStatus,\r\n"
-            + "			a.modeOfOperation, a.minorNomineeParentName, a.accountType, a.minorNomineeDob ) \r\n"
+            + "			a.modeOfOperation, a.minorNomineeParentName, a.accountType, a.minorNomineeDob, a.moId, mos.name ) \r\n"
             + "from Accounts a \r\n" + "left join Branches b on b.id=a.branchId \r\n"
             + "left join Members m on m.id =a.memberId \r\n" + "left join Schemes schm on schm.id=a.schemeId \r\n"
             + "left join Agents ag on ag.id=a.agentId \r\n" + "left join Members  agnt_m on agnt_m.id=ag.memberId \r\n"
             + "left join Teams tm on tm.id=a.teamId \r\n" + "left join Premiums p on p.accountId =a.id \r\n"
             + "left join Agents coll_agnt on coll_agnt.id=a.collectorId \r\n"
-            + "left join Members coll_m on coll_m.id=coll_agnt.memberId \r\n"
-            + "where a.accountType ='FD' or a.accountType ='MIS' ")
+            + "left join Members coll_m on coll_m.id=coll_agnt.memberId \r\n" +
+            " left join Mos mos on mos.id = a.moId "
+            + "where a.accountType ='FD' or a.accountType ='MIS' order by a.id DESC")
     Page<FixedAccountDetails> FixedAccounts(Pageable pageable);
 
     // for OTRHERS accounts..............................
@@ -111,7 +104,7 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
             + "from Accounts a \r\n" + "inner join Members m on m.id =a.memberId \r\n"
             + "inner join Schemes schm on schm.id=a.schemeId \r\n"
             + "where a.accountType= null or a.accountType='Default' or a.accountType ='Other'  or a.accountType ='Two Wheeler Loan' or a.accountType ='Personal Loan' or a.accountType ='CC' or a.accountType ='Loan Against Deposit' or a.accountType ='Auto Loan' or a.accountType ='Agriculture Loan' or a.accountType ='Home Loan' or a.accountType ='Mortgage Loan'  "
-            + " order by a.createdAt desc")
+            + " order by a.id DESC")
     Page<OtherAccountDetails> OthersAccounts(Pageable pageable);
 
 //********account statement********************			
@@ -319,7 +312,7 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
     @Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id,a.branchId) from Accounts a WHERE a.groupType = 'ESI'")
     List<AccountDetails> getESIaccount();
 
-    @Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.branchId, a.accountType, a.createdAt, a.amount, a.schemeId) from Accounts a WHERE a.id = ?1")
+    @Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.branchId, a.accountType, a.createdAt, a.amount, a.schemeId, a.agentId) from Accounts a WHERE a.id = ?1")
     AccountDetails getAccountInfoById(Integer accountId);
 
     @Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id) from Accounts a WHERE a.accountNumber LIKE ?1% and a.branchId = ?2 ")
@@ -645,12 +638,19 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
     Integer checkSMMember(int memberId);
 
     @Query(value = "select a.AccountNumber from accounts a \n" +
-            "where a.group_type = \"SavingAndCurrent\"\n" +
-            "and a.PAndLGroup = \"SavingAndCurrent\"\n" +
+            "where a.group_type = ?2 \n" +
+            "and a.PAndLGroup = ?2 \n" +
             "and a.branch_id = ?1 \n" +
             "order by a.id DESC limit 1 ",
             nativeQuery = true)
-    String getLastSavingAccount(Integer branchId);
+    String getLastSavingAccount(Integer branchId, String accountType);
+
+    @Query(value = "select a.AccountNumber from accounts a \n" +
+            "where a.account_type = ?2 \n" +
+            "and a.branch_id = ?1 \n" +
+            "order by a.id DESC limit 1 ",
+            nativeQuery = true)
+    String getLastFDMISaccount(Integer branchId, String accountType);
 
     @Query(value = "select a.id, a.AccountNumber , a.created_at, m.name, m.CurrentAddress , m.PermanentAddress , m.FatherName, a2.AccountNumber as smAccount, a.Amount,\n" +
             "m2.name as guarantorName, m2.FatherName as guarantorFatherName, m2.PermanentAddress as guarantorPermanentAddress,  m.PhoneNos from accounts a \n" +
@@ -681,9 +681,85 @@ public interface AccountsRepo extends JpaRepository<Accounts, Integer> {
             nativeQuery = true)
     Integer getAccountIdForCGST9(Integer branchId);
 
+    @Query(value = "select a.id from accounts a \n" +
+            "where a.AccountNumber like '%SGST 14%'\n" +
+            "and a.branch_id = ?1 ",
+            nativeQuery = true)
+    Integer getAccountIdForSGST14(Integer branchId);
+
+    @Query(value = "select a.id from accounts a \n" +
+            "where a.AccountNumber like '%SGST 2.5'\n" +
+            "and a.branch_id = ?1 ",
+            nativeQuery = true)
+    Integer getAccountIdForSGST2_5(Integer branchId);
+
+    @Query(value = "select a.id from accounts a \n" +
+            "where a.AccountNumber like '%SGST 6%'\n" +
+            "and a.branch_id = ?1 ",
+            nativeQuery = true)
+    Integer getAccountIdForSGST6(Integer branchId);
+
+    @Query(value = "select a.id from accounts a \n" +
+            "where a.AccountNumber like '%CGST 14%'\n" +
+            "and a.branch_id = ?1 ",
+            nativeQuery = true)
+    Integer getAccountIdForCGST14(Integer branchId);
+
+    @Query(value = "select a.id from accounts a \n" +
+            "where a.AccountNumber like '%CGST 2.5'\n" +
+            "and a.branch_id = ?1 ",
+            nativeQuery = true)
+    Integer getAccountIdForCGST2_5(Integer branchId);
+
+    @Query(value = "select a.id from accounts a \n" +
+            "where a.AccountNumber like '%CGST 6%'\n" +
+            "and a.branch_id = ?1 ",
+            nativeQuery = true)
+    Integer getAccountIdForCGST6(Integer branchId);
+
+    @Query(value = "select a.id from accounts a \n" +
+            "where a.AccountNumber like '%IGST 18%'\n" +
+            "and a.branch_id = ?1 ",
+            nativeQuery = true)
+    Integer getAccountIdForIGST18(Integer branchId);
+
     @Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.accountNumber, m.name, m.fatherName, a.accountType, a.groupType, a.maturedStatus) from Accounts a left join Members m on m.id= a.memberId where (a.accountNumber LIKE %?1% or m.name LIKE %?1%) and (NOT a.groupType = 'Loan') order by a.accountNumber")
     List<AccountDetails> getWithdrawAccounts(String accountNumber);
 
     @Query("select new com.service.banking.model.accountsModel.AccountDetails(a.id, a.accountNumber, m.name, m.fatherName, a.accountType) from Accounts a left join Members m on m.id= a.memberId where (a.accountNumber LIKE %?1% or m.name LIKE %?1%) and (a.groupType = 'Loan') and (a.activeStatus = 1) order by a.accountNumber")
     List<AccountDetails> getForClosedAccounts(String accountNumber);
+
+    @Query(value = "select a.id from accounts a \r\n"
+            + "where a.AccountNumber LIKE CONCAT(?1,' Collection Charges Paid On ',?2)",
+            nativeQuery = true)
+    Integer getCollectionSchemeAccountId(String code, String name);
+
+    @Query(value = "select a.id from accounts a \r\n"
+            + "where a.AccountNumber LIKE CONCAT(?1,' TDS') and a.group_type = 'TDS'",
+            nativeQuery = true)
+    Integer getTDSaccountID(String branchCode);
+
+    @Query(value = "select a.id from accounts a \r\n"
+            + "where a.AccountNumber LIKE CONCAT(?1,' Commission Paid On ',?2)",
+            nativeQuery = true)
+    Integer getCommissionSchemeAccountId(String branchCode, String name);
+
+    @Query(value = "select a.id, s.`type` , s.name , p.Amount , MAX(p.DueDate) as lastPremiumDate, \n" +
+            "a.AccountNumber , a.ModeOfOperation,\n" +
+            "count (case when p.PaidOn is null then p.id else null end) as paidPremiums,\n" +
+            "count (case when not p.PaidOn is null then p.id else null end) as duePremiums,\n" +
+            "count (p.id) as totalPremiums ,\n" +
+            "s.pre_mature_interests , a.created_at\n" +
+            "from accounts a \n" +
+            "left join schemes s on s.id = a.scheme_id \n" +
+            "left join premiums p on p.account_id = a.id\n" +
+            "where a.id = ?1 \n" +
+            "group by p.account_id ",
+            nativeQuery = true)
+    IPreviewDetails getPreview(Integer accountId);
+
+    @Query( "select new com.service.banking.model.GstModel.AccountDetail(a.id, a.accountNumber ) from Accounts a \n" +
+            "where a.groupType = 'Sundry Creditor' and a.pandLgroup = 'Sundry Creditor' \n" +
+            "and a.branchId = ?1 ")
+    List<AccountDetail> getSuppliers(Integer branchId);
 }

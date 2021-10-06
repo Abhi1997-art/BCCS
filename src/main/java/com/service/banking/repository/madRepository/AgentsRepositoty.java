@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.service.banking.hibernateEntity.Accounts;
+import com.service.banking.model.accountsModel.CollectorDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,13 +39,13 @@ public interface AgentsRepositoty extends JpaRepository<Agents, Integer> {
 	public List<AgentGuarantorDetails> getAgentGuarantorInAgent(Integer id);
 
 	
-	@Query("select new com.service.banking.model.accountsModel.AgentDetailsList(a.codeNo, m.name, m.id, m.permanentAddress, \r\n"
+	@Query("select new com.service.banking.model.accountsModel.AgentDetailsList(a.codeNo, m.name, a.id, m.permanentAddress, \r\n"
 			+ "m.landmark,m.isDefaulter) from Agents a \r\n"
 			+ "left join Members m on a.memberId = m.id \r\n" 
 			+ " where m.name LIKE %?1% or a.codeNo LIKE %?1%" )
 	public List<AgentDetailsList> getAgentList(String name);
 
-	@Query("select new com.service.banking.model.accountsModel.AgentDetailsList(a.codeNo, m.name, m.id, m.permanentAddress, \r\n"
+	@Query("select new com.service.banking.model.accountsModel.AgentDetailsList(a.codeNo, m.name, a.id, m.permanentAddress, \r\n"
 			+ "m.landmark) from Agents a \r\n"
 			+ "left join Members m on a.memberId = m.id \r\n"
 			+ " where m.name LIKE %?1% or a.codeNo LIKE %?1%" )
@@ -66,4 +67,10 @@ public interface AgentsRepositoty extends JpaRepository<Agents, Integer> {
 			"where a.member_id = ?1",
 			nativeQuery = true)
 	List<Agents> findAgents(Integer id);
+
+	@Query("select new com.service.banking.model.accountsModel.CollectorDetails(a.codeNo, m.name, a.id, m.permanentAddress, \r\n"
+			+ "m.landmark) from Agents a \r\n"
+			+ "left join Members m on a.memberId = m.id \r\n"
+			+ " where m.name LIKE %?1% or a.codeNo LIKE %?1%" )
+	List<CollectorDetails> getCollectorList(String name);
 }

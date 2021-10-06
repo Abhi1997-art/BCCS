@@ -55,7 +55,7 @@ public class Members implements java.io.Serializable {
 	private Integer netmemberId;
 	private String memberCode;
 	private Date dob;
-	private byte filledForm60;
+	private Byte filledForm60;
 	private String customerCode;
 	private int parentMemberId;
 	private Date customerCreatedAt;
@@ -128,7 +128,7 @@ public class Members implements java.io.Serializable {
 	public Members() {
 	}
 
-	public Members(int branchId, byte filledForm60, int parentMemberId, String username, String password) {
+	public Members(int branchId, Byte filledForm60, int parentMemberId, String username, String password) {
 		this.branchId = branchId;
 		this.filledForm60 = filledForm60;
 		this.parentMemberId = parentMemberId;
@@ -141,7 +141,7 @@ public class Members implements java.io.Serializable {
 			String witness1fatherName, String witness1address, String witness2name, String witness2fatherName,
 			String witness2address, Date createdAt, Date updatedAt, int branchId, String phoneNos, String panNo,
 			Boolean isMinor, Date minorDob, String parentName, String relationWithParent, Integer staffId,
-			Integer netmemberId, String memberCode, Date dob, byte filledForm60, String customerCode,
+			Integer netmemberId, String memberCode, Date dob, Byte filledForm60, String customerCode,
 			int parentMemberId, Date customerCreatedAt, String officeAddress, String officePhoneNos, String email,
 			String bloodGroup, String maritalStatus, Integer numberOfChildren, Date marriageDate,
 			String highestQualification, String occupationDetails, String employerAddress, String selfEmployeeDetails,
@@ -524,11 +524,11 @@ public class Members implements java.io.Serializable {
 	}
 
 	@Column(name = "FilledForm60", nullable = false)
-	public byte getFilledForm60() {
+	public Byte getFilledForm60() {
 		return this.filledForm60;
 	}
 
-	public void setFilledForm60(byte filledForm60) {
+	public void setFilledForm60(Byte filledForm60) {
 		this.filledForm60 = filledForm60;
 	}
 

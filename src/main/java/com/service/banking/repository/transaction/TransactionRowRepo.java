@@ -66,6 +66,12 @@ public interface TransactionRowRepo extends JpaRepository<TransactionRow, Intege
 			+ "where tr.account_id = ?1", nativeQuery = true)
 	iBalance getBalance(Integer accountId);
 
+	@Query(value = "select IFNULL(sum(tr.amountCr), 0) as balance from transaction_row tr \n" +
+			"left join transactions t on t.id = tr.transaction_id \n" +
+			"where tr.account_id = ?1 and (t.transaction_type_id = 10 or t.transaction_type_id = 20)  ",
+			nativeQuery = true)
+	iBalance getBalanceForRD_DDS(Integer accountId);
+
 	@Query(value = "select a.id, a.AccountNumber,m.name, m.FatherName, s.name as schemeName, tr.amountCr , tr.voucher_no ,tr.Narration , tr.created_at from transaction_row tr \r\n"
 			+ "left join accounts a on a.id=tr.account_id \r\n"
 			+ "left join schemes s on a.scheme_id =s.id\r\n"

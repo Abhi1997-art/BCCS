@@ -21,8 +21,12 @@ public AccountDetail(Integer id, String accountNumber, String name, String fathe
 	this.fatherName = fatherName;
 }
 
+	public AccountDetail(Integer id, String accountNumber) {
+		this.id = id;
+		this.accountNumber = accountNumber;
+	}
 
-public Integer getId() {
+	public Integer getId() {
 	return id;
 }
 

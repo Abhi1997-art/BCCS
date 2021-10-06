@@ -157,8 +157,8 @@ public class SuperAdminController {
 	public void deleteCadres(@PathVariable("id") Integer Id) {
 		String message = superAdminService.deleteAgentCadres(Id);
 	}
-	// get closing.................
 
+	// get closing.................
 	@GetMapping("/closing")
 	public List<ClosingDetails> getClosing() {
 		List<ClosingDetails> closingDetails = superAdminService.getClosing();
@@ -166,7 +166,6 @@ public class SuperAdminController {
 	}
 
 	// get content Management.........
-
 	@GetMapping("/content_management")
 	public List<ContentFiles> getContentManagement() {
 		List<ContentFiles> contentList = superAdminService.getcontentMangement();

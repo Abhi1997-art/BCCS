@@ -60,7 +60,6 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 						" left join Agents ag on ag.memberId=m.id where m.isAgent = 1 and m.name LIKE %?1% ")
 				public List<MeberDetail> getSponsor(String name);
 
-
 				@Query(value = "select  m.id, m.member_no , b.name as branchName, m.title , m.name, m.FatherName , m.RelationWithFatherField ,m.CurrentAddress , m.landmark , m.tehsil , m.city , m.PhoneNos, m.created_at ,m.is_active ,m.is_defaulter,\n" +
 						"m.PanNo , m.AdharNumber, m.memebr_type from members m\n" +
 						"left join branches b on m.branch_id = b.id\n" +
@@ -144,8 +143,23 @@ public interface MembersRepo extends JpaRepository<Members,Integer>  {
 						nativeQuery = true)
 				public Integer getLastMemberNo();
 
+	@Query(value = "select m.name , a.AccountNumber , a.account_type, sum(tr.amountCr) - sum(tr.amountDr) as bal from accounts a\n" +
+			"left join transaction_row tr on tr.account_id = a.id\n" +
+			"left join members m on m.id = a.member_id \n" +
+			"where a.account_type = 'SM' \n" +
+			"group by a.id\n" +
+			"HAVING (bal  = 0 or bal is NULL)",
+			nativeQuery = true)
+	List<iMemberReport> getMemberWithZeroBalance();
 
 
+	@Query(value = "select m.PanNo from members m\n" +
+			"where m.id = ?1",
+			nativeQuery = true)
+    String getPanNo(Integer id);
 
-				
+	@Query(value = "select m.id from members m\n" +
+			"where m.id = ?1",
+			nativeQuery = true)
+	Integer findMember(int memberId);
 }
