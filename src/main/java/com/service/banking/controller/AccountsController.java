@@ -7,7 +7,7 @@ import java.util.Map;
 import com.service.banking.hibernateEntity.*;
 import com.service.banking.model.GstModel.AccountStatementDetail;
 import com.service.banking.model.accountsModel.*;
-import com.service.banking.model.hodAuthorityModel.iDeleteVoucherDetails;
+import com.service.banking.model.hodAuthorityModel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.service.banking.model.MadModel.DealerDeatails;
 import com.service.banking.model.dashboardModel.DueDeatailsModel;
 import com.service.banking.model.dashboardModel.SchemaDetail;
-import com.service.banking.model.hodAuthorityModel.AssociationDetails;
-import com.service.banking.model.hodAuthorityModel.MoRoDetails;
-import com.service.banking.model.hodAuthorityModel.Teamdetails;
 import com.service.banking.model.stockModel.LedgerItemDetails;
 import com.service.banking.model.stockModel.LedgerReqModel;
 import com.service.banking.service.AccountsService;
@@ -489,6 +486,12 @@ public class AccountsController {
     public List<CollectorDetails> getCollectorList(@RequestParam String name) {
         List<CollectorDetails> list = accountService.getCollectorList(name);
         return list;
+    }
+
+    @GetMapping("maturity_to_account_list")
+    public List<MaturityToAccountDetails> getMaturityToAccountList(@RequestParam String name){
+        List<MaturityToAccountDetails> accountList = accountService.getMaturityToAccountList(name);
+        return accountList;
     }
 
     // get Dealer API for three character search....................

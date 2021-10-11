@@ -5,219 +5,283 @@ import java.util.Date;
 public class PendingLoanDetails {
 
 	private Integer id;
-	private int accountsId;
-	private int createdById;
-	private int fromBranchId;
-	private Integer toBranchId;
-	private Integer receivedById;
-	private int returnReceivedById;
-	private Date nocLetterReceivedOn;
-	private Date sendAt;
-	private String sendNarration;
-	private Date receivedAt;
-	private String receivedNarration;
-	private int isDispatchToCustomer;
-	private String dispatchNarration;
-	private Date dispatchAt;
-	private int isReturn;
-	private Date returnAt;
-	private String returnReceivedNarration;
-	private int dispatchById;
-	private String returnNarration;
-	private int returnById;
-	private byte isNocNotMade;
-	private String nocNotMadeDueTo;
-	private byte isNocHold;
-	private String nocHoldDueTo;
-	
-	
-	
+	private String accountNumber;
+	private Integer branchId;
+	private String branchName;
+	private Date createdAt;
+	private Integer memberId;
+	private String memberName;
+	private String memberCurrentAddress;
+	private Integer memberNo;
+	private Boolean memberDefaulter;
+	private Integer schemeId;
+	private String schemeName;
+	private Double loanAmount;
+	private Double smAmount;
+	private Integer otherAccountId;
+	private String otherAccountNumber;
+	private Double OtherAccountCrAmount;
+	private String repaymentMode;
+	private String insuranceTenure;
+	private Boolean activeStatus;
+	private String operationMode;
+	private Date loanInsuranceDate;
+	private String loanAgainstAccountId;
+	private String loanAgainstAccountNumber;
+	private Integer dealerId;
+	private String dealerName;
+	private Integer loanFromAccount;
+	private Integer loanFromAccountNumber;
+
 	public PendingLoanDetails() {
-		super();
 	}
-	public PendingLoanDetails(Integer id, int accountsId, int createdById, int fromBranchId, Integer toBranchId,
-			Integer receivedById, int returnReceivedById, Date nocLetterReceivedOn, Date sendAt, String sendNarration,
-			Date receivedAt, String receivedNarration, int isDispatchToCustomer, String dispatchNarration,
-			Date dispatchAt, int isReturn, Date returnAt, String returnReceivedNarration, int dispatchById,
-			String returnNarration, int returnById, byte isNocNotMade, String nocNotMadeDueTo, byte isNocHold,
-			String nocHoldDueTo) {
-		super();
+
+	public PendingLoanDetails(Integer id, String  accountNumber, Integer branchId, String branchName, Date createdAt, Integer memberId, String memberName, Integer memberNo, String memberCurrentAddress, Boolean memberDefaulter, Integer schemeId, String schemeName, Double loanAmount, String repaymentMode, String insuranceTenure, Boolean activeStatus, String operationMode, Date loanInsuranceDate, Integer dealerId, String dealerName) {
 		this.id = id;
-		this.accountsId = accountsId;
-		this.createdById = createdById;
-		this.fromBranchId = fromBranchId;
-		this.toBranchId = toBranchId;
-		this.receivedById = receivedById;
-		this.returnReceivedById = returnReceivedById;
-		this.nocLetterReceivedOn = nocLetterReceivedOn;
-		this.sendAt = sendAt;
-		this.sendNarration = sendNarration;
-		this.receivedAt = receivedAt;
-		this.receivedNarration = receivedNarration;
-		this.isDispatchToCustomer = isDispatchToCustomer;
-		this.dispatchNarration = dispatchNarration;
-		this.dispatchAt = dispatchAt;
-		this.isReturn = isReturn;
-		this.returnAt = returnAt;
-		this.returnReceivedNarration = returnReceivedNarration;
-		this.dispatchById = dispatchById;
-		this.returnNarration = returnNarration;
-		this.returnById = returnById;
-		this.isNocNotMade = isNocNotMade;
-		this.nocNotMadeDueTo = nocNotMadeDueTo;
-		this.isNocHold = isNocHold;
-		this.nocHoldDueTo = nocHoldDueTo;
+		this.accountNumber = accountNumber;
+		this.branchId = branchId;
+		this.branchName = branchName;
+		this.createdAt = createdAt;
+		this.memberId = memberId;
+		this.memberName = memberName;
+		this.memberCurrentAddress = memberCurrentAddress;
+		this.memberNo = memberNo;
+		this.memberDefaulter = memberDefaulter;
+		this.schemeId = schemeId;
+		this.schemeName = schemeName;
+		this.loanAmount = loanAmount;
+		this.smAmount = smAmount;
+		this.otherAccountId = otherAccountId;
+		this.repaymentMode = repaymentMode;
+		this.insuranceTenure = insuranceTenure;
+		this.activeStatus = activeStatus;
+		this.operationMode = operationMode;
+		this.loanInsuranceDate = loanInsuranceDate;
+		this.dealerId = dealerId;
+		this.dealerName = dealerName;
 	}
+
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public int getAccountsId() {
-		return accountsId;
-	}
-	public void setAccountsId(int accountsId) {
-		this.accountsId = accountsId;
-	}
-	public int getCreatedById() {
-		return createdById;
-	}
-	public void setCreatedById(int createdById) {
-		this.createdById = createdById;
-	}
-	public int getFromBranchId() {
-		return fromBranchId;
-	}
-	public void setFromBranchId(int fromBranchId) {
-		this.fromBranchId = fromBranchId;
-	}
-	public Integer getToBranchId() {
-		return toBranchId;
-	}
-	public void setToBranchId(Integer toBranchId) {
-		this.toBranchId = toBranchId;
-	}
-	public Integer getReceivedById() {
-		return receivedById;
-	}
-	public void setReceivedById(Integer receivedById) {
-		this.receivedById = receivedById;
-	}
-	public int getReturnReceivedById() {
-		return returnReceivedById;
-	}
-	public void setReturnReceivedById(int returnReceivedById) {
-		this.returnReceivedById = returnReceivedById;
-	}
-	public Date getNocLetterReceivedOn() {
-		return nocLetterReceivedOn;
-	}
-	public void setNocLetterReceivedOn(Date nocLetterReceivedOn) {
-		this.nocLetterReceivedOn = nocLetterReceivedOn;
-	}
-	public Date getSendAt() {
-		return sendAt;
-	}
-	public void setSendAt(Date sendAt) {
-		this.sendAt = sendAt;
-	}
-	public String getSendNarration() {
-		return sendNarration;
-	}
-	public void setSendNarration(String sendNarration) {
-		this.sendNarration = sendNarration;
-	}
-	public Date getReceivedAt() {
-		return receivedAt;
-	}
-	public void setReceivedAt(Date receivedAt) {
-		this.receivedAt = receivedAt;
-	}
-	public String getReceivedNarration() {
-		return receivedNarration;
-	}
-	public void setReceivedNarration(String receivedNarration) {
-		this.receivedNarration = receivedNarration;
-	}
-	public int getIsDispatchToCustomer() {
-		return isDispatchToCustomer;
-	}
-	public void setIsDispatchToCustomer(int isDispatchToCustomer) {
-		this.isDispatchToCustomer = isDispatchToCustomer;
-	}
-	public String getDispatchNarration() {
-		return dispatchNarration;
-	}
-	public void setDispatchNarration(String dispatchNarration) {
-		this.dispatchNarration = dispatchNarration;
-	}
-	public Date getDispatchAt() {
-		return dispatchAt;
-	}
-	public void setDispatchAt(Date dispatchAt) {
-		this.dispatchAt = dispatchAt;
-	}
-	public int getIsReturn() {
-		return isReturn;
-	}
-	public void setIsReturn(int isReturn) {
-		this.isReturn = isReturn;
-	}
-	public Date getReturnAt() {
-		return returnAt;
-	}
-	public void setReturnAt(Date returnAt) {
-		this.returnAt = returnAt;
-	}
-	public String getReturnReceivedNarration() {
-		return returnReceivedNarration;
-	}
-	public void setReturnReceivedNarration(String returnReceivedNarration) {
-		this.returnReceivedNarration = returnReceivedNarration;
-	}
-	public int getDispatchById() {
-		return dispatchById;
-	}
-	public void setDispatchById(int dispatchById) {
-		this.dispatchById = dispatchById;
-	}
-	public String getReturnNarration() {
-		return returnNarration;
-	}
-	public void setReturnNarration(String returnNarration) {
-		this.returnNarration = returnNarration;
-	}
-	public int getReturnById() {
-		return returnById;
-	}
-	public void setReturnById(int returnById) {
-		this.returnById = returnById;
-	}
-	public byte getIsNocNotMade() {
-		return isNocNotMade;
-	}
-	public void setIsNocNotMade(byte isNocNotMade) {
-		this.isNocNotMade = isNocNotMade;
-	}
-	public String getNocNotMadeDueTo() {
-		return nocNotMadeDueTo;
-	}
-	public void setNocNotMadeDueTo(String nocNotMadeDueTo) {
-		this.nocNotMadeDueTo = nocNotMadeDueTo;
-	}
-	public byte getIsNocHold() {
-		return isNocHold;
-	}
-	public void setIsNocHold(byte isNocHold) {
-		this.isNocHold = isNocHold;
-	}
-	public String getNocHoldDueTo() {
-		return nocHoldDueTo;
-	}
-	public void setNocHoldDueTo(String nocHoldDueTo) {
-		this.nocHoldDueTo = nocHoldDueTo;
+
+	public String getAccountNumber() {
+		return accountNumber;
 	}
 
-	
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public Integer getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(Integer branchId) {
+		this.branchId = branchId;
+	}
+
+	public String getBranchName() {
+		return branchName;
+	}
+
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Integer getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
+	}
+
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
+
+	public String getMemberCurrentAddress() {
+		return memberCurrentAddress;
+	}
+
+	public void setMemberCurrentAddress(String memberCurrentAddress) {
+		this.memberCurrentAddress = memberCurrentAddress;
+	}
+
+	public Integer getMemberNo() {
+		return memberNo;
+	}
+
+	public void setMemberNo(Integer memberNo) {
+		this.memberNo = memberNo;
+	}
+
+	public Boolean getMemberDefaulter() {
+		return memberDefaulter;
+	}
+
+	public void setMemberDefaulter(Boolean memberDefaulter) {
+		this.memberDefaulter = memberDefaulter;
+	}
+
+	public Integer getSchemeId() {
+		return schemeId;
+	}
+
+	public void setSchemeId(Integer schemeId) {
+		this.schemeId = schemeId;
+	}
+
+	public String getSchemeName() {
+		return schemeName;
+	}
+
+	public void setSchemeName(String schemeName) {
+		this.schemeName = schemeName;
+	}
+
+	public Double getLoanAmount() {
+		return loanAmount;
+	}
+
+	public void setLoanAmount(Double loanAmount) {
+		this.loanAmount = loanAmount;
+	}
+
+	public Double getSmAmount() {
+		return smAmount;
+	}
+
+	public void setSmAmount(Double smAmount) {
+		this.smAmount = smAmount;
+	}
+
+	public Integer getOtherAccountId() {
+		return otherAccountId;
+	}
+
+	public void setOtherAccountId(Integer otherAccountId) {
+		this.otherAccountId = otherAccountId;
+	}
+
+	public String getOtherAccountNumber() {
+		return otherAccountNumber;
+	}
+
+	public void setOtherAccountNumber(String otherAccountNumber) {
+		this.otherAccountNumber = otherAccountNumber;
+	}
+
+	public Double getOtherAccountCrAmount() {
+		return OtherAccountCrAmount;
+	}
+
+	public void setOtherAccountCrAmount(Double otherAccountCrAmount) {
+		OtherAccountCrAmount = otherAccountCrAmount;
+	}
+
+	public String getRepaymentMode() {
+		return repaymentMode;
+	}
+
+	public void setRepaymentMode(String repaymentMode) {
+		this.repaymentMode = repaymentMode;
+	}
+
+	public String getInsuranceTenure() {
+		return insuranceTenure;
+	}
+
+	public void setInsuranceTenure(String insuranceTenure) {
+		this.insuranceTenure = insuranceTenure;
+	}
+
+	public Boolean getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(Boolean activeStatus) {
+		this.activeStatus = activeStatus;
+	}
+
+	public String getOperationMode() {
+		return operationMode;
+	}
+
+	public void setOperationMode(String operationMode) {
+		this.operationMode = operationMode;
+	}
+
+	public Date getLoanInsuranceDate() {
+		return loanInsuranceDate;
+	}
+
+	public void setLoanInsuranceDate(Date loanInsuranceDate) {
+		this.loanInsuranceDate = loanInsuranceDate;
+	}
+
+	public String getLoanAgainstAccountId() {
+		return loanAgainstAccountId;
+	}
+
+	public void setLoanAgainstAccountId(String loanAgainstAccountId) {
+		this.loanAgainstAccountId = loanAgainstAccountId;
+	}
+
+	public String getLoanAgainstAccountNumber() {
+		return loanAgainstAccountNumber;
+	}
+
+	public void setLoanAgainstAccountNumber(String loanAgainstAccountNumber) {
+		this.loanAgainstAccountNumber = loanAgainstAccountNumber;
+	}
+
+	public Integer getDealerId() {
+		return dealerId;
+	}
+
+	public void setDealerId(Integer dealerId) {
+		this.dealerId = dealerId;
+	}
+
+	public String getDealerName() {
+		return dealerName;
+	}
+
+	public void setDealerName(String dealerName) {
+		this.dealerName = dealerName;
+	}
+
+	public Integer getLoanFromAccount() {
+		return loanFromAccount;
+	}
+
+	public void setLoanFromAccount(Integer loanFromAccount) {
+		this.loanFromAccount = loanFromAccount;
+	}
+
+	public Integer getLoanFromAccountNumber() {
+		return loanFromAccountNumber;
+	}
+
+	public void setLoanFromAccountNumber(Integer loanFromAccountNumber) {
+		this.loanFromAccountNumber = loanFromAccountNumber;
+	}
 }

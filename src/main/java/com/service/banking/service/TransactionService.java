@@ -338,7 +338,7 @@ public class TransactionService {
 								Integer memberId = membersRepo.findMember(agent.getMemberId());
 								double tdsPercent = 0.05;
 								String panNo = membersRepo.getPanNo(memberId);
-								if(panNo == null || panNo.equals("0") || panNo.equals("")){
+								if(panNo == null || panNo.equals("0") || panNo.equals("") || panNo.equals(" ")){
 									tdsPercent = 0.2;
 								}
 
@@ -374,7 +374,7 @@ public class TransactionService {
 										memberId = membersRepo.findMember(agent.getMemberId());
 										tdsPercent = 0.05;
 										panNo = membersRepo.getPanNo(memberId);
-										if(panNo == null || panNo.equals("0") || panNo.equals("")){
+										if(panNo == null || panNo.equals("0") || panNo.equals("") || panNo.equals(" ")){
 											tdsPercent = 0.2;
 										}
 
@@ -403,7 +403,7 @@ public class TransactionService {
 								Integer memberId = membersRepo.findMember(agent.getMemberId());
 								double tdsPercent = 0.05;
 								String panNo = membersRepo.getPanNo(memberId);
-								if(panNo == null || panNo.equals("0") || panNo.equals("")){
+								if(panNo == null || panNo.equals("0") || panNo.equals("") || panNo.equals(" ")){
 									tdsPercent = 0.2;
 								}
 
@@ -487,7 +487,7 @@ public class TransactionService {
 
 				Members members = membersRepo.findById(agent.getMemberId()).get();
 				double tdsPercent = 0.05;
-				if (members.getPanNo() == null || members.getPanNo().equals("0") || members.getPanNo().equals("")) {
+				if (members.getPanNo() == null || members.getPanNo().equals("0") || members.getPanNo().equals("") || members.getPanNo().equals(" ")) {
 					tdsPercent = 0.2;
 				}
 
@@ -519,7 +519,7 @@ public class TransactionService {
 						members = membersRepo.findById(agent.getMemberId()).get();
 
 						tdsPercent = 0.05;
-						if (members.getPanNo() == null || members.getPanNo().equals("0")  || members.getPanNo().equals("")) {
+						if (members.getPanNo() == null || members.getPanNo().equals("0")  || members.getPanNo().equals("") || members.getPanNo().equals(" ")) {
 							tdsPercent = 0.2;
 						}
 
@@ -1098,6 +1098,7 @@ public class TransactionService {
 			 }
 		 }
 		 System.out.println("Count paid: " + countPaid);
+		System.out.println("Count paid On " + countPaidOn);
 		 
 		//Get Interest for complete product....
 		 Double intrest= Double.parseDouble(schemaDetail.getInterest()); 
@@ -1115,6 +1116,7 @@ public class TransactionService {
 	    	//Splitting Premature interest....
 	 		 String arr[] = (schemaDetail.getPreMatureInterests().split("[,:]+"));
 	 		 int size = arr.length;
+
 	 		 //Converting string array to double....
 	 		 Double [] preMatureInt = new Double [size];
 	 	      for(int i=0; i<size; i++) {
@@ -1125,10 +1127,11 @@ public class TransactionService {
 	    	  //Determining interest.....
 	    	  for(int i=1;i<=preMatureInt.length-1;i=i+2) {
 	    		  System.out.println("--"+(int)Math.round(preMatureInt[i]));
-	    		  if(countPaid < (int)Math.round(preMatureInt[i])){
+	    		  if(countPaidOn < (int)Math.round(preMatureInt[i])){
 					  nowIntrest = preMatureInt[i-1];
+					  break;
 				  }
-	    		  if(countPaid > (int)Math.round(preMatureInt[preMatureInt.length-2])){
+	    		  if(countPaidOn > (int)Math.round(preMatureInt[preMatureInt.length-2])){
 					  	nowIntrest = preMatureInt[i+1];
 				  }
 //	    		  if(countPaid >= (int)Math.round(preMatureInt[i]) && countPaid < (int)Math.round(preMatureInt[i+2])) {
@@ -1177,14 +1180,16 @@ public class TransactionService {
 		 //Calculating premium table....
 		 for(PremiumDetails p:premiumDetails) {
 
-			 Amount=Integer.parseInt(p.getAmount()); 
-			 product = Amount * p.getPaid() + intrestAdded;
-			 InterestTemp2 = (product * ((nowIntrest/100)) / 12);
-			 totalIntrest+=InterestTemp2;
-			 
-			 if(p.getPaidOn() != null) {
-				 amountPaid += Amount;
-			 }
+		 	if(p.getPaid() != 0) {
+				Amount = Integer.parseInt(p.getAmount());
+				product = Amount * p.getPaid() + intrestAdded;
+				InterestTemp2 = (product * ((nowIntrest / 100)) / 12);
+				totalIntrest += InterestTemp2;
+
+				if (p.getPaidOn() != null) {
+					amountPaid += Amount;
+				}
+			}
 
 			 totalAmount += Amount + intrestAdded;
 			 countMonth++;

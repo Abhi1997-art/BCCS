@@ -3,6 +3,8 @@ package com.service.banking.repository.dashBoardRepo;
 import java.util.Date;
 import java.util.List;
 
+import com.service.banking.model.accountsModel.InterestToAccountDetails;
+import com.service.banking.model.accountsModel.MaturityToAccountDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -122,5 +124,15 @@ public interface AccountsOpenTodayRepo extends JpaRepository<Accounts, Integer> 
 		@Query("select new com.service.banking.model.hodAuthorityModel.LockUnlockAcntDetails(a.id, a.accountNumber, m.id, m.name, m.fatherName) from Accounts a left join "
 				+ "Members m on a.memberId=m.id where a.accountNumber like %?1%")
 		public List<LockUnlockAcntDetails> getAccountList(String name);
+
+	// get Account List only.............
+	@Query("select new com.service.banking.model.hodAuthorityModel.LockUnlockAcntDetails(a.id, a.accountNumber, m.id, m.name, m.fatherName) from Accounts a left join "
+			+ "Members m on a.memberId=m.id where a.accountNumber like %?1%")
+	public List<MaturityToAccountDetails> getMaturityToAccountList(String name);
+
+	// get Account List only.............
+	@Query("select new com.service.banking.model.hodAuthorityModel.LockUnlockAcntDetails(a.id, a.accountNumber, m.id, m.name, m.fatherName) from Accounts a left join "
+			+ "Members m on a.memberId=m.id where a.accountNumber like %?1%")
+	public List<InterestToAccountDetails> getInterestToAccountList(String name);
 
 }

@@ -7,9 +7,10 @@ import com.google.gson.Gson;
 import com.service.banking.hibernateEntity.*;
 import com.service.banking.model.GstModel.AccountStatementDetail;
 import com.service.banking.model.accountsModel.*;
-import com.service.banking.model.hodAuthorityModel.iDeleteVoucherDetails;
+import com.service.banking.model.hodAuthorityModel.*;
 import com.service.banking.model.transaction.DepositeDetails;
 import com.service.banking.repository.AccountsRepo.*;
+import com.service.banking.repository.dashBoardRepo.AccountsOpenTodayRepo;
 import com.service.banking.repository.gstRepository.MemorandomAccountStatement;
 import com.service.banking.repository.hodAuthorityRepo.PremuimRepo;
 import com.service.banking.repository.madRepository.AgentsRepositoty;
@@ -29,9 +30,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.service.banking.model.MadModel.DealerDeatails;
 import com.service.banking.model.dashboardModel.DueDeatailsModel;
 import com.service.banking.model.dashboardModel.SchemaDetail;
-import com.service.banking.model.hodAuthorityModel.AssociationDetails;
-import com.service.banking.model.hodAuthorityModel.MoRoDetails;
-import com.service.banking.model.hodAuthorityModel.Teamdetails;
 import com.service.banking.model.stockModel.LedgerItemDetails;
 import com.service.banking.repository.dashBoardRepo.DashBoardSchemeRepo;
 import com.service.banking.repository.hodAuthorityRepo.MoAssociationRepo;
@@ -120,6 +118,9 @@ public class AccountsService {
 
     @Autowired
     MemorandomAccountStatement memorandomTransRow;
+
+    @Autowired
+    AccountsOpenTodayRepo accountsOpenTodayRepo;
 
 
     DateFormater dateformater = new DateFormater();
@@ -227,11 +228,7 @@ public class AccountsService {
     public List<PendingLoanDetails> loanPending() {
         //Pageable paging = PageRequest.of(setFirstResults, setMaxResults);
         List<PendingLoanDetails> pendList = loanRepo.loanPending();
-        if (pendList.size() != 0) {
-            return pendList;
-        } else {
-            return new ArrayList<PendingLoanDetails>();
-        }
+        return pendList;
     }
 
     // get manage surrender bike legal accounts  .......................................................
@@ -1501,7 +1498,7 @@ public class AccountsService {
 
         AccountsPending ac = new AccountsPending();
         ac.setAccountType(accountsPending.getAccountType());
-        ac.setAccountNumber(accountsPending.getAccountNumber());
+        ac.setAccountNumber("new_account " + new Date().getTime());
         ac.setMemberId(accountsPending.getMemberId());
         ac.setSchemeId(accountsPending.getSchemeId());
         ac.setAmount(accountsPending.getAmount());
@@ -1514,27 +1511,70 @@ public class AccountsService {
 
         ac.setCreatedAt(new Date());
         ac.setStaffId(accountsPending.getStaffId());
-        ac.setPandLgroup(" ");
+        ac.setPandLgroup(accountsPending.getPandLgroup());
         ac.setIsDirty((byte) 0);
         ac.setBikeSurrendered((byte) 0);
         ac.setIsInLegal((byte) 0);
         ac.setBankAccountLimit(0);
         ac.setLegalFilingDate(new Date(0));
-        ac.setNewOrRenew("");
+        ac.setNewOrRenew(accountsPending.getNewOrRenew());
         ac.setBranchId(accountsPending.getBranchId());
         ac.setIsApproved(false);
 
         OtherValues otherValues= new OtherValues();
         otherValues.setJointMember(accountsPending.getJointMember());
         otherValues.setDocumentFeeded(accountsPending.getDocumentFeeded());
-        otherValues.setSmAmount(accountsPending.getSMAmount());
+        otherValues.setOtherAccountId(accountsPending.getOtherAccountId());
+        otherValues.setLoanFromAccountId(accountsPending.getLoanFromAccountId());
         otherValues.setAccountCrAmount(accountsPending.getAccountCrAmount());
-        otherValues.setLoanFromAccount(accountsPending.getLoanFromAccount());
+        otherValues.setSmAmount(accountsPending.getSMAmount());
+
+        otherValues.setAccountPendency(accountsPending.getAccountPendency());
+        otherValues.setAccountDontGiveToRo(accountsPending.getAccountDontGiveToRo());
+        otherValues.setAllegationAarop(accountsPending.getAllegationAarop());
+        otherValues.setArbitrationStage(accountsPending.getArbitrationStage());
+        otherValues.setArrestWarrant(accountsPending.getArrestWarrant());
+        otherValues.setArbitrationVisitStatus(accountsPending.getArbitrationVisitStatus());
+        otherValues.setBikeLocation(accountsPending.getBikeLocation());
+        otherValues.setBailableWarrantJamantiWarrant(accountsPending.getBailableWarrantJamantiWarrant());
+        otherValues.setBikeSurrender(accountsPending.getBikeSurrender());
+        otherValues.setChassisNo(accountsPending.getChassisNo());
+        otherValues.setDebateBahas(accountsPending.getDebateBahas());
+        otherValues.setEvidenceGawah(accountsPending.getEvidenceGawah());
+        otherValues.setEngineNo(accountsPending.getEngineNo());
+        otherValues.setFiStatus(accountsPending.getFiStatus());
+        otherValues.setGaurantorStamp(accountsPending.getGaurantorStamp());
+        otherValues.setGaurantoeChaqueNo(accountsPending.getGaurantoeChaqueNo());
+        otherValues.setInvastigationJanch(accountsPending.getInvastigationJanch());
+        otherValues.setLegalBikeStatus(accountsPending.getLegalBikeStatus());
+        otherValues.setLegalCaseStatus(accountsPending.getLegalCaseStatus());
+        otherValues.setLegalCaseSubmitted(accountsPending.getLegalCaseSubmitted());
+        otherValues.setLoanRemark(accountsPending.getLoanRemark());
+        otherValues.setLoanSecurity(accountsPending.getLoanSecurity());
+        otherValues.setLoanChequePaidDetail(accountsPending.getLoanChequePaidDetail());
+        otherValues.setModel(accountsPending.getModel());
+        otherValues.setNotice(accountsPending.getNotice());
+        otherValues.setNocStatus(accountsPending.getNocStatus());
+        otherValues.setOrder(accountsPending.getOrder());
+        otherValues.setOwnerChequeNo(accountsPending.getOwnerChequeNo());
+        otherValues.setPhoneFollowUp(accountsPending.getPhoneFollowUp());
+        otherValues.setPolicyNumber(accountsPending.getPolicyNumber());
+        otherValues.setPrasangGhyan(accountsPending.getPrasangGhyan());
+        otherValues.setRemark(accountsPending.getRemark());
+        otherValues.setRecoveryStatus(accountsPending.getRecoveryStatus());
+        otherValues.setRrTrackingNumber(accountsPending.getRrTrackingNumber());
+        otherValues.setStamp(accountsPending.getStamp());
+        otherValues.setSummons(accountsPending.getSummons());
+        otherValues.setTaxReceipt(accountsPending.getTaxReceipt());
+        otherValues.setVehicleNo(accountsPending.getVehicleNo());
+        otherValues.setVisitCharge(accountsPending.getVisitCharge());
+        otherValues.setWelcomeCall(accountsPending.getWelcomeCall());
 
         Gson gson = new Gson();
         gson.toJson(otherValues);
         ac.setExtraInfo(gson.toJson(otherValues));
         System.out.println(gson.toJson(otherValues));
+
         loanRepo.save(ac);
 
     }
@@ -1571,5 +1611,15 @@ public class AccountsService {
     public List<CollectorDetails> getCollectorList(String name) {
         List<CollectorDetails> list = agentsRepositoty.getCollectorList(name);
         return list;
+    }
+
+    public List<MaturityToAccountDetails> getMaturityToAccountList(String name) {
+        List<MaturityToAccountDetails> accountList = accountsOpenTodayRepo.getMaturityToAccountList(name);
+        if(accountList.size() !=0) {
+            return accountList;
+        }
+        else {
+            return new ArrayList<MaturityToAccountDetails>();
+        }
     }
 }
